@@ -1,0 +1,31 @@
+-> projeto não pode ser estático, tem que ter streams
+-> bd
+-> tem que ter ações ex: notificar sobre stock ir abaixo
+-> REST API
+-> web sockets
+
+!! defenir também critérios de aceitação dos casos de uso
+-> defenir requisitos
+
+************
+Nas users storeis ver quais são as + importantes e ver qual é que implementamos primeiro
+usar o template do relatório
+
+blur my shell
+
+*****************************************************************************************************************
+Team manager -> Bruno
+
+Product owner -> Fabio
+
+Architect Deep -> Diogo
+
+DevOps master -> Ruben
+
+-> militar por exemplo 2% gás natural e se não houver energia suificente, ou aumenta ou desligar dispositivo
+-> limitar em certos horarios certas fontes
+-> 200 litros de agua e com o caudal normal e fazer uns calculos para chegar a esse limite até ao dia
+
+
+
+

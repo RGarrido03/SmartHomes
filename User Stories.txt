@@ -1,0 +1,13 @@
+Resumo do tema:
+-> App que permite gerir recursos como energia e outras fontes
+
+-> recursos energéticos em adotar enegrias verdes
+
+Personas
+
+-> A ana quer registar a(s) sua(s) casa(s) numa aplicação com a finalidade de monitorizar todos os dados relacionados com a gestão de recursos energéticos.
+
+Core User Stories
+
+-> A Ana quer adicionar uma casa
+-> 
