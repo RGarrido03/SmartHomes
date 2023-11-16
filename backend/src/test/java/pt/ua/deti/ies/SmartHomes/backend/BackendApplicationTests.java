@@ -1,10 +1,10 @@
-package pt.ua.deti.ies.SmartHomes;
+package pt.ua.deti.ies.SmartHomes.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SmartHomesApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {

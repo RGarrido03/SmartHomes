@@ -1,13 +1,13 @@
-package pt.ua.deti.ies.SmartHomes;
+package pt.ua.deti.ies.SmartHomes.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SmartHomesApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SmartHomesApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }

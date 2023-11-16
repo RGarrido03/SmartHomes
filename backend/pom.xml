@@ -8,11 +8,11 @@
 		<version>3.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>pt.ua.deti.ies</groupId>
-	<artifactId>SmartHomes</artifactId>
+	<groupId>pt.ua.deti.ies.SmartHomes</groupId>
+	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SmartHomes</name>
-	<description>SmartHomes Project for IES subject</description>
+	<name>backend</name>
+	<description>Backend for SmartHomes Project for IES subject</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
