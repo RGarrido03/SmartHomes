@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  db_pg:
+    image: postgres:16.1
+    environment:
+      # Default user is postgres
+      # Default db is postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - backend
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  
+  backend_spring:
+    depends_on:
+      database:
+        condition: service_healthy
+    build: ./backend
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/postgres",
+          "spring.datasource.username" : "postgres",
+          "spring.datasource.password" : "postgres",
+          "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+          "spring.jpa.hibernate.ddl-auto" : "update"
+        }'
+    restart: on-failure
+    networks:
+      - backend
+      - frontend
+    volumes:
+      - ./backend:/api
+
+  app:
+    depends_on:
+      - backend_spring
+    build: ./frontend
+    ports:
+      - 3030:3030
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    networks:
+      - frontend
+
+volumes:
+  pg_data:
+
+networks:
+  backend:
+  frontend:
