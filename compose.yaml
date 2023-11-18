@@ -18,6 +18,24 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  db_influx:
+    image: influxdb:2.7
+    environment:
+      DOCKER_INFLUXDB_INIT_USERNAME: influx
+      DOCKER_INFLUXDB_INIT_PASSWORD: influx
+      DOCKER_INFLUXDB_INIT_ORG: smarthomes
+      DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
+    healthcheck:
+      test: "curl -f http://localhost:8086/ping"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - database
+    volumes:
+      - influx_data:/var/lib/influxdb2
+
   backend_spring:
     depends_on:
       db_pg:
@@ -29,7 +47,11 @@ services:
           "spring.datasource.username" : "postgres",
           "spring.datasource.password" : "postgres",
           "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
-          "spring.jpa.hibernate.ddl-auto" : "update"
+          "spring.jpa.hibernate.ddl-auto" : "update",
+          "spring.influx.url" : "https://db_influx:8086",
+          "spring.influx.user" : "influx",
+          "spring.influx.password" : "influx"
+          "spring.influx.database" : "smarthomes"
         }'
     restart: on-failure
     networks:
@@ -67,6 +89,7 @@ services:
 
 volumes:
   bun_modules:
+  influx_data:
   pg_data:
 
 
