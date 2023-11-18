@@ -16,10 +16,10 @@ services:
       - database
     volumes:
       - pg_data:/var/lib/postgresql/data
-  
+
   backend_spring:
     depends_on:
-      database:
+      db_pg:
         condition: service_healthy
     build: ./backend
     environment:
@@ -45,7 +45,7 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/frontend
-      - /frontend/node_modules
+      - bun_modules:/frontend/node_modules
     networks:
       - frontend
   
@@ -53,7 +53,6 @@ services:
     image: nginx:1.25.3
     ports:
       - 80:80
-      - 443:443
     depends_on:
       - db_pg
       - backend_spring
@@ -64,8 +63,11 @@ services:
     volumes:
       - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
 
+
 volumes:
+  bun_modules:
   pg_data:
+
 
 networks:
   database:
