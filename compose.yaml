@@ -42,7 +42,7 @@ services:
       - backend_spring
     build: ./frontend
     ports:
-      - 3030:3030
+      - 3000:3000
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
@@ -61,6 +61,8 @@ services:
       - backend
       - frontend
     restart: unless-stopped
+    volumes:
+      - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
 
 volumes:
   pg_data:
