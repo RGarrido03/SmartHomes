@@ -13,7 +13,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - backend
+      - database
     volumes:
       - pg_data:/var/lib/postgresql/data
   
@@ -22,8 +22,6 @@ services:
       database:
         condition: service_healthy
     build: ./backend
-    ports:
-      - 8080:8080
     environment:
       SPRING_APPLICATION_JSON: '{
           "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/postgres",
@@ -34,8 +32,8 @@ services:
         }'
     restart: on-failure
     networks:
+      - database
       - backend
-      - frontend
     volumes:
       - ./backend:/api
 
@@ -50,10 +48,24 @@ services:
       - /frontend/node_modules
     networks:
       - frontend
+  
+  proxy:
+    image: nginx:1.25.3
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - db_pg
+      - backend_spring
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
 
 volumes:
   pg_data:
 
 networks:
+  database:
   backend:
   frontend:
