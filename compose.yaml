@@ -50,7 +50,7 @@ services:
           "spring.jpa.hibernate.ddl-auto" : "update",
           "spring.influx.url" : "https://db_influx:8086",
           "spring.influx.user" : "influx",
-          "spring.influx.password" : "influx"
+          "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes"
         }'
     restart: on-failure
@@ -59,6 +59,7 @@ services:
       - backend
     volumes:
       - ./backend:/api
+      - maven_data:/root/.m2
 
   app:
     depends_on:
@@ -90,6 +91,7 @@ services:
 volumes:
   bun_modules:
   influx_data:
+  maven_data:
   pg_data:
 
 
