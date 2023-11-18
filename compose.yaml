@@ -5,6 +5,7 @@ services:
     environment:
       # Default user is postgres
       # Default db is postgres
+      POSTGRES_DB: smarthomes
       POSTGRES_PASSWORD: postgres
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
@@ -24,7 +25,7 @@ services:
     build: ./backend
     environment:
       SPRING_APPLICATION_JSON: '{
-          "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/postgres",
+          "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/smarthomes",
           "spring.datasource.username" : "postgres",
           "spring.datasource.password" : "postgres",
           "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
