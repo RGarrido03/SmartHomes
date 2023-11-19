@@ -41,12 +41,21 @@ services:
     environment:
       RABBITMQ_DEFAULT_PASS: rabbitmq
       RABBITMQ_DEFAULT_USER: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - backend
 
   backend_spring:
     depends_on:
       db_pg:
+        condition: service_healthy
+      influx:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     build: ./backend
     environment:
@@ -90,7 +99,7 @@ services:
     ports:
       - 80:80
     depends_on:
-      - db_pg
+      - app
       - backend_spring
     networks:
       - backend
