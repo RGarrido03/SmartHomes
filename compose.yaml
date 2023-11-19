@@ -14,7 +14,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - database
+      - backend
     volumes:
       - pg_data:/var/lib/postgresql/data
 
@@ -32,7 +32,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - database
+      - backend
     volumes:
       - influx_data:/var/lib/influxdb2
 
@@ -42,7 +42,7 @@ services:
       RABBITMQ_DEFAULT_PASS: rabbitmq
       RABBITMQ_DEFAULT_USER: rabbitmq
     networks:
-      - database
+      - backend
 
   backend_spring:
     depends_on:
@@ -63,7 +63,6 @@ services:
         }'
     restart: on-failure
     networks:
-      - database
       - backend
     volumes:
       - ./backend:/api
@@ -104,6 +103,5 @@ volumes:
 
 
 networks:
-  database:
   backend:
   frontend:
