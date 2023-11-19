@@ -18,7 +18,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-  db_influx:
+  influx:
     image: influxdb:2.7
     environment:
       DOCKER_INFLUXDB_INIT_USERNAME: influx
@@ -56,7 +56,7 @@ services:
           "spring.datasource.password" : "postgres",
           "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
           "spring.jpa.hibernate.ddl-auto" : "update",
-          "spring.influx.url" : "https://db_influx:8086",
+          "spring.influx.url" : "https://influx:8086",
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes"
