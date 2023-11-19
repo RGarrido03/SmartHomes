@@ -36,6 +36,14 @@ services:
     volumes:
       - influx_data:/var/lib/influxdb2
 
+  rabbitmq:
+    image: rabbitmq:3
+    environment:
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_USER: rabbitmq
+    networks:
+      - database
+
   backend_spring:
     depends_on:
       db_pg:
