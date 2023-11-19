@@ -59,7 +59,12 @@ services:
           "spring.influx.url" : "https://influx:8086",
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
-          "spring.influx.database" : "smarthomes"
+          "spring.influx.database" : "smarthomes",
+          "spring.rabbitmq.host" : "rabbitmq",
+          "spring.rabbitmq.port" : "5672",
+          "spring.rabbitmq.username" : "rabbitmq",
+          "spring.rabbitmq.password" : "rabbitmq"
+
         }'
     restart: on-failure
     networks:
