@@ -74,7 +74,7 @@ services:
           "spring.rabbitmq.password" : "rabbitmq"
 
         }'
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - backend
     volumes:
