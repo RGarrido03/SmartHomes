@@ -1,5 +1,6 @@
 package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 public class RabbitMQConfig {
@@ -43,14 +45,20 @@ public class RabbitMQConfig {
         return new RabbitTemplate(connectionFactory);
     }
 
+    @Bean
+    public Queue hello() {
+        return new Queue("smarthomes");
+    }
+
     @Autowired
+    @Lazy
     private RabbitTemplate rabbitTemplate;
 
     public void sendMessage(String exchange, String routingKey, Object message) {
         rabbitTemplate.convertAndSend(exchange, routingKey, message);
     }
 
-    @RabbitListener(queues = "${rabbitmq.queue}")
+    @RabbitListener(queues = "smarthomes")
     public void receiveMessage(String message) {
         // process the message
     }
