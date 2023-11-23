@@ -1,5 +1,4 @@
-const million = require("million/compiler");
-/** @type {import('next').NextConfig} */
+import { next } from "million/compiler";
 const nextConfig = {};
 
-module.exports = million.next(nextConfig, { auto: { rsc: true } });
+export default next(nextConfig, { auto: { rsc: true } });
