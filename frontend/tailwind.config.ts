@@ -3,11 +3,11 @@ import { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -73,10 +73,10 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
-      }
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
 
 export default config;
