@@ -53,6 +53,9 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      borderRadius: {
+        card: "1rem",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
