@@ -1,10 +1,25 @@
+import { cn } from "@/lib/utils";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
+import { Button } from "./ui/button";
+
+export type TabIds =
+  | "home"
+  | "environment"
+  | "electricity"
+  | "water"
+  | "devices"
+  | "costs"
+  | "settings";
 
 type SidebarTabsProps = {
-  id: string;
+  id: TabIds;
   name: string;
   icon: MaterialSymbolProps["icon"];
 }[];
+
+type SidebarProps = {
+  active: TabIds;
+};
 
 const tabs: SidebarTabsProps = [
   {
@@ -44,13 +59,17 @@ const tabs: SidebarTabsProps = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ active }: SidebarProps) {
   return (
-    <div className="flex w-fit flex-col gap-4 rounded-tr-2xl border p-4">
+    <div className="flex w-fit flex-col gap-4 rounded-tr-2xl bg-background p-4">
       {tabs.map((tab) => (
-        <div key={tab.id} className="rounded-lg p-2">
-          <MaterialSymbol size={24} icon={tab.icon} />
-        </div>
+        <Button
+          key={tab.id}
+          variant={active === tab.id ? "default" : "ghost"}
+          className="p-2"
+        >
+          <MaterialSymbol size={24} icon={tab.icon} fill={active === tab.id} />
+        </Button>
       ))}
     </div>
   );
