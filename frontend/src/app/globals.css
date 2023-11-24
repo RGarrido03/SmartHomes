@@ -25,10 +25,10 @@
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 207 93% 89%; /* accent, #C9E6FD */
-    --accent-foreground: 211 76% 11%; /* Color from Material website */
+    --accent-foreground: 211 76% 11%; /* Color from Material 3 website */
 
     --destructive: 5 61% 40%; /* Color from Material 3 website */
-    --destructive-foreground: 0 0% 100%; /* White */
+    --destructive-foreground: 0 0% 100%; /* Color from Material 3 website */
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -39,31 +39,31 @@
 
   .dark,
   [data-theme="dark"] {
-    --page-background: 0 0 12%;
+    --page-background: 0 0 12%; /* base-100, #1F1F1F */
 
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 210 4% 18%; /* base-200, #F4F6FB */
+    --foreground: 0 0% 89%; /* text-100, #E3E3E3 */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 4% 18%; /* base-200, #F4F6FB */
+    --card-foreground: 0 0% 89%; /* text-100, #E3E3E3 */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 5% 16%; /* Modal color from Bard */
+    --popover-foreground: 0 0% 89%; /* text-100, #E3E3E3 */
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 209 60% 28%; /* accent, #1D4973 */
+    --primary-foreground: 207 93% 89%; /* Color from Material 3 website */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 3% 23%; /* base-300, #393B3D */
+    --secondary-foreground: 140 3% 77%; /* text-200, #C4C7C5 */
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 209 60% 28%; /* accent, #1D4973 */
+    --accent-foreground: 210 40% 98%; /* Color from Material 3 website */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 53% 82%; /* Color from Material 3 website */
+    --destructive-foreground: 6 63% 21%; /* Color from Material 3 website */
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
