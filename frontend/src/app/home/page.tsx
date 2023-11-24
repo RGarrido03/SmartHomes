@@ -1,10 +1,11 @@
+import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 
 export default function Home() {
   return (
-    <div>
-      <p>Hi how</p>
-      <Sidebar />
-    </div>
+    <>
+      <Navbar />
+      <Sidebar active="home" />
+    </>
   );
 }
