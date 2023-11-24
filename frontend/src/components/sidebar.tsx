@@ -71,9 +71,8 @@ export default function Sidebar({ active }: SidebarProps) {
   return (
     <div className="flex w-fit flex-col gap-4 rounded-tr-2xl bg-background p-4">
       {tabs.map((tab) => (
-        <Link href={tab.href}>
+        <Link href={tab.href} key={tab.id}>
           <Button
-            key={tab.id}
             variant={active === tab.id ? "default" : "ghost"}
             className="p-2"
           >
