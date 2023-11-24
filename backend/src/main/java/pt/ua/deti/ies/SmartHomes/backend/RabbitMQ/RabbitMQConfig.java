@@ -93,9 +93,6 @@ public class RabbitMQConfig {
     @Lazy
     private AmqpTemplate amqpTemplate;
 
-    public void sendMessage(String exchange, String routingKey, Object message) {
-        amqpTemplate.convertAndSend(exchange, routingKey, message);
-    }
 
     @RabbitListener(queues = "smarthomes")
     public void receiveMessage(String message) {
