@@ -1,9 +1,7 @@
-"use client";
-
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import type { Viewport } from "next";
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -13,12 +11,16 @@ export const viewport: Viewport = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const headersList = headers();
+
   return (
     <>
       <Navbar />
       <div className="flex flex-1 flex-col gap-4 px-4 md:flex-row md:px-0">
-        <Sidebar activeUrl={pathname} className="md:self-stretch" />
+        <Sidebar
+          activeUrl={headersList.get("x-url") ?? "/home"}
+          className="md:self-stretch"
+        />
         <div className="mr-4 flex-1">{children}</div>
       </div>
     </>
