@@ -18,8 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <div className="flex flex-row gap-4">
-        <Sidebar active="home" />
+      <div className="flex flex-1 flex-row gap-4">
+        <Sidebar active="home" className="self-stretch" />
         <div className="mr-4 flex-1">{children}</div>
       </div>
     </>
