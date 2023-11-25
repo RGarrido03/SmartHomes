@@ -1,6 +1,7 @@
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export type TabIds =
   | "home"
@@ -20,6 +21,7 @@ type SidebarTabsProps = {
 
 type SidebarProps = {
   active: TabIds;
+  className?: string;
 };
 
 const tabs: SidebarTabsProps = [
@@ -67,9 +69,14 @@ const tabs: SidebarTabsProps = [
   },
 ];
 
-export default function Sidebar({ active }: SidebarProps) {
+export default function Sidebar({ active, className }: SidebarProps) {
   return (
-    <div className="flex w-fit flex-col gap-4 rounded-tr-2xl bg-background p-4">
+    <div
+      className={cn(
+        "flex w-fit flex-col gap-4 rounded-tr-2xl bg-background p-4",
+        className,
+      )}
+    >
       {tabs.map((tab) => (
         <Link href={tab.href} key={tab.id}>
           <Button
