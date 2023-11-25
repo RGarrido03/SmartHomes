@@ -3,24 +3,22 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export type TabIds =
-  | "home"
-  | "environment"
-  | "electricity"
-  | "water"
-  | "devices"
-  | "costs"
-  | "settings";
-
 type SidebarTabsProps = {
-  id: TabIds;
+  id:
+    | "home"
+    | "environment"
+    | "electricity"
+    | "water"
+    | "devices"
+    | "costs"
+    | "settings";
   name: string;
   icon: MaterialSymbolProps["icon"];
   href: string;
 }[];
 
 type SidebarProps = {
-  active: TabIds;
+  activeUrl: string;
   className?: string;
 };
 
@@ -69,7 +67,7 @@ const tabs: SidebarTabsProps = [
   },
 ];
 
-export default function Sidebar({ active, className }: SidebarProps) {
+export default function Sidebar({ activeUrl, className }: SidebarProps) {
   return (
     <div
       className={cn(
@@ -80,13 +78,13 @@ export default function Sidebar({ active, className }: SidebarProps) {
       {tabs.map((tab) => (
         <Link href={tab.href} key={tab.id}>
           <Button
-            variant={active === tab.id ? "default" : "ghost"}
+            variant={activeUrl === tab.href ? "default" : "ghost"}
             className="p-2"
           >
             <MaterialSymbol
               size={24}
               icon={tab.icon}
-              fill={active === tab.id}
+              fill={activeUrl === tab.href}
             />
           </Button>
         </Link>
