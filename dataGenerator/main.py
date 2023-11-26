@@ -51,15 +51,15 @@ def generate_random_data(house_id):
 
 def send_data_to_rabbitmq(json_data):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters("localhost")
+        pika.ConnectionParameters("smarthomes")
     )  # replace with your RabbitMQ server
     channel = connection.channel()
 
-    channel.queue_declare(queue="house_data")  # replace with your queue name
+    channel.queue_declare(queue="smarthomes")  # replace with your queue name
 
     channel.basic_publish(
-        exchange="",
-        routing_key="house_data",  # replace with your queue name
+        exchange="smarthomes_exchange",
+        routing_key="smarthomes_routing_json_key",  # replace with your queue name
         body=json_data,
     )
 
@@ -67,12 +67,12 @@ def send_data_to_rabbitmq(json_data):
 
 # id_list receives the IDs from the first connection from RabbitMQ
 def get_ids_from_rabbitmq():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))  # replace with your RabbitMQ server
+    connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq"))  # replace with your RabbitMQ server
     channel = connection.channel()
 
     id_list = []
     while True:
-        method_frame, header_frame, body = channel.basic_get(queue='id_queue')  # replace with your queue name
+        method_frame, header_frame, body = channel.basic_get(queue='smarthomes')  # replace with your queue name
         if method_frame is None:
             break
         else:
