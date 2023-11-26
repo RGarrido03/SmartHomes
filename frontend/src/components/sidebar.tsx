@@ -20,9 +20,23 @@ export default function Sidebar({ activeUrl, className }: SidebarProps) {
     >
       {tabs.map((tab) => (
         <Link href={tab.href} key={tab.id} className="snap-start">
+          {/* Desktop version button */}
           <Button
             variant={activeUrl === tab.href ? "default" : "ghost"}
-            className="rounded-full px-4 py-2 md:rounded-lg md:px-2"
+            className="hidden rounded-lg p-2 md:block"
+          >
+            <MaterialSymbol
+              size={24}
+              icon={tab.icon}
+              fill={activeUrl === tab.href}
+            />
+            <p className="ml-2 md:hidden">{tab.name}</p>
+          </Button>
+
+          {/* Mobile version pile-like button */}
+          <Button
+            variant={activeUrl === tab.href ? "default" : "background"}
+            className="rounded-full px-4 py-2 md:hidden"
           >
             <MaterialSymbol
               size={24}
