@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "flex min-h-screen flex-col font-sans antialiased",
+          "flex min-h-[100dvh] flex-col font-sans antialiased",
           inter.variable,
         )}
       >
