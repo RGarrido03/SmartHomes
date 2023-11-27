@@ -24,6 +24,7 @@ services:
       DOCKER_INFLUXDB_INIT_PASSWORD: influx
       DOCKER_INFLUXDB_INIT_ORG: smarthomes
       DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: smarthomes
     healthcheck:
       test: "curl -f http://localhost:8086/ping"
       interval: 10s
@@ -68,13 +69,13 @@ services:
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes",
-          "spring.influx.token" : "smarthomes_token",
-          "spring.influx.bucket" : "smarthomes_bucket",
-          "spring.influx.org" : "smarthomes_org",
+          "spring.influx.token" : "smarthomes",
+          "spring.influx.bucket" : "smarthomes",
+          "spring.influx.org" : "smarthomes",
           "spring.rabbitmq.host" : "rabbitmq",
           "spring.rabbitmq.port" : "5672",
           "spring.rabbitmq.username" : "rabbitmq",
-          "spring.rabbitmq.password" : "rabbitmq",
+          "spring.rabbitmq.password" : "rabbitmq"
         }'
     restart: unless-stopped
     networks:
