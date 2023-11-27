@@ -91,7 +91,7 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/frontend
-      - bun_modules:/frontend/node_modules
+      - pnpm_modules:/frontend/node_modules
     networks:
       - frontend
   
@@ -111,7 +111,7 @@ services:
 
 
 volumes:
-  bun_modules:
+  pnpm_modules:
   influx_data:
   maven_data:
   pg_data:
