@@ -1,13 +1,10 @@
 package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Logger;
 
 @Slf4j
 @Service
@@ -16,6 +13,7 @@ public class Sender {
 
     private final RabbitTemplate rabbitTemplate;
 
+    @Autowired
     public Sender(RabbitTemplate rabbitTemplate) {
 
         this.rabbitTemplate = rabbitTemplate;

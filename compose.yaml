@@ -68,12 +68,13 @@ services:
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes",
+          "spring.influx.token" : "smarthomes_token",
+          "spring.influx.bucket" : "smarthomes_bucket",
+          "spring.influx.org" : "smarthomes_org",
           "spring.rabbitmq.host" : "rabbitmq",
           "spring.rabbitmq.port" : "5672",
           "spring.rabbitmq.username" : "rabbitmq",
           "spring.rabbitmq.password" : "rabbitmq",
-          
-
         }'
     restart: unless-stopped
     networks:
