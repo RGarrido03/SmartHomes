@@ -51,7 +51,7 @@ def generate_random_data(house_id):
 
 def send_data_to_rabbitmq(json_data):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters("localhost")
+        pika.ConnectionParameters("localhost:5672")
     )  # replace with your RabbitMQ server
     channel = connection.channel()
 
