@@ -23,9 +23,4 @@ public class Message implements Serializable {
         this.grid = grid;
         this.totalConsumption = totalConsumption;
     }
-
-    @Override
-    public String toString() {
-        return "RabbitMQProperties{" + "house_id=" + house_id + ", grid=" + grid + ", totalConsumption=" + totalConsumption + '}';
-    }
 }
