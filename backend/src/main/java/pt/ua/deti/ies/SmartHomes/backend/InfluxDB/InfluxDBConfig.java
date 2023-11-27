@@ -42,10 +42,12 @@ public class InfluxDBConfig {
     @Autowired
     private InfluxDBClient influxDBClient;
 
+
+    //example of an insert
     public void writeData() {
         WriteApi writeApi = influxDBClient.getWriteApi();
 
-        //example of an insert
+
         Point point = Point.measurement("cpu")
                 .addField("idle", 90L)
                 .addField("user", 9L)
