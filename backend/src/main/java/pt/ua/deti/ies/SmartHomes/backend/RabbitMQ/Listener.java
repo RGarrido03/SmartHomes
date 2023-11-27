@@ -1,7 +1,6 @@
 package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.message.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
