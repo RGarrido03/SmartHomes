@@ -4,10 +4,9 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
-public class RabbitMQProperties implements Serializable {
+public class Message implements Serializable {
 
     @NotEmpty
     private int house_id;
@@ -18,7 +17,7 @@ public class RabbitMQProperties implements Serializable {
     @NotEmpty
     private float totalConsumption;
 
-    public RabbitMQProperties(int house_id, String grid, float totalConsumption) {
+    public Message(int house_id, String grid, float totalConsumption) {
         this.house_id = house_id;
         this.grid = grid;
         this.totalConsumption = totalConsumption;

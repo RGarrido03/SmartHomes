@@ -1,19 +1,18 @@
 package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.Message;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import java.util.logging.Logger;
+import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.QUEUE_NAME;
 
+@Slf4j
 @Service
-public class RabbitMQListener {
+public class Listener {
 
-    private static final Logger log = (Logger) LoggerFactory.getLogger(RabbitMQSender.class);
-
-    @RabbitListener(queues = "smarthomes")
+    @RabbitListener(queues = {QUEUE_NAME} )
     public void consumeMessage(final Message message){
-        log.info("Received message: {}");
+        log.info("Received message: [{}]", message);
     }
 }

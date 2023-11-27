@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    public static final String QUEUE_NAME = "q.test-queue";
+    public static final String EXCHANGE_NAME = "x.test-exchange";
+
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -31,25 +34,24 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.routing.json.key}")
     public String routingJsonKey;
 
-
+    //spring bean for queue (store json messages)
+    // second parameter it means at restart RabbitMQ Queue won't survive
+    @Bean
+    public Queue jsonQueue(){
+        return new Queue(QUEUE_NAME, false);
+    }
     //spring bean for rabbitMQ exchange
     @Bean
     public TopicExchange exchange(){
-        return new TopicExchange("smarthomes_exchange");
-    }
-
-    //spring bean for queue (store json messages)
-    @Bean
-    public Queue jsonQueue(){
-        return new Queue(jsonQueue);
+        return new TopicExchange(EXCHANGE_NAME, false, false);
     }
 
     //binding between json queue and exchange using routing key
     @Bean
-    public Binding jsonBinding(){
-        return BindingBuilder.bind(jsonQueue())
-                .to(exchange())
-                .with(routingJsonKey);
+    public Binding jsonBinding(Queue queue, TopicExchange exchange){
+        return BindingBuilder.bind(queue)
+                .to(exchange)
+                .with(QUEUE_NAME);
     }
 
     @Bean

@@ -15,6 +15,7 @@
 	<name>backend</name>
 	<description>Backend for SmartHomes Project for IES subject</description>
 	<properties>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
