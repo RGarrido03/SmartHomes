@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String QUEUE_NAME = "house_data";
-    public static final String EXCHANGE_NAME = "x.test-exchange";
+    public static final String EXCHANGE_NAME = "house_data";
 
     // JSON Queue Values
     @Value("${spring.rabbitmq.queue.json.name}")
