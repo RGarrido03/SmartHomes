@@ -24,6 +24,7 @@ services:
       DOCKER_INFLUXDB_INIT_PASSWORD: influx
       DOCKER_INFLUXDB_INIT_ORG: smarthomes
       DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: smarthomes
     healthcheck:
       test: "curl -f http://localhost:8086/ping"
       interval: 10s
@@ -62,19 +63,20 @@ services:
           "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/smarthomes",
           "spring.datasource.username" : "postgres",
           "spring.datasource.password" : "postgres",
-          "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
           "spring.jpa.hibernate.ddl-auto" : "update",
           "spring.influx.url" : "https://influx:8086",
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes",
-          "spring.influx.token" : "smarthomes_token",
-          "spring.influx.bucket" : "smarthomes_bucket",
-          "spring.influx.org" : "smarthomes_org",
+          "spring.influx.token" : "smarthomes",
+          "spring.influx.bucket" : "smarthomes",
+          "spring.influx.org" : "smarthomes",
           "spring.rabbitmq.host" : "rabbitmq",
           "spring.rabbitmq.port" : "5672",
           "spring.rabbitmq.username" : "rabbitmq",
           "spring.rabbitmq.password" : "rabbitmq",
+          "spring.rabbitmq.queue.json.name" : "smarthomes",
+          "spring.rabbitmq.routing.json.key" : "smarthomes_routing_json_key"
         }'
     restart: unless-stopped
     networks:
