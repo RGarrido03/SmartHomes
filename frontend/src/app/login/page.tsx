@@ -2,14 +2,32 @@ import "globals";
 
 export default function Home() {
   return (
-    <div className="grid auto-rows-max grid-cols-2 justify-center">
-      <div className="columns bottom-0 max-h-full space-y-7 rounded-tr-2xl bg-background py-20 pt-12 text-center">
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
-        <p className="w-full text-8xl font-extrabold">SmartHomes.</p>
+    <div className="grid grid-cols-2 justify-center flex-1 h-full">
+      <div className="relative rounded-tr-2xl bg-background h-full hidden lg:block">
+        <div className="relative max-h-full space-y-7 pt-12 text-center">
+          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+        </div>
+
+        <div className="absolute z-40 top-0 w-full h-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 576 549"
+            className="w-full h-full fill-secondary"
+          >
+            <g style={{ mixBlendMode: "color" }}>
+              <path
+                d="M314.314 -120.5C258.783 10.5325 150.079 112.851 0 154.287V-120.5H314.314Z"
+              />
+              <path
+                d="M576 367.283C377.83 234.069 217.588 191.906 0 208.444V695.5H576V367.283Z"
+              />
+            </g>
+          </svg>
+        </div>
       </div>
 
       <div className="row-auto grid content-center space-y-8 p-8">
