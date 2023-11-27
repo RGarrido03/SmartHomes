@@ -33,23 +33,19 @@ public class InfluxDBConfig {
     @Value("${spring.influxdb.org}")
     private String org;
 
+    @Autowired
+    private InfluxDBClient influxDBClient;
 
     @Bean
     public InfluxDBClient influxDBClient() {
         return InfluxDBClientFactory.create(influxUrl, token.toCharArray());
     }
 
-    @Autowired
-    private InfluxDBClient influxDBClient;
-
     public void writeData() {
-        WriteApi writeApi = influxDBClient.getWriteApi();
+        WriteApi writeApi = influxDBClient.makeWriteApi();
 
         //example of an insert
-        Point point = Point.measurement("cpu")
-                .addField("idle", 90L)
-                .addField("user", 9L)
-                .addField("system", 1L);
+        Point point = Point.measurement("cpu").addField("idle", 90L).addField("user", 9L).addField("system", 1L);
 
         writeApi.writePoint(bucket, org, point);
     }

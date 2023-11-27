@@ -2,12 +2,13 @@ package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.io.Serializable;
 
+@Getter
 @Data
 public class Message implements Serializable {
-
     @NotEmpty
     private int house_id;
 
@@ -23,24 +24,8 @@ public class Message implements Serializable {
         this.totalConsumption = totalConsumption;
     }
 
-    public int getHouse_id() {
-        return house_id;
-    }
-
-    public String getGrid() {
-        return grid;
-    }
-
-    public float getTotalConsumption() {
-        return totalConsumption;
-    }
-
     @Override
     public String toString() {
-        return "RabbitMQProperties{" +
-                "house_id=" + house_id +
-                ", grid=" + grid +
-                ", totalConsumption=" + totalConsumption +
-                '}';
+        return "RabbitMQProperties{" + "house_id=" + house_id + ", grid=" + grid + ", totalConsumption=" + totalConsumption + '}';
     }
 }

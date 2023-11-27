@@ -10,19 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class Sender {
 
-
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
     public Sender(RabbitTemplate rabbitTemplate) {
-
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    //send message every 3 seconds
+    // Send a message every 3 seconds
     @Scheduled(fixedDelay = 3000L)
-    public void sendJsonMessage(){
-        Message message = new Message(1, "Bruno" , 34);
+    public void sendJsonMessage() {
+        Message message = new Message(1, "Bruno", 34);
         rabbitTemplate.convertAndSend("smarthomes_exchange", "smarthomes_routing_json_key", message);
         log.info("Json message sent");
     }
