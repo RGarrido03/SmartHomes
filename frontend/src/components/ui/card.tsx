@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -16,15 +17,32 @@ Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { icon?: MaterialSymbolProps["icon"] }
+>(({ className, icon, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1 p-4", className)}
+    className={cn("flex items-start justify-between p-4", className)}
+    {...props}
+  >
+    <div className="flex flex-col space-y-1">{children}</div>
+    {icon && <CardIcon icon={icon} />}
+  </div>
+));
+CardHeader.displayName = "CardHeader";
+
+const CardIcon = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLDivElement> & { icon: MaterialSymbolProps["icon"] }
+>(({ className, icon, ...props }, ref) => (
+  <MaterialSymbol
+    ref={ref}
+    icon={icon}
+    size={24}
+    className={className}
     {...props}
   />
 ));
-CardHeader.displayName = "CardHeader";
+CardIcon.displayName = "CardIcon";
 
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
