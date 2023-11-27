@@ -1,11 +1,13 @@
-FROM oven/bun:1
+FROM node:21
 
 WORKDIR /frontend
 
 COPY package.json ./
-COPY bun.lockb ./
+COPY pnpm-lock.yaml ./
 
-RUN bun install
+RUN npm install -g pnpm
+
+RUN pnpm install --frozen-lockfile
 
 EXPOSE 3000
-CMD ["bun", "dev"]
+CMD ["pnpm", "dev"]
