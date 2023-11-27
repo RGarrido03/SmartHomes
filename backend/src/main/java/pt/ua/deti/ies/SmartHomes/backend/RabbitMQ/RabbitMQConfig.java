@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE_NAME = "house_data";
-    public static final String EXCHANGE_NAME = "house_data";
+    public static final String QUEUE_NAME = "smarthomes";
+    public static final String EXCHANGE_NAME = "smarthomes_exchange";
+    public static final String ROUTING_KEY = "smarthomes_routing_json_key";
 
     // JSON Queue Values
     @Value("${spring.rabbitmq.queue.json.name}")
@@ -47,7 +48,7 @@ public class RabbitMQConfig {
     // Binding between json queue and exchange using routing key
     @Bean
     public Binding jsonBinding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
     @Bean

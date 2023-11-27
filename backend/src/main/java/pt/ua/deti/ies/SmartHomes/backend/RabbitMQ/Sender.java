@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.EXCHANGE_NAME;
+import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.ROUTING_KEY;
 
 @Slf4j
 @Service
@@ -23,7 +24,7 @@ public class Sender {
     @Scheduled(fixedDelay = 3000L)
     public void sendJsonMessage() {
         Message message = new Message(1, "Bruno", 34);
-        rabbitTemplate.convertAndSend(EXCHANGE_NAME, EXCHANGE_NAME, message);
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, message);
         log.info("Json message sent");
     }
 }
