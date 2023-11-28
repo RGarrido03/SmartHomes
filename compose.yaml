@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+  data_generator:
+    build: ./dataGenerator
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+    volumes:
+      - ./dataGenerator:/dataGenerator
+
   db_pg:
     image: postgres:16.1
     environment:
