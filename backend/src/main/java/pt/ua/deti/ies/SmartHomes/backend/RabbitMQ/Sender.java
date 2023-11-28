@@ -23,9 +23,9 @@ public class Sender {
     }
 
     // Send a message every 3 seconds
-    @Scheduled(fixedDelay = 3000L)
+    // @Scheduled(fixedDelay = 3000L)
     public void sendJsonMessage() {
-        Message message = new Message(1, "Bruno", 34);
+        Message message = new Message();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, message);
         log.info("Json message sent");
     }
