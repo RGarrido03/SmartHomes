@@ -41,13 +41,13 @@ public class RabbitMQConfig {
 
     // Spring bean for rabbitMQ exchange
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME, false, false);
+    public DirectExchange exchange() {
+        return new DirectExchange(EXCHANGE_NAME, false, false);
     }
 
     // Binding between json queue and exchange using routing key
     @Bean
-    public Binding jsonBinding(Queue queue, TopicExchange exchange) {
+    public Binding jsonBinding(Queue queue, DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
