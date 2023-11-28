@@ -4,8 +4,9 @@ import random
 import time
 
 # id_list = get_ids_from_rabbitmq()
-
-id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+queue_name = "smarthomes"
+exchange_name = "smarthomes_exchange"
+routing_key = "smarthomes_routing_json_key"
 
 
 def generate_random_data(house_id):
@@ -53,74 +54,43 @@ def generate_random_data(house_id):
     }
 
 
-def send_data_to_rabbitmq(json_data):
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters("localhost:5672")
-    )  # replace with your RabbitMQ server
-    channel = connection.channel()
-
-    channel.queue_declare(queue="house_data")  # replace with your queue name
-
+def send_data_to_rabbitmq(channel, json_data):
     channel.basic_publish(
-        exchange="",
-        routing_key="house_data",  # replace with your queue name
+        exchange=exchange_name,
+        routing_key=routing_key,
         body=json_data,
     )
 
-    connection.close()
-
 
 # id_list receives the IDs from the first connection from RabbitMQ
-def get_ids_from_rabbitmq():
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters("localhost")
-    )  # replace with your RabbitMQ server
-    channel = connection.channel()
-
+def get_ids_from_rabbitmq(channel):
     id_list = []
     while True:
-        method_frame, header_frame, body = channel.basic_get(
-            queue="id_queue"
-        )  # replace with your queue name
+        method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is None:
             break
         else:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
             id_list.append(int(body.decode()))
 
-    connection.close()
-
     return id_list
 
 
 if __name__ == "__main__":
+    connection = pika.BlockingConnection(pika.ConnectionParameters("localhost:5672"))
+    channel = connection.channel()
+    channel.queue_declare(queue=queue_name)
+
+    starttime = time.monotonic()
     while True:
-        for house_id in id_list:
-            house_data = generate_random_data(house_id)
+        try:
+            house_data = generate_random_data(1)
             json_data = json.dumps(house_data)
-            # send_data_to_rabbitmq(json_data)
-            # print all formatted data
-            print("House ID: ", house_data["id"])
-            print("Power Supplied")
-            print("Grid")
-            print(
-                " Hydroelectric: ",
-                house_data["power_supplied"]["grid"]["hydroelectric"],
-            )
-            print(" Wind: ", house_data["power_supplied"]["grid"]["wind"])
-            print(" Coal: ", house_data["power_supplied"]["grid"]["coal"])
-            print(" Solar: ", house_data["power_supplied"]["grid"]["solar"])
-            print(" Other: ", house_data["power_supplied"]["grid"]["other"])
-            print(" Total Grid: ", house_data["power_supplied"]["grid"]["total_grid"])
-            print("House")
-            print(
-                " Hydroelectric: ",
-                house_data["power_supplied"]["house"]["hydroelectric"],
-            )
-            print(" Wind: ", house_data["power_supplied"]["house"]["wind"])
-            print(
-                " Total House: ", house_data["power_supplied"]["house"]["total_house"]
-            )
-            print("Total: ", house_data["power_supplied"]["total"])
-            print("\n")
-        time.sleep(1)  # wait for 1 second before generating the next set of data
+
+            send_data_to_rabbitmq(channel, json_data)
+            print(json_data)
+
+            # wait for 1 second before generating the next set of data
+            time.sleep(1 - ((time.monotonic() - starttime) % 1))
+        except Exception:
+            connection.close()
