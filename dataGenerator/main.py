@@ -9,38 +9,46 @@ id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def generate_random_data(house_id):
-    hydroelectric_grid = round(random.uniform(0, 10000), 3)
-    wind_grid = round(random.uniform(0, 10000), 3)
-    coal_grid = round(random.uniform(0, 10000), 3)
-    solar_grid = round(random.uniform(0, 10000), 3)
-    other_grid = round(random.uniform(0, 10000), 3)
+    hydroelectric_grid = round(random.uniform(0, 8200000000), 3)
+    wind_grid = round(random.uniform(0, 5400000000), 3)
+    gas_grid = round(random.uniform(0, 2700000000), 3)
+    solar_grid = round(random.uniform(0, 2200000000), 3)
+    biomass_grid = round(random.uniform(0, 700000000), 3)
     total_grid = round(
-        hydroelectric_grid + wind_grid + coal_grid + solar_grid + other_grid, 3
+        hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid, 3
+    )
+    renewable_grid = round(
+        (hydroelectric_grid + wind_grid + solar_grid + biomass_grid) * 100 / total_grid,
+        3,
     )
 
-    hydroelectric_house = round(random.uniform(0, 2500), 3)
+    solar_house = round(random.uniform(0, 2500), 3)
     wind_house = round(random.uniform(0, 1000), 3)
-    total_house = round(hydroelectric_house + wind_house, 3)
-
-    total = round(total_grid + total_house, 3)
+    grid_exchange = round(random.uniform(-3500, 4000), 3)
+    total_house = round(solar_house + wind_house + grid_exchange, 3)
+    self_sufficiency = round(100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100, 3)
+    renewable_house = round(self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid, 3)
 
     return {
         "id": house_id,
-        "power_supplied": {
+        "power": {
             "grid": {
-                "hydroelectric": hydroelectric_grid,
+                "hydro": hydroelectric_grid,
                 "wind": wind_grid,
-                "coal": coal_grid,
+                "gas": gas_grid,
                 "solar": solar_grid,
-                "other": other_grid,
-                "total_grid": total_grid,
+                "biomass": biomass_grid,
+                "total": total_grid,
+                "renewable": renewable_grid,
             },
             "house": {
-                "hydroelectric": hydroelectric_house,
+                "solar": solar_house,
                 "wind": wind_house,
-                "total_house": total_house,
+                "grid_exchange": grid_exchange,
+                "total": total_house,
+                "self_sufficiency": self_sufficiency,
+                "renewable": renewable_house,
             },
-            "total": total,
         },
     }
 
