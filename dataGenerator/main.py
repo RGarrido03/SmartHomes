@@ -4,6 +4,10 @@ import random
 import time
 
 # id_list = get_ids_from_rabbitmq()
+host = "rabbitmq"
+port = 5672
+username = "rabbitmq"
+password = "rabbitmq"
 queue_name = "smarthomes"
 exchange_name = "smarthomes_exchange"
 routing_key = "smarthomes_routing_json_key"
@@ -27,8 +31,12 @@ def generate_random_data(house_id):
     wind_house = round(random.uniform(0, 1000), 3)
     grid_exchange = round(random.uniform(-3500, 4000), 3)
     total_house = round(solar_house + wind_house + grid_exchange, 3)
-    self_sufficiency = round(100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100, 3)
-    renewable_house = round(self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid, 3)
+    self_sufficiency = round(
+        100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100, 3
+    )
+    renewable_house = round(
+        self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid, 3
+    )
 
     return {
         "id": house_id,
@@ -77,9 +85,13 @@ def get_ids_from_rabbitmq(channel):
 
 
 if __name__ == "__main__":
-    connection = pika.BlockingConnection(pika.ConnectionParameters("localhost:5672"))
+    credentials = pika.PlainCredentials(username, password)
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host, port, "/", credentials)
+    )
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
+    channel.exchange_declare(exchange=exchange_name)
 
     starttime = time.monotonic()
     while True:
