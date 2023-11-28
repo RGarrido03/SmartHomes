@@ -41,7 +41,6 @@ services:
       - influx
     image: influxdb:2.7
     entrypoint: influx setup --bucket smarthomes -t smarthomes -o smarthomes --username=influx --password=influx_smarthomes --host=http://influx:8086 -f
-    restart: on-failure
     depends_on:
       influx:
         condition: service_healthy
@@ -67,9 +66,17 @@ services:
         condition: service_healthy
       influx:
         condition: service_healthy
+      influxcli:
+        condition: service_started
       rabbitmq:
         condition: service_healthy
     build: ./backend
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 2s
+      timeout: 2s
+      retries: 20
+      start_period: 2s
     environment:
       SPRING_APPLICATION_JSON: '{
           "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/smarthomes",
@@ -99,7 +106,8 @@ services:
 
   app:
     depends_on:
-      - backend_spring
+      backend_spring:
+        condition: service_healthy
     build: ./frontend
     ports:
       - 3000:3000
@@ -114,8 +122,10 @@ services:
     ports:
       - 80:80
     depends_on:
-      - app
-      - backend_spring
+      app:
+        condition: service_started
+      backend_spring:
+        condition: service_healthy
     networks:
       - backend
       - frontend
