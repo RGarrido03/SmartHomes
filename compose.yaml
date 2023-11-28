@@ -64,7 +64,7 @@ services:
           "spring.datasource.username" : "postgres",
           "spring.datasource.password" : "postgres",
           "spring.jpa.hibernate.ddl-auto" : "update",
-          "spring.influx.url" : "https://influx:8086",
+          "spring.influx.url" : "http://influx:8086",
           "spring.influx.user" : "influx",
           "spring.influx.password" : "influx",
           "spring.influx.database" : "smarthomes",
