@@ -1,6 +1,9 @@
 package pt.ua.deti.ies.SmartHomes.backend.Database;
 
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +30,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteClient(Long clientId) {
         clientRepository.deleteById(clientId);
+    }
+
+    @Override
+    public List<Client> findAll() {
+        return clientRepository.findAll();
     }
 }
