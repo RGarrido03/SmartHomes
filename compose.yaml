@@ -21,7 +21,7 @@ services:
     image: influxdb:2.7
     environment:
       DOCKER_INFLUXDB_INIT_USERNAME: influx
-      DOCKER_INFLUXDB_INIT_PASSWORD: influx
+      DOCKER_INFLUXDB_INIT_PASSWORD: influx_smarthomes
       DOCKER_INFLUXDB_INIT_ORG: smarthomes
       DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: smarthomes
@@ -35,6 +35,18 @@ services:
       - backend
     volumes:
       - influx_data:/var/lib/influxdb2
+
+  influxcli:
+    links:
+      - influx
+    image: influxdb:2.7
+    entrypoint: influx setup --bucket smarthomes -t smarthomes -o smarthomes --username=influx --password=influx_smarthomes --host=http://influx:8086 -f
+    restart: on-failure:20
+    depends_on:
+      influx:
+        condition: service_healthy
+    networks:
+      - backend
 
   rabbitmq:
     image: rabbitmq:3
@@ -66,7 +78,7 @@ services:
           "spring.jpa.hibernate.ddl-auto" : "update",
           "spring.influx.url" : "http://influx:8086",
           "spring.influx.user" : "influx",
-          "spring.influx.password" : "influx",
+          "spring.influx.password" : "influx_smarthomes",
           "spring.influx.database" : "smarthomes",
           "spring.influx.token" : "smarthomes",
           "spring.influx.bucket" : "smarthomes",
@@ -96,7 +108,7 @@ services:
       - pnpm_modules:/frontend/node_modules
     networks:
       - frontend
-  
+
   proxy:
     image: nginx:1.25.3
     ports:
@@ -110,7 +122,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
-
 
 volumes:
   pnpm_modules:
