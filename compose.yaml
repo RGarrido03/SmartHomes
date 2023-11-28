@@ -41,7 +41,7 @@ services:
       - influx
     image: influxdb:2.7
     entrypoint: influx setup --bucket smarthomes -t smarthomes -o smarthomes --username=influx --password=influx_smarthomes --host=http://influx:8086 -f
-    restart: on-failure:20
+    restart: on-failure
     depends_on:
       influx:
         condition: service_healthy
