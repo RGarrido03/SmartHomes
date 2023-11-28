@@ -8,29 +8,24 @@ import org.springframework.stereotype.Service;
 public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
-    
+
     @Override
     public Client createClient(Client client) {
-        return clientRepository.createClient();
+        return clientRepository.save(client);
     }
 
     @Override
-    public Client getClient(String client_name) {
-        return clientRepository.findByName(client_name);
+    public Client getClient(String clientName) {
+        return clientRepository.findByName(clientName);
     }
 
     @Override
     public Client updateClient(Client client) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateClient'");
+        return clientRepository.save(client);
     }
 
     @Override
     public void deleteClient(Long clientId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteClient'");
+        clientRepository.deleteById(clientId);
     }
-
-    
-
 }

@@ -2,5 +2,10 @@
   "editor.formatOnSave": true,
   "git.autofetch": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "eslint.workingDirectories": [{ "pattern": "./frontend" }]
+  "eslint.workingDirectories": [
+    {
+      "pattern": "./frontend"
+    }
+  ],
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
 }

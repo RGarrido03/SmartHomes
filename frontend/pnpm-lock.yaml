@@ -47,6 +47,9 @@ dependencies:
   react-material-symbols:
     specifier: ^4.3.1
     version: 4.3.1(react-dom@18.2.0)(react@18.2.0)
+  react-router-dom:
+    specifier: ^6.20.0
+    version: 6.20.0(react-dom@18.2.0)(react@18.2.0)
   tailwind-merge:
     specifier: ^2.0.0
     version: 2.0.0
@@ -680,6 +683,11 @@ packages:
     resolution: {integrity: sha512-fyrgCaedtvMg9NK3en0pnOYJdtfwxUcNolezkNPUsoX57X8oQk+NkqcvzHXD2uKNij6GXmWU9NDru2IWjrO4BQ==}
     dependencies:
       '@babel/runtime': 7.23.4
+    dev: false
+
+  /@remix-run/router@1.13.0:
+    resolution: {integrity: sha512-5dMOnVnefRsl4uRnAdoWjtVTdh8e6aZqgM4puy9nmEADH72ck+uXwzpJLEKE9Q6F8ZljNewLgmTfkxUrBdv4WA==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
   /@rushstack/eslint-patch@1.6.0:
@@ -2927,6 +2935,29 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-router-dom@6.20.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-CbcKjEyiSVpA6UtCHOIYLUYn/UJfwzp55va4yEfpk7JBN3GPqWfHrdLkAvNCcpXr8QoihcDMuk0dzWZxtlB/mQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      '@remix-run/router': 1.13.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-router: 6.20.0(react@18.2.0)
+    dev: false
+
+  /react-router@6.20.0(react@18.2.0):
+    resolution: {integrity: sha512-pVvzsSsgUxxtuNfTHC4IxjATs10UaAtvLGVSA1tbUE4GDaOSU1Esu2xF5nWLz7KPiMuW8BJWuPFdlGYJ7/rW0w==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@remix-run/router': 1.13.0
+      react: 18.2.0
     dev: false
 
   /react@18.2.0:
