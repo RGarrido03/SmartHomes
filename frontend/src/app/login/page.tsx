@@ -128,7 +128,7 @@ export default function Home() {
             />
           </form>
           <div className="flex items-center gap-4">
-            <Link href="/home" className="rounded-lg bg-accent px-4 py-2 text-base font-bold">
+            <Link href="/insight" className="rounded-lg bg-accent px-4 py-2 text-base font-bold">
               Login
             </Link>
             <Link href="/register" className="rounded-lg bg-secondary px-4 py-2 text-base font-medium">
