@@ -41,6 +41,19 @@ public class InfluxDBConfig {
     @Scheduled(fixedDelay = 3000L)
     public void writeData() {
 
+        InfluxDBClient influxDBClient = InfluxDBClientFactory.create("http://localhost:8086", "my-token".toCharArray());
+        boolean isServerHealthy = influxDBClient.ping();
+        if (isServerHealthy) {
+            System.out.println("InfluxDB server is healthy");
+        } else {
+            System.out.println("InfluxDB server is not healthy");
+        }
+
+        String serverVersion = influxDBClient.version();
+        System.out.println("InfluxDB server version: " + serverVersion);
+
+        influxDBClient.close();
+
         try{
 
             if (writeApi == null){
@@ -53,6 +66,9 @@ public class InfluxDBConfig {
                     .addField("user", 9L)
                     .addField("system", 1L)
                     .time(System.currentTimeMillis(), WritePrecision.NS));
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception for further investigation
