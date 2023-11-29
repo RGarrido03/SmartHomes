@@ -31,11 +31,22 @@ public class Listener {
     private void writeDataToInfluxDB(Message message) {
         // Create a data point
         Point point = Point.measurement(String.valueOf(message.getHouse_id()))
+                            //Grid values
                            .addField("grid_hydro", message.getPower().getGrid().getHydro())
+                           .addField("grid_wind", message.getPower().getGrid().getWind())
+                           .addField("grid_gas", message.getPower().getGrid().getGas())
+                           .addField("grid_gas", message.getPower().getGrid().getGas())
                            .addField("grid_solar", message.getPower().getGrid().getSolar())
-                           // ...
+                           .addField("grid_biomass", message.getPower().getGrid().getBiomass())
+                           .addField("grid_total", message.getPower().getGrid().getTotal())
+                           .addField("grid_renewable", message.getPower().getGrid().getRenewable())
+
+                            //House values
                            .addField("house_solar", message.getPower().getHouse().getSolar())
-                           // ...
+                           .addField("house_wind", message.getPower().getHouse().getWind())
+                           .addField("house_grid_exchange", message.getPower().getHouse().getGrid_exchange())
+                           .addField("house_total", message.getPower().getHouse().getTotal())
+                           .addField("house_self_sufficiency", message.getPower().getHouse().getSelf_sufficiency())
                            .addField("house_renewable", message.getPower().getHouse().getRenewable())
                            .time(Instant.now(), WritePrecision.NS);
 
