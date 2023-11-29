@@ -1,6 +1,7 @@
 "use client";
 
 import { CustomAreaChart } from "@/components/area-chart";
+import { CustomLineChart } from "@/components/line-chart";
 import { TitleCard } from "@/components/title-card";
 import {
   Card,
@@ -92,6 +93,44 @@ export default function Electricity() {
             className="fill-emerald-300 dark:fill-emerald-600"
             unitOfMeasurement="W"
           />
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader icon="electric_meter">
+          <CardTitle>Self production stats</CardTitle>
+          <CardDescription>Real and forecast for today</CardDescription>
+        </CardHeader>
+        <CardContent noPadding>
+          <CustomLineChart
+            data={data}
+            dataKey="solar"
+            className="fill-emerald-300 stroke-emerald-300 dark:fill-emerald-600 dark:stroke-emerald-600"
+            unitOfMeasurement="W"
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle>Most power-intensive appliances</CardTitle>
+          <CardDescription>Right now</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row justify-between">
+              <p className="font-semibold">Air conditioner</p>
+              <p>2600 W</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p className="font-semibold">Dehumidifier</p>
+              <p>350 W</p>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p className="font-semibold">Oven</p>
+              <p>100 W</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
