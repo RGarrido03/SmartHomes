@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomAreaChart } from "@/components/area-chart";
 import { TitleCard } from "@/components/title-card";
 import {
   Card,
@@ -8,13 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  AreaChart,
-  Area,
-  Tooltip,
-  ResponsiveContainer,
-  TooltipProps,
-} from "recharts";
 
 const data = [
   {
@@ -47,23 +41,6 @@ const data = [
   },
 ];
 
-function CustomTooltip({
-  payload,
-  label,
-  active,
-}: TooltipProps<number, number>) {
-  if (active) {
-    return (
-      <div className="rounded-lg bg-popover px-4 py-3 shadow dark:shadow-lg">
-        <p className="font-semibold">{payload ? payload[0].value : 0} W</p>
-        <p className="text-sm">{label}</p>
-      </div>
-    );
-  }
-
-  return null;
-}
-
 export default function Electricity() {
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -75,26 +52,12 @@ export default function Electricity() {
           <CardDescription>Solar PV generation</CardDescription>
         </CardHeader>
         <CardContent noPadding>
-          <ResponsiveContainer width={"100%"} height={160}>
-            <AreaChart
-              data={data}
-              margin={{
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-            >
-              <Tooltip content={<CustomTooltip />} />
-              <Area
-                className="fill-yellow-300 dark:fill-yellow-600"
-                type="monotone"
-                dataKey="solar"
-                fill="inherit"
-                strokeWidth={0}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <CustomAreaChart
+            data={data}
+            dataKey="solar"
+            className="fill-yellow-300 dark:fill-yellow-600"
+            unitOfMeasurement="W"
+          />
         </CardContent>
       </Card>
 
