@@ -32,7 +32,7 @@ class ElectricityData {
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/house")
+@RequestMapping("service/house")
 public class HouseController {
     @Autowired
     private QueryApi queryApi;
