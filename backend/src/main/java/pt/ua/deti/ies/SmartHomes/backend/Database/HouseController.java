@@ -21,15 +21,7 @@ import java.util.List;
 @Getter
 class ElectricityData {
     private Instant time;
-
-    private double grid_hydro;
-    private double grid_wind;
-    private double grid_gas;
-    private double grid_solar;
-    private double grid_biomass;
-    private double grid_total;
     private double grid_renewable;
-
     private double house_solar;
     private double house_wind;
     private double house_grid_exchange;
@@ -60,12 +52,6 @@ public class HouseController {
                 for (FluxRecord fluxRecord : fluxTable.getRecords()) {
                     ElectricityData electricityData = new ElectricityData(
                             fluxRecord.getTime(),
-                            (double) fluxRecord.getValueByKey("grid_hydro"),
-                            (double) fluxRecord.getValueByKey("grid_wind"),
-                            (double) fluxRecord.getValueByKey("grid_gas"),
-                            (double) fluxRecord.getValueByKey("grid_solar"),
-                            (double) fluxRecord.getValueByKey("grid_biomass"),
-                            (double) fluxRecord.getValueByKey("grid_total"),
                             (double) fluxRecord.getValueByKey("grid_renewable"),
                             (double) fluxRecord.getValueByKey("house_solar"),
                             (double) fluxRecord.getValueByKey("house_wind"),
@@ -79,7 +65,7 @@ public class HouseController {
             if (data.isEmpty()) {
                 code = HttpStatus.NOT_FOUND;
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             code = HttpStatus.INTERNAL_SERVER_ERROR;
         }
