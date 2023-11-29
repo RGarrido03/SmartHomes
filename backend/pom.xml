@@ -81,6 +81,16 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
+		</dependency>
 	</dependencies>
 
 	<build>
