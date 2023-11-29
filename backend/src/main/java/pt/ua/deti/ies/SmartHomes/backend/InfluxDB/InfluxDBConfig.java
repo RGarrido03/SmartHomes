@@ -2,6 +2,7 @@ package pt.ua.deti.ies.SmartHomes.backend.InfluxDB;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.client.QueryApi;
 import com.influxdb.client.WriteApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,11 @@ public class InfluxDBConfig {
     @Bean
     public WriteApi writeApi() {
         return influxDBClient.makeWriteApi();
+    }
+
+    @Bean
+    public QueryApi queryApi() {
+        return influxDBClient.getQueryApi();
     }
 }
 

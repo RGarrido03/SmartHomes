@@ -102,7 +102,7 @@ if __name__ == "__main__":
             send_data_to_rabbitmq(channel, json_data)
             print(json_data)
 
-            # wait for 1 second before generating the next set of data
-            time.sleep(1 - ((time.monotonic() - starttime) % 1))
+            # wait for 5 seconds before generating the next set of data
+            time.sleep(5 - ((time.monotonic() - starttime) % 5))
         except Exception:
             connection.close()
