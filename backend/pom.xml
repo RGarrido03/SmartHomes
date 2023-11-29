@@ -38,6 +38,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>com.influxdb</groupId>
 			<artifactId>influxdb-spring</artifactId>
@@ -46,6 +47,11 @@
 		<dependency>
 			<groupId>org.influxdb</groupId>
 			<artifactId>influxdb-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.influxdb</groupId>
+			<artifactId>influxdb-client-java</artifactId>
+			<version>6.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -67,10 +73,15 @@
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>3.0.10</version>
+        </dependency>
 		<dependency>
-			<groupId>com.influxdb</groupId>
-			<artifactId>influxdb-client-java</artifactId>
-			<version>6.10.0</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.16.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
