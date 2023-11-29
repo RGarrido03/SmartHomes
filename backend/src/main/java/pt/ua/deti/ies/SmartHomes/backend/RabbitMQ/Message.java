@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Message {
     @NotEmpty
-    private int house_id;
+    private long house_id;
 
     @NotEmpty
     private Power power;
@@ -38,25 +38,25 @@ class Power {
 @Data
 class Grid {
     @NotEmpty
-    private double hydro;
+    private long hydro;
 
     @NotEmpty
-    private double wind;
+    private long wind;
 
     @NotEmpty
-    private double gas;
+    private long gas;
 
     @NotEmpty
-    private double solar;
+    private long solar;
 
     @NotEmpty
-    private double biomass;
+    private long biomass;
 
     @NotEmpty
-    private double total;
+    private long total;
 
     @NotEmpty
-    private double renewable;
+    private long renewable;
 }
 
 @NoArgsConstructor
@@ -65,20 +65,20 @@ class Grid {
 @Data
 class House {
     @NotEmpty
-    private double solar;
+    private long solar;
 
     @NotEmpty
-    private double wind;
+    private long wind;
 
     @NotEmpty
-    private double grid_exchange;
+    private long grid_exchange;
 
     @NotEmpty
-    private double total;
+    private long total;
 
     @NotEmpty
-    private double self_sufficiency;
+    private long self_sufficiency;
 
     @NotEmpty
-    private double renewable;
+    private long renewable;
 }

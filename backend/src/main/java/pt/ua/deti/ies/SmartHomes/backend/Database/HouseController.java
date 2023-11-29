@@ -21,13 +21,13 @@ import java.util.List;
 @Getter
 class ElectricityData {
     private Instant time;
-    private double grid_renewable;
-    private double house_solar;
-    private double house_wind;
-    private double house_grid_exchange;
-    private double house_total;
-    private double house_self_sufficiency;
-    private double house_renewable;
+    private long grid_renewable;
+    private long house_solar;
+    private long house_wind;
+    private long house_grid_exchange;
+    private long house_total;
+    private long house_self_sufficiency;
+    private long house_renewable;
 }
 
 @RestController
@@ -52,13 +52,13 @@ public class HouseController {
                 for (FluxRecord fluxRecord : fluxTable.getRecords()) {
                     ElectricityData electricityData = new ElectricityData(
                             fluxRecord.getTime(),
-                            (double) fluxRecord.getValueByKey("grid_renewable"),
-                            (double) fluxRecord.getValueByKey("house_solar"),
-                            (double) fluxRecord.getValueByKey("house_wind"),
-                            (double) fluxRecord.getValueByKey("house_grid_exchange"),
-                            (double) fluxRecord.getValueByKey("house_total"),
-                            (double) fluxRecord.getValueByKey("house_self_sufficiency"),
-                            (double) fluxRecord.getValueByKey("house_renewable"));
+                            (long) fluxRecord.getValueByKey("grid_renewable"),
+                            (long) fluxRecord.getValueByKey("house_solar"),
+                            (long) fluxRecord.getValueByKey("house_wind"),
+                            (long) fluxRecord.getValueByKey("house_grid_exchange"),
+                            (long) fluxRecord.getValueByKey("house_total"),
+                            (long) fluxRecord.getValueByKey("house_self_sufficiency"),
+                            (long) fluxRecord.getValueByKey("house_renewable"));
                     data.add(electricityData);
                 }
             }
