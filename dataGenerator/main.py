@@ -14,28 +14,27 @@ routing_key = "smarthomes_routing_json_key"
 
 
 def generate_random_data(house_id):
-    hydroelectric_grid = round(random.uniform(0, 8200000000), 3)
-    wind_grid = round(random.uniform(0, 5400000000), 3)
-    gas_grid = round(random.uniform(0, 2700000000), 3)
-    solar_grid = round(random.uniform(0, 2200000000), 3)
-    biomass_grid = round(random.uniform(0, 700000000), 3)
+    hydroelectric_grid = round(random.uniform(0, 8200000000))
+    wind_grid = round(random.uniform(0, 5400000000))
+    gas_grid = round(random.uniform(0, 2700000000))
+    solar_grid = round(random.uniform(0, 2200000000))
+    biomass_grid = round(random.uniform(0, 700000000))
     total_grid = round(
-        hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid, 3
+        hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     )
     renewable_grid = round(
         (hydroelectric_grid + wind_grid + solar_grid + biomass_grid) * 100 / total_grid,
-        3,
     )
 
-    solar_house = round(random.uniform(0, 2500), 3)
-    wind_house = round(random.uniform(0, 1000), 3)
-    grid_exchange = round(random.uniform(-3500, 4000), 3)
-    total_house = round(solar_house + wind_house + grid_exchange, 3)
+    solar_house = round(random.uniform(0, 2500))
+    wind_house = round(random.uniform(0, 1000))
+    grid_exchange = round(random.uniform(-3500, 4000))
+    total_house = round(solar_house + wind_house + grid_exchange)
     self_sufficiency = round(
-        100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100, 3
+        100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100
     )
     renewable_house = round(
-        self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid, 3
+        self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid
     )
 
     return {
