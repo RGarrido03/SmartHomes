@@ -65,6 +65,7 @@ export function CustomLineChart({
           className={className}
           type="monotone"
           dataKey={dataKey}
+          dot={false}
           fill="inherit"
           stroke="inherit"
           strokeWidth={2}
