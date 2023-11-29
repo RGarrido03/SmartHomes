@@ -107,13 +107,13 @@ export default function Electricity() {
         </CardHeader>
         <CardContent className="flex flex-1 flex-row items-center">
           <div className="flex flex-col gap-4">
-            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
               <MaterialSymbol icon="solar_power" size={24} />
               <p className="text-xs text-secondary-foreground">
                 {data.length !== 0 ? data[data.length - 1].house_solar : "0"}
               </p>
             </div>
-            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
               <MaterialSymbol icon="wind_power" size={24} />
               <p className="text-xs text-secondary-foreground">
                 {data.length !== 0 ? data[data.length - 1].house_wind : "0"}
@@ -130,7 +130,7 @@ export default function Electricity() {
             >
               <path
                 d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
-                className="stroke-border"
+                className="stroke-secondary"
                 strokeWidth="1.5"
               />
             </svg>
@@ -142,7 +142,7 @@ export default function Electricity() {
             >
               <path
                 d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
-                className="stroke-border"
+                className="stroke-secondary"
                 strokeWidth="1.5"
               />
             </svg>
@@ -155,9 +155,9 @@ export default function Electricity() {
             </p>
           </div>
 
-          <div className="flex-1 border"></div>
+          <div className="flex-1 border border-secondary"></div>
 
-          <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+          <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
             <MaterialSymbol icon="electric_meter" size={24} />
             <p className="text-xs text-secondary-foreground">
               {data.length !== 0
@@ -171,7 +171,7 @@ export default function Electricity() {
       <Card className="overflow-hidden">
         <CardHeader icon="electric_meter">
           <CardTitle>Self production stats</CardTitle>
-          <CardDescription>Real and forecast for today</CardDescription>
+          <CardDescription>For today</CardDescription>
         </CardHeader>
         <CardContent noPadding>
           <CustomLineChart
