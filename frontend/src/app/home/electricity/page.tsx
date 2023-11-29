@@ -87,10 +87,10 @@ export default function Electricity() {
             >
               <Tooltip content={<CustomTooltip />} />
               <Area
+                className="fill-yellow-300 dark:fill-yellow-600"
                 type="monotone"
                 dataKey="solar"
-                stroke="#8884d8"
-                fill="#8884d8"
+                fill="inherit"
                 strokeWidth={0}
               />
             </AreaChart>
