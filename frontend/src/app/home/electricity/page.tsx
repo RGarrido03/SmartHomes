@@ -177,7 +177,10 @@ export default function Electricity() {
           <CustomLineChart
             data={data}
             dataKey="house_solar"
-            className="fill-emerald-300 stroke-emerald-300 dark:fill-emerald-600 dark:stroke-emerald-600"
+            dataKey2="house_wind"
+            strokeWidth={1}
+            className="fill-yellow-300 stroke-yellow-300 dark:fill-yellow-600 dark:stroke-yellow-600"
+            className2="fill-sky-300 stroke-sky-300 dark:fill-sky-600 dark:stroke-sky-600"
             unitOfMeasurement="W"
           />
         </CardContent>

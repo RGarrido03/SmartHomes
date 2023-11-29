@@ -9,9 +9,12 @@ import {
 type CustomLineChartProps = {
   data: object[];
   dataKey: string;
+  dataKey2?: string;
   className?: string;
+  className2?: string;
   height?: number | string | undefined;
   unitOfMeasurement?: string;
+  strokeWidth?: number;
   width?: number | string | undefined;
 };
 
@@ -40,9 +43,12 @@ export function CustomTooltip({
 export function CustomLineChart({
   data,
   dataKey,
+  dataKey2,
   className = "stroke-primary",
+  className2,
   height = 160,
   unitOfMeasurement = "",
+  strokeWidth = 2,
   width = "100%",
 }: CustomLineChartProps) {
   return (
@@ -68,8 +74,19 @@ export function CustomLineChart({
           dot={false}
           fill="inherit"
           stroke="inherit"
-          strokeWidth={2}
+          strokeWidth={strokeWidth}
         />
+        {!!dataKey2 && (
+          <Line
+            className={className2}
+            type="monotone"
+            dataKey={dataKey2}
+            dot={false}
+            fill="inherit"
+            stroke="inherit"
+            strokeWidth={strokeWidth}
+          />
+        )}
       </LineChart>
     </ResponsiveContainer>
   );
