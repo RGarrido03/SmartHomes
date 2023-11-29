@@ -53,26 +53,36 @@ public class HouseController {
 
         List<FluxTable> result = queryApi.query(parametrizedQuery, "smarthomes");
 
-        for (FluxTable fluxTable : result) {
-            for (FluxRecord fluxRecord : fluxTable.getRecords()) {
-                ElectricityData electricityData = new ElectricityData(
-                        fluxRecord.getTime(),
-                        (double) fluxRecord.getValueByKey("grid_hydro"),
-                        (double) fluxRecord.getValueByKey("grid_wind"),
-                        (double) fluxRecord.getValueByKey("grid_gas"),
-                        (double) fluxRecord.getValueByKey("grid_solar"),
-                        (double) fluxRecord.getValueByKey("grid_biomass"),
-                        (double) fluxRecord.getValueByKey("grid_total"),
-                        (double) fluxRecord.getValueByKey("grid_renewable"),
-                        (double) fluxRecord.getValueByKey("house_solar"),
-                        (double) fluxRecord.getValueByKey("house_wind"),
-                        (double) fluxRecord.getValueByKey("house_grid_exchange"),
-                        (double) fluxRecord.getValueByKey("house_total"),
-                        (double) fluxRecord.getValueByKey("house_self_sufficiency"),
-                        (double) fluxRecord.getValueByKey("house_renewable"));
-                data.add(electricityData);
+        HttpStatus code = HttpStatus.OK;
+
+        try {
+            for (FluxTable fluxTable : result) {
+                for (FluxRecord fluxRecord : fluxTable.getRecords()) {
+                    ElectricityData electricityData = new ElectricityData(
+                            fluxRecord.getTime(),
+                            (double) fluxRecord.getValueByKey("grid_hydro"),
+                            (double) fluxRecord.getValueByKey("grid_wind"),
+                            (double) fluxRecord.getValueByKey("grid_gas"),
+                            (double) fluxRecord.getValueByKey("grid_solar"),
+                            (double) fluxRecord.getValueByKey("grid_biomass"),
+                            (double) fluxRecord.getValueByKey("grid_total"),
+                            (double) fluxRecord.getValueByKey("grid_renewable"),
+                            (double) fluxRecord.getValueByKey("house_solar"),
+                            (double) fluxRecord.getValueByKey("house_wind"),
+                            (double) fluxRecord.getValueByKey("house_grid_exchange"),
+                            (double) fluxRecord.getValueByKey("house_total"),
+                            (double) fluxRecord.getValueByKey("house_self_sufficiency"),
+                            (double) fluxRecord.getValueByKey("house_renewable"));
+                    data.add(electricityData);
+                }
             }
+            if (data.isEmpty()) {
+                code = HttpStatus.NOT_FOUND;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            code = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseEntity<>(data, HttpStatus.OK);
+        return new ResponseEntity<>(data, code);
     }
 }
