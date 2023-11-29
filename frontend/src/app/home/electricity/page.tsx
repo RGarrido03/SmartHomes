@@ -34,7 +34,12 @@ export default function Electricity() {
       });
       setData(await temp.json());
     }
+
     fetchData().catch(console.error);
+    const interval = setInterval(() => {
+      fetchData().catch(console.error);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
