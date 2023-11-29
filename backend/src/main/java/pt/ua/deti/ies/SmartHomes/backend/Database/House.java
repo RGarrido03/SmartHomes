@@ -42,7 +42,7 @@ public class House {
     private int waterLitersYesterday;
     private int waterLitersWeek;
 
-    @OneToMany(mappedBy = "devices")
+    @OneToMany(mappedBy = "house")
     private List<Device> devices;
 
     public House(long houseId, Client client, @NotBlank(message = "House name is mandatory") String name,
