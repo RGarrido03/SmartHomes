@@ -20,7 +20,7 @@ export function CustomTooltip({
   label,
   active,
   unitOfMeasurement,
-}: TooltipProps<number, number> & {
+}: TooltipProps<number, string> & {
   unitOfMeasurement: string;
 }) {
   if (active) {
@@ -57,7 +57,9 @@ export function CustomAreaChart({
         }}
       >
         <Tooltip
-          content={<CustomTooltip unitOfMeasurement={unitOfMeasurement} />}
+          content={
+            <CustomTooltip label={"hi"} unitOfMeasurement={unitOfMeasurement} />
+          }
         />
         <Area
           className={className}
