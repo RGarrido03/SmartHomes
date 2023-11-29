@@ -38,25 +38,25 @@ class Power {
 @Data
 class Grid {
     @NotEmpty
-    private float hydro;
+    private double hydro;
 
     @NotEmpty
-    private float wind;
+    private double wind;
 
     @NotEmpty
-    private float gas;
+    private double gas;
 
     @NotEmpty
-    private float solar;
+    private double solar;
 
     @NotEmpty
-    private float biomass;
+    private double biomass;
 
     @NotEmpty
-    private float total;
+    private double total;
 
     @NotEmpty
-    private float renewable;
+    private double renewable;
 }
 
 @NoArgsConstructor
@@ -65,20 +65,20 @@ class Grid {
 @Data
 class House {
     @NotEmpty
-    private float solar;
+    private double solar;
 
     @NotEmpty
-    private float wind;
+    private double wind;
 
     @NotEmpty
-    private float grid_exchange;
+    private double grid_exchange;
 
     @NotEmpty
-    private float total;
+    private double total;
 
     @NotEmpty
-    private float self_sufficiency;
+    private double self_sufficiency;
 
     @NotEmpty
-    private float renewable;
+    private double renewable;
 }

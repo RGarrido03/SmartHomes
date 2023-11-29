@@ -85,7 +85,7 @@ services:
       test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
       interval: 2s
       timeout: 2s
-      retries: 20
+      retries: 100
       start_period: 2s
     environment:
       SPRING_APPLICATION_JSON: '{
