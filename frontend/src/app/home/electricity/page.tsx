@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { MaterialSymbol } from "react-material-symbols";
 
 const data = [
   {
@@ -93,6 +94,64 @@ export default function Electricity() {
             className="fill-emerald-300 dark:fill-emerald-600"
             unitOfMeasurement="W"
           />
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle>Power flow</CardTitle>
+          <CardDescription>In Watts (W)</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-1 flex-row items-center">
+          <div className="flex flex-col gap-4">
+            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+              <MaterialSymbol icon="solar_power" size={24} />
+              <p className="text-xs text-secondary-foreground">2500</p>
+            </div>
+            <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+              <MaterialSymbol icon="wind_power" size={24} />
+              <p className="text-xs text-secondary-foreground">1300</p>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <svg
+              viewBox="0 0 56 26"
+              fill="none"
+              className="w-full flex-1 -scale-y-100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
+                className="stroke-border"
+                stroke-width="1.5"
+              />
+            </svg>
+            <svg
+              viewBox="0 0 55 26"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
+                className="stroke-border"
+                stroke-width="1.5"
+              />
+            </svg>
+          </div>
+
+          <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full bg-primary p-2">
+            <MaterialSymbol icon="home" size={24} fill />
+            <p className="text-xs text-secondary-foreground">3400</p>
+          </div>
+
+          <div className="flex-1 border"></div>
+
+          <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
+            <MaterialSymbol icon="electric_meter" size={24} />
+            <p className="text-xs text-secondary-foreground">-400</p>
+          </div>
         </CardContent>
       </Card>
 
