@@ -10,57 +10,48 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
-const data = [
-  {
-    name: "Page A",
-    solar: 2500,
-  },
-  {
-    name: "Page A",
-    solar: 4000,
-  },
-  {
-    name: "Page B",
-    solar: 3000,
-  },
-  {
-    name: "Page C",
-    solar: 2000,
-  },
-  {
-    name: "Page D",
-    solar: 2780,
-  },
-  {
-    name: "Page E",
-    solar: 1890,
-  },
-  {
-    name: "Page F",
-    solar: 2390,
-  },
-  {
-    name: "Page G",
-    solar: 3490,
-  },
-];
+type ElectricityDataProps = {
+  time: string;
+  grid_renewable: number;
+  house_solar: number;
+  house_wind: number;
+  house_grid_exchange: number;
+  house_total: number;
+  house_self_sufficiency: number;
+  house_renewable: number;
+}[];
 
 export default function Electricity() {
+  const [data, setData] = useState<ElectricityDataProps>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const temp = await fetch("http://localhost/api/house/0/electricity", {
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
+      });
+      setData(await temp.json());
+    }
+    fetchData().catch(console.error);
+  }, []);
+
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       <TitleCard text="Check your electricity sources." />
 
       <Card className="overflow-hidden">
         <CardHeader icon="solar_power">
-          <CardTitle>2500 W</CardTitle>
+          <CardTitle>
+            {data.length !== 0 ? data[data.length - 1].house_solar : "0"} W
+          </CardTitle>
           <CardDescription>Solar PV generation</CardDescription>
         </CardHeader>
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="solar"
+            dataKey="house_solar"
             className="fill-yellow-300 dark:fill-yellow-600"
             unitOfMeasurement="W"
           />
@@ -69,13 +60,15 @@ export default function Electricity() {
 
       <Card className="overflow-hidden">
         <CardHeader icon="wind_power">
-          <CardTitle>1300 W</CardTitle>
+          <CardTitle>
+            {data.length !== 0 ? data[data.length - 1].house_wind : "0"} W
+          </CardTitle>
           <CardDescription>Wind generation</CardDescription>
         </CardHeader>
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="solar"
+            dataKey="house_wind"
             className="fill-sky-300 dark:fill-sky-600"
             unitOfMeasurement="W"
           />
@@ -84,13 +77,18 @@ export default function Electricity() {
 
       <Card className="overflow-hidden">
         <CardHeader icon="compare_arrows">
-          <CardTitle>-400 W</CardTitle>
+          <CardTitle>
+            {data.length !== 0
+              ? data[data.length - 1].house_grid_exchange
+              : "0"}{" "}
+            W
+          </CardTitle>
           <CardDescription>Grid exchange</CardDescription>
         </CardHeader>
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="solar"
+            dataKey="house_grid_exchange"
             className="fill-emerald-300 dark:fill-emerald-600"
             unitOfMeasurement="W"
           />
@@ -106,11 +104,15 @@ export default function Electricity() {
           <div className="flex flex-col gap-4">
             <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
               <MaterialSymbol icon="solar_power" size={24} />
-              <p className="text-xs text-secondary-foreground">2500</p>
+              <p className="text-xs text-secondary-foreground">
+                {data.length !== 0 ? data[data.length - 1].house_solar : "0"}
+              </p>
             </div>
             <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
               <MaterialSymbol icon="wind_power" size={24} />
-              <p className="text-xs text-secondary-foreground">1300</p>
+              <p className="text-xs text-secondary-foreground">
+                {data.length !== 0 ? data[data.length - 1].house_wind : "0"}
+              </p>
             </div>
           </div>
 
@@ -124,7 +126,7 @@ export default function Electricity() {
               <path
                 d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
                 className="stroke-border"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
             </svg>
             <svg
@@ -136,21 +138,27 @@ export default function Electricity() {
               <path
                 d="M1 25H20.4167C24.8349 25 28.4167 21.4183 28.4167 17V9.5C28.4167 5.08172 31.9984 1.5 36.4167 1.5H55.8333"
                 className="stroke-border"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
             </svg>
           </div>
 
           <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full bg-primary p-2">
             <MaterialSymbol icon="home" size={24} fill />
-            <p className="text-xs text-secondary-foreground">3400</p>
+            <p className="text-xs text-secondary-foreground">
+              {data.length !== 0 ? data[data.length - 1].house_total : "0"}
+            </p>
           </div>
 
           <div className="flex-1 border"></div>
 
           <div className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 p-2">
             <MaterialSymbol icon="electric_meter" size={24} />
-            <p className="text-xs text-secondary-foreground">-400</p>
+            <p className="text-xs text-secondary-foreground">
+              {data.length !== 0
+                ? data[data.length - 1].house_grid_exchange
+                : "0"}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -163,7 +171,7 @@ export default function Electricity() {
         <CardContent noPadding>
           <CustomLineChart
             data={data}
-            dataKey="solar"
+            dataKey="house_solar"
             className="fill-emerald-300 stroke-emerald-300 dark:fill-emerald-600 dark:stroke-emerald-600"
             unitOfMeasurement="W"
           />
