@@ -26,4 +26,4 @@ jobs:
         run: docker builder prune -a -f
 
       - name: Up containers
-        run: docker compose up --build -d
+        run: docker compose -f compose.prod.yaml up --build -d
