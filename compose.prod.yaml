@@ -1,11 +1,21 @@
 version: "3.8"
 services:
+  data_generator:
+    build: ./dataGenerator
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+    volumes:
+      - ./dataGenerator:/dataGenerator
+
   db_pg:
     image: postgres:16.1
     environment:
       # Default user is postgres
       POSTGRES_DB: smarthomes
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: postgres
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
@@ -21,9 +31,10 @@ services:
     image: influxdb:2.7
     environment:
       DOCKER_INFLUXDB_INIT_USERNAME: influx
-      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_PASSWORD: influx_smarthomes
       DOCKER_INFLUXDB_INIT_ORG: smarthomes
       DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: smarthomes
     healthcheck:
       test: "curl -f http://localhost:8086/ping"
       interval: 10s
@@ -35,10 +46,21 @@ services:
     volumes:
       - influx_data:/var/lib/influxdb2
 
+  influxcli:
+    links:
+      - influx
+    image: influxdb:2.7
+    entrypoint: influx setup --bucket smarthomes -t smarthomes -o smarthomes --username=influx --password=influx_smarthomes --host=http://influx:8086 -f
+    depends_on:
+      influx:
+        condition: service_healthy
+    networks:
+      - backend
+
   rabbitmq:
     image: rabbitmq:3
     environment:
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_PASS: rabbitmq
       RABBITMQ_DEFAULT_USER: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
@@ -54,27 +76,38 @@ services:
         condition: service_healthy
       influx:
         condition: service_healthy
+      influxcli:
+        condition: service_started
       rabbitmq:
         condition: service_healthy
     build: ./backend
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 2s
+      timeout: 2s
+      retries: 100
+      start_period: 2s
     environment:
       SPRING_APPLICATION_JSON: '{
           "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/smarthomes",
           "spring.datasource.username" : "postgres",
-          "spring.datasource.password" : "${POSTGRES_PASSWORD}",
-          "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+          "spring.datasource.password" : "postgres",
           "spring.jpa.hibernate.ddl-auto" : "update",
-          "spring.influx.url" : "https://influx:8086",
+          "spring.influx.url" : "http://influx:8086",
           "spring.influx.user" : "influx",
-          "spring.influx.password" : "${INFLUX_PASSWORD}",
+          "spring.influx.password" : "influx_smarthomes",
           "spring.influx.database" : "smarthomes",
+          "spring.influx.token" : "smarthomes",
+          "spring.influx.bucket" : "smarthomes",
+          "spring.influx.org" : "smarthomes",
           "spring.rabbitmq.host" : "rabbitmq",
           "spring.rabbitmq.port" : "5672",
           "spring.rabbitmq.username" : "rabbitmq",
-          "spring.rabbitmq.password" : "${RABBITMQ_PASSWORD}"
-
+          "spring.rabbitmq.password" : "rabbitmq",
+          "spring.rabbitmq.queue.json.name" : "smarthomes",
+          "spring.rabbitmq.routing.json.key" : "smarthomes_routing_json_key"
         }'
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - backend
     volumes:
@@ -83,23 +116,28 @@ services:
 
   app:
     depends_on:
-      - backend_spring
-    build: ./frontend
-    ports:
-      - 3000:3000
+      backend_spring:
+        condition: service_healthy
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    environment:
+      - NEXT_PUBLIC_HOST_URL=deti-ies-09.ua.pt
     volumes:
       - ./frontend:/frontend
-      - bun_modules:/frontend/node_modules
+      - pnpm_modules:/frontend/node_modules
     networks:
       - frontend
-  
+
   proxy:
     image: nginx:1.25.3
     ports:
       - 80:80
     depends_on:
-      - app
-      - backend_spring
+      app:
+        condition: service_started
+      backend_spring:
+        condition: service_healthy
     networks:
       - backend
       - frontend
@@ -107,9 +145,8 @@ services:
     volumes:
       - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
 
-
 volumes:
-  bun_modules:
+  pnpm_modules:
   influx_data:
   maven_data:
   pg_data:
