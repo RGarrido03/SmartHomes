@@ -1,10 +1,4 @@
-import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
-import { TabRoutes, urlMapping } from "./tabs";
-
-export const metadata: Metadata = {
-  title: urlMapping[headers().get("x-url") as TabRoutes],
-};
+import type { Viewport } from "next";
 
 export const viewport: Viewport = {
   themeColor: [
