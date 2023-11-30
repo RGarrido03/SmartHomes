@@ -119,8 +119,6 @@ services:
       backend_spring:
         condition: service_healthy
     build: ./frontend
-    ports:
-      - 3000:3000
     volumes:
       - ./frontend:/frontend
       - pnpm_modules:/frontend/node_modules
