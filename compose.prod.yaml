@@ -5,6 +5,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     networks:
       - backend
     volumes:
@@ -15,7 +17,7 @@ services:
     environment:
       # Default user is postgres
       POSTGRES_DB: smarthomes
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
@@ -31,10 +33,10 @@ services:
     image: influxdb:2.7
     environment:
       DOCKER_INFLUXDB_INIT_USERNAME: influx
-      DOCKER_INFLUXDB_INIT_PASSWORD: influx_smarthomes
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD}
       DOCKER_INFLUXDB_INIT_ORG: smarthomes
       DOCKER_INFLUXDB_INIT_BUCKET: smarthomes
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: smarthomes
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
     healthcheck:
       test: "curl -f http://localhost:8086/ping"
       interval: 10s
@@ -50,7 +52,7 @@ services:
     links:
       - influx
     image: influxdb:2.7
-    entrypoint: influx setup --bucket smarthomes -t smarthomes -o smarthomes --username=influx --password=influx_smarthomes --host=http://influx:8086 -f
+    entrypoint: influx setup --bucket smarthomes -t ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN} -o smarthomes --username=influx --password=${DOCKER_INFLUXDB_INIT_PASSWORD} --host=http://influx:8086 -f
     depends_on:
       influx:
         condition: service_healthy
@@ -60,7 +62,7 @@ services:
   rabbitmq:
     image: rabbitmq:3
     environment:
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
       RABBITMQ_DEFAULT_USER: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
@@ -91,19 +93,19 @@ services:
       SPRING_APPLICATION_JSON: '{
           "spring.datasource.url" : "jdbc:postgresql://db_pg:5432/smarthomes",
           "spring.datasource.username" : "postgres",
-          "spring.datasource.password" : "postgres",
+          "spring.datasource.password" : "${POSTGRES_PASSWORD}",
           "spring.jpa.hibernate.ddl-auto" : "update",
           "spring.influx.url" : "http://influx:8086",
           "spring.influx.user" : "influx",
-          "spring.influx.password" : "influx_smarthomes",
+          "spring.influx.password" : "${DOCKER_INFLUXDB_INIT_PASSWORD}",
           "spring.influx.database" : "smarthomes",
-          "spring.influx.token" : "smarthomes",
+          "spring.influx.token" : "${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}",
           "spring.influx.bucket" : "smarthomes",
           "spring.influx.org" : "smarthomes",
           "spring.rabbitmq.host" : "rabbitmq",
           "spring.rabbitmq.port" : "5672",
           "spring.rabbitmq.username" : "rabbitmq",
-          "spring.rabbitmq.password" : "rabbitmq",
+          "spring.rabbitmq.password" : "${RABBITMQ_DEFAULT_PASS}",
           "spring.rabbitmq.queue.json.name" : "smarthomes",
           "spring.rabbitmq.routing.json.key" : "smarthomes_routing_json_key"
         }'

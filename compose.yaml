@@ -5,6 +5,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    environment:
+      RABBITMQ_DEFAULT_PASS: rabbitmq
     networks:
       - backend
     volumes:
