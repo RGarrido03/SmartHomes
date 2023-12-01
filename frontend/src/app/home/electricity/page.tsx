@@ -29,9 +29,12 @@ export default function Electricity() {
 
   useEffect(() => {
     async function fetchData() {
-      const temp = await fetch("http://localhost/service/house/0/electricity", {
-        next: { revalidate: 60 }, // Revalidate every 60 seconds
-      });
+      const temp = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/house/0/electricity`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+        },
+      );
       setData(await temp.json());
     }
 

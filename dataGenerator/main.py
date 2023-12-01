@@ -2,12 +2,13 @@ import json
 import pika
 import random
 import time
+import os
 
 # id_list = get_ids_from_rabbitmq()
 host = "rabbitmq"
 port = 5672
 username = "rabbitmq"
-password = "rabbitmq"
+password = os.environ.get("RABBITMQ_DEFAULT_PASS")
 queue_name = "smarthomes"
 exchange_name = "smarthomes_exchange"
 routing_key = "smarthomes_routing_json_key"

@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    name: Deploy to DETI machine
+    steps:
+      - name: Clean workspace
+        uses: AutoModality/action-clean@v1.1.0
+
+      - name: Checkout repo
+        uses: actions/checkout@v4.1.1
+
+      - name: Down containers
+        run: docker compose down
+
+      - name: Remove build caches
+        run: docker builder prune -a -f
+
+      - name: Up containers
+        run: docker compose -f compose.prod.yaml up --build -d
+        env:
+          RABBITMQ_DEFAULT_PASS: ${{secrets.RABBITMQ_DEFAULT_PASS}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          DOCKER_INFLUXDB_INIT_PASSWORD: ${{secrets.DOCKER_INFLUXDB_INIT_PASSWORD}}
+          DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${{secrets.DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}}

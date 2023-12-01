@@ -5,6 +5,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    environment:
+      RABBITMQ_DEFAULT_PASS: rabbitmq
     networks:
       - backend
     volumes:
@@ -118,7 +120,11 @@ services:
     depends_on:
       backend_spring:
         condition: service_healthy
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_HOST_URL=localhost
     volumes:
       - ./frontend:/frontend
       - pnpm_modules:/frontend/node_modules
