@@ -124,7 +124,6 @@ services:
     environment:
       - NEXT_PUBLIC_HOST_URL=deti-ies-09.ua.pt
     volumes:
-      - ./frontend:/frontend
       - pnpm_modules:/frontend/node_modules
     networks:
       - frontend
