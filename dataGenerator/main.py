@@ -4,6 +4,9 @@ import random
 import time
 import os
 
+rate_env = os.environ.get("SECONDS_RATE")
+seconds_rate = int(os.environ.get("SECONDS_RATE")) if rate_env is not None else 5
+
 # id_list = get_ids_from_rabbitmq()
 host = "rabbitmq"
 port = 5672
@@ -85,7 +88,7 @@ def get_ids_from_rabbitmq(channel):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(username, password)
+    credentials = pika.PlainCredentials(username, password if password is not None else "")
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host, port, "/", credentials)
     )
@@ -102,7 +105,7 @@ if __name__ == "__main__":
             send_data_to_rabbitmq(channel, json_data)
             print(json_data)
 
-            # wait for 5 seconds before generating the next set of data
-            time.sleep(5 - ((time.monotonic() - starttime) % 5))
+            # wait before generating the next set of data
+            time.sleep(seconds_rate - ((time.monotonic() - starttime) % seconds_rate))
         except Exception:
             connection.close()
