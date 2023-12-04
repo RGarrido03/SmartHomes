@@ -11,5 +11,8 @@
   "python.analysis.autoImportCompletions": true,
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
   }
 }
