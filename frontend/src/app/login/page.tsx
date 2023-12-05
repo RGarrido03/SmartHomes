@@ -3,7 +3,31 @@ import { Button } from "@/components/ui/button";
 import { MaterialSymbol } from "react-material-symbols";
 import { LoginForm } from "./form";
 
+type AuthProvidersProps = {
+  name: string;
+  icon: JSX.Element;
+}[];
+
 export default function Home() {
+  const providers: AuthProvidersProps = [
+    {
+      name: "Passkey",
+      icon: <MaterialSymbol icon="encrypted" size={20} />,
+    },
+    {
+      name: "GitHub",
+      icon: <GitHubIcon />,
+    },
+    {
+      name: "Meta",
+      icon: <MetaIcon />,
+    },
+    {
+      name: "Google",
+      icon: <GoogleIcon />,
+    },
+  ];
+
   return (
     <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
       <div className="relative hidden select-none rounded-tr-2xl bg-background lg:block">
@@ -37,35 +61,17 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex flex-row gap-3 overflow-hidden">
-          <Button
-            variant={"background"}
-            className="flex flex-row items-center gap-1 rounded-full"
-          >
-            <MaterialSymbol icon="encrypted" size={20} />
-            Passkey
-          </Button>
-          <Button
-            variant={"background"}
-            className="flex flex-row items-center gap-2 rounded-full"
-          >
-            <GoogleIcon />
-            Google
-          </Button>
-          <Button
-            variant={"background"}
-            className="flex flex-row items-center gap-2 rounded-full"
-          >
-            <MetaIcon />
-            Facebook
-          </Button>
-          <Button
-            variant={"background"}
-            className="flex flex-row items-center gap-2 rounded-full"
-          >
-            <GitHubIcon />
-            GitHub
-          </Button>
+        <div className="flex snap-x flex-row gap-3 overflow-x-scroll">
+          {providers.map((provider) => (
+            <Button
+              variant={"background"}
+              key={provider.name}
+              className="flex snap-start flex-row items-center gap-2 rounded-full"
+            >
+              {provider.icon}
+              {provider.name}
+            </Button>
+          ))}
         </div>
 
         <LoginForm />
