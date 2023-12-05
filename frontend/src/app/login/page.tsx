@@ -65,30 +65,7 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="p4 space-y-4">
-          <form className="row-auto grid">
-            <label className="pb-1 text-lg font-medium">E-mail</label>
-            <input
-              className="mt-1 rounded-md bg-background px-3 py-2 sm:text-sm"
-              type="email"
-              name="email"
-            />
-            <label className="pb-2 pt-2 text-lg font-medium">Password</label>
-            <input
-              className="mt-1 rounded-md bg-background px-3 py-2 sm:text-sm"
-              type="password"
-              name="password"
-            />
-          </form>
-          <div className="flex items-center gap-4">
-            <Link href="/insight" className="rounded-lg bg-accent px-4 py-2 text-base font-bold">
-              Login
-            </Link>
-            <Link href="/register" className="rounded-lg bg-secondary px-4 py-2 text-base font-medium">
-              Register
-            </Link>
-          </div>
-        </div>
+        <LoginForm />
       </div>
     </div>
   );
