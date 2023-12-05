@@ -1,15 +1,18 @@
-import Link from "next/link";
+import { GitHubIcon, GoogleIcon, MetaIcon } from "@/components/brand-icons";
+import { Button } from "@/components/ui/button";
+import { MaterialSymbol } from "react-material-symbols";
+import { LoginForm } from "./form";
 
 export default function Home() {
   return (
-    <div className="grid h-full flex-1 grid-cols-2 justify-center">
-      <div className="relative hidden h-full rounded-tr-2xl bg-background lg:block">
-        <div className="relative max-h-full space-y-7 pt-12 text-center">
-          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
-          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
-          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
-          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
-          <p className="w-full text-[6.5vw] font-extrabold">SmartHomes.</p>
+    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
+      <div className="relative hidden select-none rounded-tr-2xl bg-background lg:block">
+        <div className="max-h-[100dvh] space-y-8 overflow-hidden py-8 text-center">
+          <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
+          <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
         </div>
 
         <div className="absolute top-0 z-40 h-full w-full">
@@ -29,7 +32,7 @@ export default function Home() {
       <div className="row-auto grid content-center space-y-8 p-8">
         <div className="space-y-4">
           <p className="text-4xl font-extrabold">Hi!</p>
-          <p className="text-200 text-200 text-2xl font-medium">
+          <p className="text-lg font-medium text-secondary-foreground">
             Please login to get started.
           </p>
         </div>
