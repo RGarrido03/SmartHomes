@@ -57,7 +57,7 @@ export default function Home() {
               <p className="text-green-700">carbon neutral.</p>
             </CardTitle>
           </CardHomeHeader>
-          <CardContent noPadding>
+          <CardContent>
             <div className="flex flex-row items-center ">
               <p>Take a look at what’s happening.</p>
             </div>
@@ -125,7 +125,7 @@ export default function Home() {
         </Card>
       </Link>
 
-      <Link href={"/home/electricity"}>
+      <Link href={"/home"}>
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>Power flow</CardTitle>
