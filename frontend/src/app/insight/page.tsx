@@ -11,7 +11,7 @@ export default function Home() {
             Welcome back, <br></br>John!
           </p>
           <p className="text-3xl font-medium text-secondary-foreground">
-            Here’s your summary.
+            Here&apos;s your summary.
           </p>
 
           <div className="relative rounded-xl p-4">
@@ -45,7 +45,7 @@ export default function Home() {
           <button className="flex w-full justify-between rounded-2xl bg-background p-6">
             <div className="space-y-2">
               <div className="text-2xl font-bold">Main House</div>
-              <div className="center p flex gap-1 text-lg font-medium">
+              <div className="flex gap-1 text-lg font-medium">
                 <MaterialSymbol icon="location_pin" size={24}></MaterialSymbol>
                 <p>Azores Island</p>
               </div>
@@ -64,7 +64,7 @@ export default function Home() {
           <button className="flex w-full justify-between gap-1 rounded-2xl bg-background p-6">
             <div className="space-y-2">
               <div className="text-2xl font-bold">Main House</div>
-              <div className="center flex gap-1 text-lg font-medium">
+              <div className="flex gap-1 text-lg font-medium">
                 <MaterialSymbol icon="location_pin" size={24}></MaterialSymbol>
                 <p>Azores Island</p>
               </div>
@@ -72,10 +72,7 @@ export default function Home() {
             <div className="place-items-end self-center">
               <Link href={"/home"}>
                 <Button className="rounded-xl py-8">
-                  <MaterialSymbol
-                    icon="arrow_right_alt"
-                    size={32}
-                  ></MaterialSymbol>
+                  <MaterialSymbol icon="arrow_right_alt" size={32} />
                 </Button>
               </Link>
             </div>
@@ -83,29 +80,25 @@ export default function Home() {
           <button className="flex w-full justify-between gap-1 rounded-2xl bg-background p-6">
             <div className="space-y-2">
               <div className="text-2xl font-bold">Main House</div>
-              <div className="center flex gap-1 text-lg font-medium">
-                <MaterialSymbol icon="location_pin" size={24}></MaterialSymbol>
+              <div className="flex gap-1 text-lg font-medium">
+                <MaterialSymbol icon="location_pin" size={24} />
                 <p>Azores Island</p>
               </div>
             </div>
             <div className="place-items-end self-center">
               <Link href={"/home"}>
                 <Button className="rounded-xl py-8">
-                  <MaterialSymbol
-                    icon="arrow_right_alt"
-                    size={32}
-                  ></MaterialSymbol>
+                  <MaterialSymbol icon="arrow_right_alt" size={32} />
                 </Button>
               </Link>
             </div>
           </button>
           <div className="flex items-center justify-center gap-4">
-            <Link
-              href="/home"
-              className="flex rounded-lg bg-accent p-4 py-2 text-base font-bold"
-            >
-              <MaterialSymbol icon="add" size={24}></MaterialSymbol>
-              Register
+            <Link href="/home">
+              <Button className="font-bold">
+                <MaterialSymbol icon="add" size={24} />
+                Register
+              </Button>
             </Link>
           </div>
         </div>
