@@ -1,5 +1,7 @@
+import Cover from "@/../public/cover.png";
 import { GitHubIcon, GoogleIcon, MetaIcon } from "@/components/brand-icons";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { MaterialSymbol } from "react-material-symbols";
 import { LoginForm } from "./form";
 
@@ -39,18 +41,13 @@ export default function Home() {
           <p className="text-[6.5vw] font-extrabold">SmartHomes.</p>
         </div>
 
-        <div className="absolute top-0 z-40 h-full w-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 576 549"
-            className="h-full w-full fill-secondary"
-          >
-            <g style={{ mixBlendMode: "color" }}>
-              <path d="M314.314 -120.5C258.783 10.5325 150.079 112.851 0 154.287V-120.5H314.314Z" />
-              <path d="M576 367.283C377.83 234.069 217.588 191.906 0 208.444V695.5H576V367.283Z" />
-            </g>
-          </svg>
-        </div>
+        <Image
+          alt="Title cover"
+          src={Cover}
+          fill
+          className="pointer-events-none absolute top-0 z-40 h-full w-full"
+          objectFit="cover"
+        />
       </div>
 
       <div className="row-auto grid content-center space-y-8 p-8">
