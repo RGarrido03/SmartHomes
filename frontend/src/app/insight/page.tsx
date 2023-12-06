@@ -39,29 +39,21 @@ export default function Home() {
             Here&apos;s your summary.
           </p>
 
-          <div className="relative rounded-xl p-4">
+          {summary.map((item) => (
+            <div key={item.name} className="relative rounded-xl p-4">
             <div className="absolute inset-0 animate-pulse rounded-xl border-4 border-secondary delay-100"></div>
-            <div className="flex">
-              <div className="relative z-10 flex flex-1 gap-x-2">
-                <MaterialSymbol icon="bolt" size={24}></MaterialSymbol>
-                <p className="text-xl font-medium">Electricity</p>
+              <div className="flex items-center">
+                <div className="relative flex flex-1 items-center gap-x-2">
+                  <MaterialSymbol icon={item.icon} size={24} />
+                  <p className="font-bold">{item.name}</p>
               </div>
-              <p className="flex-1 text-xl font-medium">838,80 W</p>
-              <p className="text-xl font-medium">34034,93€</p>
-            </div>
-          </div>
-
-          <div className="relative rounded-xl p-4">
-            <div className="absolute inset-0 animate-pulse rounded-xl border-4 border-secondary delay-100"></div>
-            <div className="flex">
-              <div className="relative z-10 flex flex-1 gap-x-2">
-                <MaterialSymbol icon="water_drop" size={24}></MaterialSymbol>
-                <p className="text-xl font-medium">Water</p>
+                <p className="flex-1 text-center font-semibold">
+                  {item.value} {item.unit_of_measurement}
+                </p>
+                <p className="flex-1 text-end">{item.cost} €</p>
               </div>
-              <p className="flex-1 text-xl font-medium">23.2 L</p>
-              <p className="text-xl font-medium">23.11€</p>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
