@@ -1,6 +1,14 @@
 import Link from "next/link";
-import { MaterialSymbol } from "react-material-symbols";
+import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
+
+type SummaryProps = {
+  name: string;
+  icon: MaterialSymbolProps["icon"];
+  value: number;
+  unit_of_measurement: string;
+  cost: number;
+}[];
 
 type HousesProps = {
   id: number;
@@ -9,6 +17,22 @@ type HousesProps = {
 }[];
 
 export default function Home() {
+  const summary: SummaryProps = [
+    {
+      name: "Electricity",
+      icon: "bolt",
+      value: 838.8,
+      unit_of_measurement: "W",
+      cost: 34.93,
+    },
+    {
+      name: "Water",
+      icon: "water_drop",
+      value: 23.2,
+      unit_of_measurement: "L",
+      cost: 23.11,
+    },
+  ];
 
   const houses: HousesProps = [
     {
@@ -29,24 +53,24 @@ export default function Home() {
   ];
 
   return (
-    <div className="grid h-full flex-1 grid-cols-2">
-      <div className="grid h-full content-center rounded-tr-2xl bg-background">
-        <div className="row-auto grid content-center space-y-12 p-24">
-          <p className="text-5xl font-extrabold">
-            Welcome back, <br></br>John!
+    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
+      <div className="grid h-full content-center rounded-b-card bg-background lg:rounded-none lg:rounded-tr-card">
+        <div className="row-auto grid content-center space-y-4 p-8 md:space-y-8 md:p-24">
+          <p className="text-4xl font-extrabold md:text-5xl">
+            Welcome back, John!
           </p>
-          <p className="text-3xl font-medium text-secondary-foreground">
+          <p className="text-lg font-medium text-secondary-foreground">
             Here&apos;s your summary.
           </p>
 
           {summary.map((item) => (
             <div key={item.name} className="relative rounded-xl p-4">
-            <div className="absolute inset-0 animate-pulse rounded-xl border-4 border-secondary delay-100"></div>
+              <div className="absolute inset-0 animate-pulse rounded-xl border-4 border-secondary delay-100"></div>
               <div className="flex items-center">
                 <div className="relative flex flex-1 items-center gap-x-2">
                   <MaterialSymbol icon={item.icon} size={24} />
                   <p className="font-bold">{item.name}</p>
-              </div>
+                </div>
                 <p className="flex-1 text-center font-semibold">
                   {item.value} {item.unit_of_measurement}
                 </p>
@@ -72,17 +96,17 @@ export default function Home() {
             </div>
             <Button className="p-2">
               <MaterialSymbol icon="arrow_right_alt" size={24} />
-                </Button>
-            </div>
+            </Button>
+          </div>
         ))}
 
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/home">
+        <div className="flex items-center justify-center gap-4">
+          <Link href="/home">
             <Button className="flex gap-2 font-bold">
-                <MaterialSymbol icon="add" size={24} />
-                Register
-              </Button>
-            </Link>
+              <MaterialSymbol icon="add" size={24} />
+              Register
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
