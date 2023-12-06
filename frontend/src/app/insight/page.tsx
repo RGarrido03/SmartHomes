@@ -94,9 +94,11 @@ export default function Home() {
                 <p>{house.location}</p>
               </div>
             </div>
-            <Button className="p-2">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
+            <Link href="/home">
+              <Button className="p-2">
+                <MaterialSymbol icon="arrow_right_alt" size={24} />
+              </Button>
+            </Link>
           </div>
         ))}
 
