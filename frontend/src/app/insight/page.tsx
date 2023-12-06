@@ -2,7 +2,32 @@ import Link from "next/link";
 import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 
+type HousesProps = {
+  id: number;
+  name: string;
+  location: string;
+}[];
+
 export default function Home() {
+
+  const houses: HousesProps = [
+    {
+      id: 0,
+      name: "Main House",
+      location: "Azores Island",
+    },
+    {
+      id: 0,
+      name: "Main House",
+      location: "Azores Island",
+    },
+    {
+      id: 0,
+      name: "Main House",
+      location: "Azores Island",
+    },
+  ];
+
   return (
     <div className="grid h-full flex-1 grid-cols-2">
       <div className="grid h-full content-center rounded-tr-2xl bg-background">
@@ -40,67 +65,32 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="row-auto grid p-12 pr-8">
-        <div className="space-y-7 pt-2">
-          <button className="flex w-full justify-between rounded-2xl bg-background p-6">
-            <div className="space-y-2">
-              <div className="text-2xl font-bold">Main House</div>
-              <div className="flex gap-1 text-lg font-medium">
-                <MaterialSymbol icon="location_pin" size={24}></MaterialSymbol>
-                <p>Azores Island</p>
+      <div className="flex flex-col space-y-4 p-4 lg:space-y-8 lg:p-12">
+        {houses.map((house) => (
+          <div
+            key={house.id}
+            className="flex items-center justify-between rounded-card bg-background p-4"
+          >
+            <div>
+              <p className="text-xl font-bold">{house.name}</p>
+              <div className="flex items-center gap-1">
+                <MaterialSymbol icon="location_pin" size={20}></MaterialSymbol>
+                <p>{house.location}</p>
               </div>
             </div>
-            <div className="place-items-end self-center">
-              <Link href={"/home"}>
-                <Button className="rounded-xl py-8">
-                  <MaterialSymbol
-                    icon="arrow_right_alt"
-                    size={32}
-                  ></MaterialSymbol>
+            <Button className="p-2">
+              <MaterialSymbol icon="arrow_right_alt" size={24} />
                 </Button>
-              </Link>
             </div>
-          </button>
-          <button className="flex w-full justify-between gap-1 rounded-2xl bg-background p-6">
-            <div className="space-y-2">
-              <div className="text-2xl font-bold">Main House</div>
-              <div className="flex gap-1 text-lg font-medium">
-                <MaterialSymbol icon="location_pin" size={24}></MaterialSymbol>
-                <p>Azores Island</p>
-              </div>
-            </div>
-            <div className="place-items-end self-center">
-              <Link href={"/home"}>
-                <Button className="rounded-xl py-8">
-                  <MaterialSymbol icon="arrow_right_alt" size={32} />
-                </Button>
-              </Link>
-            </div>
-          </button>
-          <button className="flex w-full justify-between gap-1 rounded-2xl bg-background p-6">
-            <div className="space-y-2">
-              <div className="text-2xl font-bold">Main House</div>
-              <div className="flex gap-1 text-lg font-medium">
-                <MaterialSymbol icon="location_pin" size={24} />
-                <p>Azores Island</p>
-              </div>
-            </div>
-            <div className="place-items-end self-center">
-              <Link href={"/home"}>
-                <Button className="rounded-xl py-8">
-                  <MaterialSymbol icon="arrow_right_alt" size={32} />
-                </Button>
-              </Link>
-            </div>
-          </button>
+        ))}
+
           <div className="flex items-center justify-center gap-4">
             <Link href="/home">
-              <Button className="font-bold">
+            <Button className="flex gap-2 font-bold">
                 <MaterialSymbol icon="add" size={24} />
                 Register
               </Button>
             </Link>
-          </div>
         </div>
       </div>
     </div>
