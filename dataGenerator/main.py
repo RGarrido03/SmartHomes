@@ -41,6 +41,40 @@ def generate_random_data(house_id):
         self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid
     )
 
+    emissions = round((1 - renewable_house / 100) * 450)
+    renewable_forecast_day = [round(random.uniform(50, 100)) for i in range(3)]
+    renewable_forecast_hour = [round(random.uniform(50, 100)) for i in range(3)]
+
+    water_kitchen = round(random.uniform(0, 100))
+    water_baths = round(random.uniform(0, 100))
+    water_garden = round(random.uniform(0, 25))
+    water_other = round(random.uniform(0, 50))
+    water_total = water_kitchen + water_baths + water_garden + water_other
+    water_today_forecast = round(random.uniform(water_total - 25, water_total + 50))
+
+    costs_electricity = round(total_house * (1 - renewable_house / 100) * 0.01, 2)
+    costs_water = round(water_total * 0.01, 2)
+    costs_total = costs_electricity + costs_water
+
+    devices = [
+        {
+            "id": 0,
+            "power": round(random.uniform(0, total_house / 2)),
+        },
+        {
+            "id": 1,
+            "power": round(random.uniform(0, total_house / 4)),
+        },
+        {
+            "id": 2,
+            "power": round(random.uniform(0, total_house / 4)),
+        },
+        {
+            "id": 3,
+            "power": round(random.uniform(0, total_house / 8)),
+        },
+    ]
+
     return {
         "id": house_id,
         "power": {
@@ -60,8 +94,25 @@ def generate_random_data(house_id):
                 "total": total_house,
                 "self_sufficiency": self_sufficiency,
                 "renewable": renewable_house,
+                "emissions": emissions,
+                "renewable_forecast_day": renewable_forecast_day,
+                "renewable_forecast_hour": renewable_forecast_hour,
             },
         },
+        "water": {
+            "kitchen": water_kitchen,
+            "bath": water_baths,
+            "garden": water_garden,
+            "other": water_other,
+            "total": water_total,
+            "forecast_today": water_today_forecast,
+        },
+        "costs": {
+            "electricity": costs_electricity,
+            "water": costs_water,
+            "today": costs_total,
+        },
+        "devices": devices,
     }
 
 
@@ -88,7 +139,9 @@ def get_ids_from_rabbitmq(channel):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(username, password if password is not None else "")
+    credentials = pika.PlainCredentials(
+        username, password if password is not None else ""
+    )
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host, port, "/", credentials)
     )
