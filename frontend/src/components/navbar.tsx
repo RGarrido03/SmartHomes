@@ -5,7 +5,7 @@ import { MaterialSymbol } from "react-material-symbols";
 export default function Navbar() {
   return (
     <div className="flex flex-row items-center justify-between gap-4 p-4">
-      <Link href="/homes">
+      <Link href="/insight">
         <Button variant="background" className="h-fit p-1">
           <MaterialSymbol size={24} icon="arrow_back" />
         </Button>

@@ -7,6 +7,7 @@ services:
         condition: service_healthy
     environment:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      SECONDS_RATE: 60
     networks:
       - backend
     volumes:
