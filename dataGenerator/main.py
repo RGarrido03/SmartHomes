@@ -4,6 +4,7 @@ import random
 import time
 import os
 import requests
+import requests_cache
 
 
 rate_env = os.environ.get("SECONDS_RATE")
@@ -17,6 +18,8 @@ password = os.environ.get("RABBITMQ_DEFAULT_PASS")
 queue_name = "smarthomes"
 exchange_name = "smarthomes_exchange"
 routing_key = "smarthomes_routing_json_key"
+
+requests_cache.install_cache("ren_cache", expire_after=900)
 
 
 def generate_random_data(house_id):
