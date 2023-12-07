@@ -54,6 +54,7 @@ public class Listener {
                            .addField("water_garden", message.getWater().getGarden())
                            .addField("water_other", message.getWater().getOther())
                            .addField("water_total", message.getWater().getTotal())
+                           .addField("water_forecast_today", message.getWater().getForecast_today())
 
                            .addField("costs_electricity", message.getCosts().getElectricity())
                            .addField("costs_water", message.getCosts().getWater())
