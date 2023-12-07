@@ -3,6 +3,8 @@ import pika
 import random
 import time
 import os
+import requests
+
 
 rate_env = os.environ.get("SECONDS_RATE")
 seconds_rate = int(rate_env) if rate_env is not None else 5
@@ -18,11 +20,28 @@ routing_key = "smarthomes_routing_json_key"
 
 
 def generate_random_data(house_id):
-    hydroelectric_grid = round(random.uniform(0, 8200000000))
-    wind_grid = round(random.uniform(0, 5400000000))
-    gas_grid = round(random.uniform(0, 2700000000))
-    solar_grid = round(random.uniform(0, 2200000000))
-    biomass_grid = round(random.uniform(0, 700000000))
+    headers = {
+        "Accept": "application/json",
+    }
+
+    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString=638375445673643573&useGasDate=false"
+
+    response = requests.post(url, headers=headers)
+    data = json.loads(response.text)
+
+    # convert REM data from MW to W
+    for series in data["series"]:
+        if series["name"] == "Hídrica":
+            hydroelectric_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Eólica":
+            wind_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Gás Natural":
+            gas_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Solar":
+            solar_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Biomassa":
+            biomass_grid = round((series["data"][-2])) * 1000000
+
     total_grid = round(
         hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     )
@@ -88,7 +107,9 @@ def get_ids_from_rabbitmq(channel):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(username, password if password is not None else "")
+    credentials = pika.PlainCredentials(
+        username, password if password is not None else ""
+    )
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host, port, "/", credentials)
     )
