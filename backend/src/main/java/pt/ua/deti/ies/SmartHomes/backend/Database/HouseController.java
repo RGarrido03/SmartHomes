@@ -30,6 +30,45 @@ class ElectricityData {
     private long house_renewable;
 }
 
+@AllArgsConstructor
+@Getter
+class EnvironmentData {
+    private Instant time;
+    private long self_sufficiency;
+    private long renewable;
+    private long emissions;
+    private List<Long> renewable_forecast_day;
+    private List<Long> renewable_forecast_hour;
+}
+
+@AllArgsConstructor
+@Getter
+class WaterData {
+    private Instant time;
+    private long kitchen;
+    private long bath;
+    private long garden;
+    private long other;
+    private long total;
+    private long forecast_today;
+}
+
+@AllArgsConstructor
+@Getter
+class CostData {
+    private Instant time;
+    private long electricity;
+    private long water;
+    private long total;
+}
+
+@AllArgsConstructor
+@Getter
+class DevicePower {
+    private int id;
+    private long power;
+}
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("service/house")
