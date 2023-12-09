@@ -72,7 +72,7 @@ class DevicePower {
 @RestController
 @AllArgsConstructor
 @RequestMapping("service/house")
-public class HouseController {
+public class HouseDataController {
     @Autowired
     private QueryApi queryApi;
 
