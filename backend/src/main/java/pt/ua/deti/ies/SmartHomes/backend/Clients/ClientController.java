@@ -9,33 +9,31 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/Clients")
+@RequestMapping("service/clients")
 public class ClientController {
 
     private ClientService clientService;
 
-    @GetMapping("all")
-    public ResponseEntity<List<String>> getAllMovies(){
-        List<String> names = new ArrayList<>();
-        for (Client m: clientService.findAll()) {
-            names.add(m.getName());
-        }
-        return new ResponseEntity<>(names, HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clients = clientService.findAll();
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Client> createCliEntity(@RequestBody Client Client){
+    public ResponseEntity<Client> createClient(@RequestBody Client Client) {
         Client savedClient = clientService.createClient(Client);
         return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Client> getClientByName(String name){
-        Client Client = clientService.getClient(name);
-        return new ResponseEntity<>(Client, HttpStatus.OK);
+    public ResponseEntity<Client> getClient(@PathVariable("id") long id) {
+        Client client = clientService.getClient(id);
+        return new ResponseEntity<>(client, client != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("{id}/houses")
@@ -52,9 +50,8 @@ public class ClientController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId){
+    public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId) {
         clientService.deleteClient(ClientId);
         return new ResponseEntity<>("Client successfully deleted!", HttpStatus.OK);
     }
-
 }
