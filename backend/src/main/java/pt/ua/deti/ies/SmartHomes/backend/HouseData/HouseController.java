@@ -1,4 +1,4 @@
-package pt.ua.deti.ies.SmartHomes.backend.Houses;
+package pt.ua.deti.ies.SmartHomes.backend.HouseData;
 
 import com.influxdb.client.QueryApi;
 import com.influxdb.query.FluxRecord;
