@@ -80,12 +80,8 @@ def generate_random_data(house_id):
 
     devices = [
         {
-            "id": 0,
-            "power": round(random.uniform(0, total_house / 2)),
-        },
-        {
             "id": 1,
-            "power": round(random.uniform(0, total_house / 4)),
+            "power": round(random.uniform(0, total_house / 2)),
         },
         {
             "id": 2,
@@ -93,6 +89,10 @@ def generate_random_data(house_id):
         },
         {
             "id": 3,
+            "power": round(random.uniform(0, total_house / 4)),
+        },
+        {
+            "id": 4,
             "power": round(random.uniform(0, total_house / 8)),
         },
     ]
