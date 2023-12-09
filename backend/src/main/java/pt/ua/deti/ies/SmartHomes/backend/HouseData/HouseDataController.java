@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceType;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -71,9 +72,8 @@ class DevicePower {
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/house")
+@RequestMapping("service/houses")
 public class HouseDataController {
-    @Autowired
     private QueryApi queryApi;
 
     @GetMapping("{id}/electricity")
@@ -187,8 +187,8 @@ public class HouseDataController {
     }
 
     @GetMapping("{id}/devices")
-    public ResponseEntity<List<DevicePower>> getDevices(@PathVariable String id) {
-        List<DevicePower> data = new ArrayList<>();
+    public ResponseEntity<List<DeviceData>> getDevices(@PathVariable String id) {
+        List<DeviceData> data = new ArrayList<>();
         String parametrizedQuery = String.format(
                 "from(bucket: \"smarthomes\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"%s\") |> last() |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> drop(columns: [\"_start\", \"_stop\", \"_measurement\"])", id);
 
@@ -199,9 +199,9 @@ public class HouseDataController {
         try {
             for (FluxTable fluxTable : result) {
                 for (FluxRecord fluxRecord : fluxTable.getRecords()) {
-                    data.add(new DevicePower(0, (long) fluxRecord.getValueByKey("device_0")));
-                    data.add(new DevicePower(1, (long) fluxRecord.getValueByKey("device_1")));
-                    data.add(new DevicePower(2, (long) fluxRecord.getValueByKey("device_2")));
+                    data.add(new DeviceData(0, DeviceType.AC, "AC", "LR", (long) fluxRecord.getValueByKey("device_0")));
+                    data.add(new DeviceData(1, DeviceType.LIGHT, "Light", "LR", (long) fluxRecord.getValueByKey("device_1")));
+                    data.add(new DeviceData(2, DeviceType.TV, "TV", "LR", (long) fluxRecord.getValueByKey("device_2")));
                 }
             }
             if (data.isEmpty()) {
