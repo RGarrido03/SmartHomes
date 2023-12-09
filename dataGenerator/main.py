@@ -74,8 +74,8 @@ def generate_random_data(house_id):
     water_total = water_kitchen + water_baths + water_garden + water_other
     water_today_forecast = round(random.uniform(water_total - 25, water_total + 50))
 
-    costs_electricity = round(total_house * (1 - renewable_house / 100) * 0.01, 2)
-    costs_water = round(water_total * 0.01, 2)
+    costs_electricity = round((grid_exchange if grid_exchange > 0 else 0) * 0.0001, 2)
+    costs_water = round(water_total * 0.00001, 2)
     costs_total = costs_electricity + costs_water
 
     devices = [
