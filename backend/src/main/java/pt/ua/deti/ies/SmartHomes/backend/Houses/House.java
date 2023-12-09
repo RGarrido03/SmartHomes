@@ -34,17 +34,6 @@ public class House {
     @NotBlank(message = "House location is mandatory")
     private String location;
 
-    private BigDecimal electricityPow;
-    private BigDecimal electricityMon;
-    private BigDecimal waterLiters;
-    private BigDecimal waterMon;
-
-    private int totalSolarPV;
-    private int totalWindGen;
-    private int sentToGrid;
-    private int waterLitersYesterday;
-    private int waterLitersWeek;
-
     @OneToMany(mappedBy = "house")
     private List<Device> devices;
 }
