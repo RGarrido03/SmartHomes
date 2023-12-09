@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class Message {
     @NotEmpty
-    private long house_id;
+    private long id;
 
     @NotEmpty
     private Power power;

@@ -15,7 +15,6 @@ import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.QUEUE_NA
 @Slf4j
 @Service
 public class Listener {
-    @Autowired
     private WriteApi writeApi;
 
     @RabbitListener(queues = {QUEUE_NAME})
@@ -30,7 +29,7 @@ public class Listener {
 
     private void writeDataToInfluxDB(Message message) {
         // Create a data point
-        Point point = Point.measurement(String.valueOf(message.getHouse_id()))
+        Point point = Point.measurement(String.valueOf(message.getId()))
                            // Other grid values are ignored
                            .addField("grid_renewable", message.getPower().getGrid().getRenewable())
                            .addField("house_solar", message.getPower().getHouse().getSolar())
