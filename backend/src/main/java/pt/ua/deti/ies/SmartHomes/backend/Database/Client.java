@@ -10,9 +10,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "Client")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Client {
 
     @Id
@@ -34,64 +42,4 @@ public class Client {
     
     @OneToMany(mappedBy = "client")
     private List<House> houses;
-
-    public Client(long clientId, @NotBlank(message = "Username is mandatory") String username,
-            @NotBlank(message = "Name is mandatory") String name,
-            @NotBlank(message = "Password is mandatory") String password,
-            @NotBlank(message = "Email is mandatory") String email, List<House> houses) {
-        this.clientId = clientId;
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.houses = houses;
-    }
-
-    public long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(long clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<House> getHouses() {
-        return houses;
-    }
-
-    public void setHouses(List<House> houses) {
-        this.houses = houses;
-    }
 }

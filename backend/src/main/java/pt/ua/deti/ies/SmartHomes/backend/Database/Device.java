@@ -11,11 +11,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "Device")
 public class Device {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "device_id")
@@ -34,55 +41,5 @@ public class Device {
 
     @Enumerated(EnumType.STRING)
     private DeviceType type;
-
-    public Device(long deviceId, @NotBlank(message = "House is mandatory") House house,
-            @NotBlank(message = "Device name is mandatory") String name,
-            @NotBlank(message = "House area is mandatory") String houseArea, DeviceType type) {
-        this.deviceId = deviceId;
-        this.house = house;
-        this.name = name;
-        this.houseArea = houseArea;
-        this.type = type;
-    }
-
-    public long getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(long deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public House getHouse() {
-        return house;
-    }
-
-    public void setHouse(House house) {
-        this.house = house;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getHouseArea() {
-        return houseArea;
-    }
-
-    public void setHouseArea(String houseArea) {
-        this.houseArea = houseArea;
-    }
-
-    public DeviceType getType() {
-        return type;
-    }
-
-    public void setType(DeviceType type) {
-        this.type = type;
-    }
 }
 
