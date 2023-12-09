@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ua.deti.ies.SmartHomes.backend.Clients.Client;
 import pt.ua.deti.ies.SmartHomes.backend.Devices.Device;
 
 import java.math.BigDecimal;

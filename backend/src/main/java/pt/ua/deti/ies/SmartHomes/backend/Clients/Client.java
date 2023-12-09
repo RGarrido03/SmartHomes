@@ -1,4 +1,4 @@
-package pt.ua.deti.ies.SmartHomes.backend.Database;
+package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ua.deti.ies.SmartHomes.backend.Database.House;
 
 @Setter
 @Getter

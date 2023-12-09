@@ -1,4 +1,4 @@
-package pt.ua.deti.ies.SmartHomes.backend.Database;
+package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
 import lombok.AllArgsConstructor;
 
