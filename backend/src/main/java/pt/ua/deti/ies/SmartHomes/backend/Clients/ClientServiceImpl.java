@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseRepository;
 
 @Service
 @AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
     private ClientRepository clientRepository;
+    private HouseRepository houseRepository;
 
     @Override
     public Client createClient(Client client) {
@@ -48,5 +51,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> findAll() {
         return clientRepository.findAll();
+    }
+
+    @Override
+    public List<House> getHousesByClient(long id) {
+        return houseRepository.findHousesByClientClientId(id);
     }
 }

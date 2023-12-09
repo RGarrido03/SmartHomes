@@ -38,6 +38,19 @@ public class ClientController {
         return new ResponseEntity<>(Client, HttpStatus.OK);
     }
 
+    @GetMapping("{id}/houses")
+    public ResponseEntity<List<House>> getHousesByClient(@PathVariable("id") long id) {
+        List<House> houses = clientService.getHousesByClient(id);
+        return new ResponseEntity<>(houses, houses.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Client> updateDevice(@PathVariable("id") long id, @RequestBody Client client) {
+        client.setClientId(id);
+        Client updatedClient = clientService.updateClient(client);
+        return new ResponseEntity<>(updatedClient, updatedClient != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId){
         clientService.deleteClient(ClientId);
