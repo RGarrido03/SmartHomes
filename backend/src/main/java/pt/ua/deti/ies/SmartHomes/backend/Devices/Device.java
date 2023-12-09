@@ -1,5 +1,6 @@
 package pt.ua.deti.ies.SmartHomes.backend.Devices;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,7 @@ public class Device {
 
     @ManyToOne
     @JoinColumn(name = "house_id", nullable = false)
-    @NotBlank(message = "House is mandatory")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private House house;
 
     @NotBlank(message = "Device name is mandatory")

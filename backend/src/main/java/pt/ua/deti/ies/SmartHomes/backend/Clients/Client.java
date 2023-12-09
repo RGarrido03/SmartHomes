@@ -2,6 +2,7 @@ package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +36,7 @@ public class Client {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password is mandatory")
     private String password;
     
