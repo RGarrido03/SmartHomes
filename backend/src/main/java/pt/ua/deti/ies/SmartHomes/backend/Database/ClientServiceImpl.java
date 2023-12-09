@@ -3,6 +3,7 @@ package pt.ua.deti.ies.SmartHomes.backend.Database;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,19 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(Client client) {
-        return clientRepository.save(client);
+        Optional<Client> existingOpt = clientRepository.findById(client.getClientId());
+
+        if (existingOpt.isPresent()) {
+            Client existing = existingOpt.get();
+            existing.setName(client.getName());
+            existing.setEmail(client.getEmail());
+            existing.setHouses(client.getHouses());
+            existing.setUsername(client.getUsername());
+            existing.setPassword(client.getPassword());
+            return clientRepository.save(existing);
+        } else {
+            return null;
+        }
     }
 
     @Override
