@@ -131,6 +131,38 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
+    @GetMapping("{id}/costs")
+    public ResponseEntity<CostData> getCosts(@PathVariable String id) {
+        String parametrizedQuery = String.format(
+                "from(bucket: \"smarthomes\") |> range(start: -1d) |> filter(fn: (r) => r._measurement == \"%s\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> drop(columns: [\"_start\", \"_stop\", \"_measurement\"])", id);
+
+        List<FluxTable> result = queryApi.query(parametrizedQuery, "smarthomes");
+
+        HttpStatus code = HttpStatus.OK;
+
+        double electricity = 0;
+        double water = 0;
+        double today = 0;
+
+        try {
+            for (FluxTable fluxTable : result) {
+                for (FluxRecord fluxRecord : fluxTable.getRecords()) {
+                    electricity += (double) fluxRecord.getValueByKey("costs_water");
+                    water += (double) fluxRecord.getValueByKey("costs_electricity");
+                    today += (double) fluxRecord.getValueByKey("costs_total");
+                }
+            }
+            if (today == 0) {
+                code = HttpStatus.NOT_FOUND;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            code = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        CostData data = new CostData(electricity, water, today);
+        return new ResponseEntity<>(data, code);
+    }
+
     @GetMapping("{id}/devices")
     public ResponseEntity<List<DeviceData>> getDevices(@PathVariable String id) {
         List<DeviceData> data = new ArrayList<>();
