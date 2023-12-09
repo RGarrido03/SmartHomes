@@ -1,4 +1,4 @@
-package pt.ua.deti.ies.SmartHomes.backend.Database;
+package pt.ua.deti.ies.SmartHomes.backend.Houses;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pt.ua.deti.ies.SmartHomes.backend.Database.House;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 
 @Entity
 @NoArgsConstructor
