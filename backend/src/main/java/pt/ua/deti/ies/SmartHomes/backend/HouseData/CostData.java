@@ -8,8 +8,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 class CostData {
-    private Instant time;
-    private long electricity;
-    private long water;
-    private long total;
+    private double electricity;
+    private double water;
+    private double today;
 }

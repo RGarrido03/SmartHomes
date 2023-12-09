@@ -15,6 +15,7 @@ import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.QUEUE_NA
 @Slf4j
 @Service
 public class Listener {
+    @Autowired
     private WriteApi writeApi;
 
     @RabbitListener(queues = {QUEUE_NAME})
@@ -57,7 +58,7 @@ public class Listener {
 
                            .addField("costs_electricity", message.getCosts().getElectricity())
                            .addField("costs_water", message.getCosts().getWater())
-                           .addField("costs_total", message.getCosts().getTotal())
+                           .addField("costs_total", message.getCosts().getToday())
 
                            .addField("device_0", message.getDevices().get(0).getPower())
                            .addField("device_1", message.getDevices().get(1).getPower())

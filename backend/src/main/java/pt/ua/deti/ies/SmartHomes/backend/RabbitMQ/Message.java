@@ -133,13 +133,13 @@ class Water {
 @Data
 class Costs {
     @NotEmpty
-    private long electricity;
+    private double electricity;
 
     @NotEmpty
-    private long water;
+    private double water;
 
     @NotEmpty
-    private long total;
+    private double today;
 }
 
 @NoArgsConstructor
