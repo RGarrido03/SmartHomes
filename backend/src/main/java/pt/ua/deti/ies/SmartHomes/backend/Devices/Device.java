@@ -1,4 +1,4 @@
-package pt.ua.deti.ies.SmartHomes.backend.Database;
+package pt.ua.deti.ies.SmartHomes.backend.Devices;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ua.deti.ies.SmartHomes.backend.Database.House;
 
 @Entity
 @NoArgsConstructor
