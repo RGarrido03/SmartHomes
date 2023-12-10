@@ -31,7 +31,7 @@ public class DeviceServiceImpl implements DeviceService {
             existing.setHouse(device.getHouse());
             existing.setName(device.getName());
             existing.setHouseArea(device.getHouseArea());
-            existing.setOn(device.isOn());
+            existing.setTurnedOn(device.isTurnedOn());
             return deviceRepository.save(existing);
         }
         else {
@@ -42,6 +42,17 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public void deleteDevice(long id) {
         deviceRepository.deleteById(id);
+    }
+
+    @Override
+    public Device changeState(long id, boolean on) {
+        Device device = deviceRepository.findById(id).orElse(null);
+        if (device == null) {
+            return null;
+        }
+        device.setTurnedOn(on);
+        deviceRepository.save(device);
+        return device;
     }
 
     @Override

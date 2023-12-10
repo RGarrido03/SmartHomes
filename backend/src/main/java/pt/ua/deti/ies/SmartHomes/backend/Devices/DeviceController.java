@@ -30,6 +30,18 @@ public class DeviceController {
         return new ResponseEntity<>(updatedDevice, updatedDevice != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
+    @PatchMapping("{id}/on")
+    public ResponseEntity<Device> turnOnDevice(@PathVariable("id") long deviceId) {
+        Device device = deviceService.changeState(deviceId, true);
+        return new ResponseEntity<>(device, device != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("{id}/off")
+    public ResponseEntity<Device> turnOffDevice(@PathVariable("id") long deviceId) {
+        Device device = deviceService.changeState(deviceId, false);
+        return new ResponseEntity<>(device, device != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteDevice(@PathVariable("id") long deviceId) {
         deviceService.deleteDevice(deviceId);
