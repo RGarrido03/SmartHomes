@@ -38,11 +38,28 @@ export function LoginForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    router.push("/insight");
+
+    const result = await fetch(
+      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/authentication/login`,
+      {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (result.status === 200) {
+      const j = await result.json();
+      localStorage.setItem("token", j["token"])
+      router.push("/insight")
+    } else {
+      // error
+    }
   }
 
   return (
