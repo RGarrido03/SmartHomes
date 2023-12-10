@@ -27,6 +27,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client getClientByUsername(String username) {
+        return clientRepository.findByUsername(username).orElse(null);
+    }
+
+    @Override
     public Client updateClient(Client client) {
         Optional<Client> existingOpt = clientRepository.findById(client.getClientId());
 

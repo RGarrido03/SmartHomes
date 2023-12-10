@@ -8,6 +8,7 @@ public interface ClientService {
 
     Client createClient(Client client);
     Client getClient(long id);
+    Client getClientByUsername(String username);
     Client updateClient(Client client);
     void deleteClient(Long clientId);
     List<Client> findAll();
