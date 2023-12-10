@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
 
 type SummaryProps = {
   name: string;
@@ -17,6 +19,9 @@ type HousesProps = {
 }[];
 
 export default function Home() {
+  const cookies = useCookies();
+  const user: User = JSON.parse(cookies.get("currentUser") ?? "");
+
   const summary: SummaryProps = [
     {
       name: "Electricity",
@@ -57,7 +62,7 @@ export default function Home() {
       <div className="grid h-full content-center rounded-b-card bg-background lg:rounded-none lg:rounded-tr-card">
         <div className="row-auto grid content-center space-y-4 p-8 md:space-y-8 md:p-24">
           <p className="text-4xl font-extrabold md:text-5xl">
-            Welcome back, John!
+            Welcome back, {user.name.split(" ")[0]}!
           </p>
           <p className="text-lg font-medium text-secondary-foreground">
             Here&apos;s your summary.
