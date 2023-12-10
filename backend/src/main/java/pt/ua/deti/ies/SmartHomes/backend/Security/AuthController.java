@@ -70,9 +70,21 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("E-mail is already in use"));
         }
 
+        String unencryptedPassword = client.getPassword();
+
         client.setPassword(encoder.encode(client.getPassword()));
         clientRepository.save(client);
 
-        return ResponseEntity.ok(new MessageResponse("Client registered successfully!"));
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(client.getUsername(), unencryptedPassword));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        Date expires = jwtUtils.getDateFromJwtToken(jwt);
+
+        Client userDetails = (Client) authentication.getPrincipal();
+
+        return ResponseEntity
+                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getUsername(), userDetails.getEmail()));
     }
 }
