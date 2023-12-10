@@ -50,7 +50,7 @@ export default function Electricity() {
       fetchData().catch(console.error);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user.token]);
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
