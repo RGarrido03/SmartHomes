@@ -80,17 +80,12 @@ export default function Devices() {
   useEffect(() => {
     async function fetchData(){
       const temp = await fetch(
-          `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/house/0/devices`,
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/house/1/devices`,
           {
             next: {revalidate: 60}, //every 60 seconds revalidate
           },
       );
       setData(await temp.json())
-
-      //Certificates that is an array coming from the API
-      if (Array.isArray(temp)){
-          setData(temp);
-      }
     }
 
     fetchData().catch(console.error);
@@ -102,6 +97,12 @@ export default function Devices() {
 
   // A useCallback is used to keep function after re-render.
   const organizeDataByRoom = useCallback(() => {
+
+    //In the case that the array is empty (0 devices)
+    if (!Array.isArray(data)){
+      return [];
+    }
+
     const temp = data.reduce((accumulator: Room[], currentValue: Device) => {
       let houseArea = accumulator.find(
         (area) => area.name === currentValue.houseArea,
