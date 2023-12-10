@@ -106,7 +106,7 @@ export default function Home() {
           </CardHeader>
           <CardContent noPadding>
             <div className="grid">
-              <p className="absolute inline-block justify-self-center fill-primary text-3xl font-bold dark:fill-sky-600">
+              <p className="absolute inline-block justify-self-center fill-primary text-3xl font-bold text-blue-200">
                 {data.length !== 0
                   ? (
                       data[data.length - 1].house_self_sufficiency / 2.1
@@ -256,7 +256,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="grid p-14">
-              <p className="inline-block justify-self-center fill-primary text-3xl font-bold dark:fill-sky-600">
+              <p className="inline-block justify-self-center fill-primary text-3xl font-bold text-green-700">
                 {data.length !== 0
                   ? data[data.length - 1].house_self_sufficiency
                   : "0"}{" "}
