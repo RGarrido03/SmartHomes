@@ -7,15 +7,18 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MaterialSymbol } from "react-material-symbols";
+import { Room } from "@/app/home/devices/page";
 
-export function RoomCard() {
+type RoomCardProps = {
+  room: Room;
+};
+
+export function RoomCard({ room }: RoomCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardHeader icon="scene">
-        <CardTitle>Room Name</CardTitle>
-        <CardDescription>
-          Using 0 W
-        </CardDescription>
+        <CardTitle>{room.name}</CardTitle>
+        <CardDescription>Using {room.power} W</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 flex-row items-center">
         <Button variant="outline">
