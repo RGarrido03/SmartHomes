@@ -3,6 +3,9 @@ import pika
 import random
 import time
 import os
+import requests
+import requests_cache
+
 
 rate_env = os.environ.get("SECONDS_RATE")
 seconds_rate = int(rate_env) if rate_env is not None else 5
@@ -16,13 +19,32 @@ queue_name = "smarthomes"
 exchange_name = "smarthomes_exchange"
 routing_key = "smarthomes_routing_json_key"
 
+requests_cache.install_cache("ren_cache", expire_after=900)
+
 
 def generate_random_data(house_id):
-    hydroelectric_grid = round(random.uniform(0, 8200000000))
-    wind_grid = round(random.uniform(0, 5400000000))
-    gas_grid = round(random.uniform(0, 2700000000))
-    solar_grid = round(random.uniform(0, 2200000000))
-    biomass_grid = round(random.uniform(0, 700000000))
+    headers = {
+        "Accept": "application/json",
+    }
+
+    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString=638375445673643573&useGasDate=false"
+
+    response = requests.post(url, headers=headers)
+    data = json.loads(response.text)
+
+    # convert REM data from MW to W
+    for series in data["series"]:
+        if series["name"] == "Hídrica":
+            hydroelectric_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Eólica":
+            wind_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Gás Natural":
+            gas_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Solar":
+            solar_grid = round((series["data"][-2])) * 1000000
+        elif series["name"] == "Biomassa":
+            biomass_grid = round((series["data"][-2])) * 1000000
+
     total_grid = round(
         hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     )
@@ -40,6 +62,40 @@ def generate_random_data(house_id):
     renewable_house = round(
         self_sufficiency + (100 - self_sufficiency) / 100 * renewable_grid
     )
+
+    emissions = round((1 - renewable_house / 100) * 450)
+    renewable_forecast_day = [round(random.uniform(50, 100)) for i in range(3)]
+    renewable_forecast_hour = [round(random.uniform(50, 100)) for i in range(3)]
+
+    water_kitchen = round(random.uniform(0, 100))
+    water_baths = round(random.uniform(0, 100))
+    water_garden = round(random.uniform(0, 25))
+    water_other = round(random.uniform(0, 50))
+    water_total = water_kitchen + water_baths + water_garden + water_other
+    water_today_forecast = round(random.uniform(water_total - 25, water_total + 50))
+
+    costs_electricity = round((grid_exchange if grid_exchange > 0 else 0) * 0.0001, 2)
+    costs_water = round(water_total * 0.00001, 2)
+    costs_total = costs_electricity + costs_water
+
+    devices = [
+        {
+            "id": 1,
+            "power": round(random.uniform(0, total_house / 2)),
+        },
+        {
+            "id": 2,
+            "power": round(random.uniform(0, total_house / 4)),
+        },
+        {
+            "id": 3,
+            "power": round(random.uniform(0, total_house / 4)),
+        },
+        {
+            "id": 4,
+            "power": round(random.uniform(0, total_house / 8)),
+        },
+    ]
 
     return {
         "id": house_id,
@@ -60,8 +116,25 @@ def generate_random_data(house_id):
                 "total": total_house,
                 "self_sufficiency": self_sufficiency,
                 "renewable": renewable_house,
+                "emissions": emissions,
+                "renewable_forecast_day": renewable_forecast_day,
+                "renewable_forecast_hour": renewable_forecast_hour,
             },
         },
+        "water": {
+            "kitchen": water_kitchen,
+            "bath": water_baths,
+            "garden": water_garden,
+            "other": water_other,
+            "total": water_total,
+            "forecast_today": water_today_forecast,
+        },
+        "costs": {
+            "electricity": costs_electricity,
+            "water": costs_water,
+            "today": costs_total,
+        },
+        "devices": devices,
     }
 
 
@@ -88,7 +161,9 @@ def get_ids_from_rabbitmq(channel):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(username, password if password is not None else "")
+    credentials = pika.PlainCredentials(
+        username, password if password is not None else ""
+    )
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host, port, "/", credentials)
     )
