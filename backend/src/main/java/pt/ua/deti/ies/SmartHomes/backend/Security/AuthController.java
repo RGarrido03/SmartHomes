@@ -21,6 +21,8 @@ import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.JwtResponse;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.LoginRequest;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.MessageResponse;
 
+import java.util.Date;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/authentication")
@@ -50,11 +52,12 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
+        Date expires = jwtUtils.getDateFromJwtToken(jwt);
 
         Client userDetails = (Client) authentication.getPrincipal();
 
         return ResponseEntity
-                .ok(new JwtResponse(jwt, userDetails.getClientId(), userDetails.getUsername(), userDetails.getEmail()));
+                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getUsername(), userDetails.getEmail()));
     }
 
     @PostMapping("/register")
