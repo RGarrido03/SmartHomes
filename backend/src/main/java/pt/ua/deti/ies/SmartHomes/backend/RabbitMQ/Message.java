@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,10 +15,19 @@ import lombok.NoArgsConstructor;
 @Data
 public class Message {
     @NotEmpty
-    private long house_id;
+    private long id;
 
     @NotEmpty
     private Power power;
+
+    @NotEmpty
+    private Water water;
+
+    @NotEmpty
+    private Costs costs;
+
+    @NotEmpty
+    private List<Device> devices;
 }
 
 @NoArgsConstructor
@@ -81,4 +92,64 @@ class House {
 
     @NotEmpty
     private long renewable;
+
+    @NotEmpty
+    private long emissions;
+
+    @NotEmpty
+    private List<Long> renewable_forecast_day;
+
+    @NotEmpty
+    private List<Long> renewable_forecast_hour;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Data
+class Water {
+    @NotEmpty
+    private long kitchen;
+
+    @NotEmpty
+    private long bath;
+
+    @NotEmpty
+    private long garden;
+
+    @NotEmpty
+    private long other;
+
+    @NotEmpty
+    private long total;
+
+    @NotEmpty
+    private long forecast_today;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Data
+class Costs {
+    @NotEmpty
+    private double electricity;
+
+    @NotEmpty
+    private double water;
+
+    @NotEmpty
+    private double today;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Data
+class Device {
+    @NotEmpty
+    private int id;
+
+    @NotEmpty
+    private long power;
 }
