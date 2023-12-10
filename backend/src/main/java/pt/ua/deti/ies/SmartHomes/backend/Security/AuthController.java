@@ -23,7 +23,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.MessageResponse;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/service/auth")
+@RequestMapping("/api/authentication")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -42,7 +42,7 @@ public class AuthController {
         Client client = clientRepository.findByEmail(loginRequest.getEmail()).orElse(null);
 
         if (client == null) {
-            return new ResponseEntity<>(new MessageResponse("Not found"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Not found"), HttpStatus.UNAUTHORIZED);
         }
 
         Authentication authentication = authenticationManager

@@ -56,9 +56,8 @@ public class Authentication {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
-                                           auth.requestMatchers("/service/auth/**").permitAll()
+                                           auth.requestMatchers("/api/authentication/**").permitAll()
                                                .requestMatchers("/actuator/**").permitAll()
-                                               .requestMatchers("/service/test/**").permitAll()
                                                .anyRequest().authenticated()
             );
 
