@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
+  const { toast } = useToast();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,10 +41,6 @@ export function LoginForm() {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-
     const result = await fetch(
       `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/authentication/login`,
       {
@@ -55,10 +53,14 @@ export function LoginForm() {
     );
     if (result.status === 200) {
       const j = await result.json();
-      localStorage.setItem("token", j["token"])
-      router.push("/insight")
+      localStorage.setItem("token", j["token"]);
+      router.push("/insight");
     } else {
-      // error
+      toast({
+        title: "Error logging in.",
+        description: "Invalid credentials.",
+        variant: "destructive",
+      });
     }
   }
 
