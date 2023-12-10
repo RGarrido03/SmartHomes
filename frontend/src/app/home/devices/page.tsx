@@ -42,7 +42,7 @@ export default function Devices() {
   */
 
   const [data, setData] = useState<Device[]>([
-    {
+    /*{
       id: 1,
       type: "LIGHT",
       name: "Light",
@@ -73,8 +73,32 @@ export default function Devices() {
       houseArea: "Kitchen",
       on: false,
       power: 0,
-    },
+    },*/
   ]);
+
+  //fetch data from API
+  useEffect(() => {
+    async function fetchData(){
+      const temp = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/house/0/devices`,
+          {
+            next: {revalidate: 60}, //every 60 seconds revalidate
+          },
+      );
+      setData(await temp.json())
+
+      //Certificates that is an array coming from the API
+      if (Array.isArray(temp)){
+          setData(temp);
+      }
+    }
+
+    fetchData().catch(console.error);
+    const interval = setInterval(() =>{
+      fetchData().catch(console.error);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // A useCallback is used to keep function after re-render.
   const organizeDataByRoom = useCallback(() => {
