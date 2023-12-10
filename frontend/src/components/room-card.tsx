@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MaterialSymbol } from "react-material-symbols";
 
-export function DeviceCard({}: { text: string }) {
+export function RoomCard() {
   return (
     <Card className="overflow-hidden">
       <CardHeader icon="scene">
