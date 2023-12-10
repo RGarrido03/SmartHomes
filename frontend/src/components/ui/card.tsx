@@ -131,6 +131,21 @@ const CardHomeHeader = React.forwardRef<
 ));
 CardHeader.displayName = "CardHeader";
 
+const DevicesCard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "flex justify-between rounded-card bg-secondary text-card-foreground self-end items-center pr-3",
+      className,
+    )}
+    {...props}
+  />
+));
+Card.displayName = "Card";
+
 export {
   Card,
   CardHeader,
@@ -140,4 +155,5 @@ export {
   CardContent,
   CardHome,
   CardHomeHeader,
+  DevicesCard
 };

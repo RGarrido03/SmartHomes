@@ -10,6 +10,7 @@ import {
   CardFooter,
   CardHeader,
   CardDescription,
+  DevicesCard,
 } from "@/components/ui/card";
 import Link from "next/link";
 import Wave from "react-wavify";
@@ -106,8 +107,10 @@ export default function Home() {
           <CardContent noPadding>
             <div className="grid">
               <p className="absolute inline-block justify-self-center fill-primary text-3xl font-bold dark:fill-sky-600">
-                0.{data.length !== 0
-                  ? data[data.length - 1].house_self_sufficiency
+                {data.length !== 0
+                  ? (
+                      data[data.length - 1].house_self_sufficiency / 2.1
+                    ).toFixed(1)
                   : "0"}{" "}
                 L
               </p>
@@ -116,8 +119,8 @@ export default function Home() {
                   fill="#7dd3fc"
                   options={{
                     height: 80,
-                    amplitude: 20,
-                    speed: 0.15,
+                    amplitude: 5,
+                    speed: 0.25,
                     points: 4,
                   }}
                   gradientTransform="rotate(90)"
@@ -140,15 +143,20 @@ export default function Home() {
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>Devices</CardTitle>
-            <CardDescription>The more power consuming devices</CardDescription>
+            <CardDescription className="pb-4">
+              The more power consuming devices
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-1 flex-row items-center">
-              <MaterialSymbol
-                icon="scene"
-                className="animate-pulse"
-                size={144}
-              ></MaterialSymbol>
+            <div className="space-y-4">
+              <DevicesCard>
+                <CardHeader>Aspirador</CardHeader>
+                <MaterialSymbol icon="vacuum" size={24}></MaterialSymbol>
+              </DevicesCard>
+              <DevicesCard>
+                <CardHeader>Tesla charger</CardHeader>
+                <MaterialSymbol icon="electric_car" size={24}></MaterialSymbol>
+              </DevicesCard>
             </div>
           </CardContent>
           <CardFooter>
@@ -243,16 +251,17 @@ export default function Home() {
       <Link href={"/home"}>
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle>Power flow</CardTitle>
-            <CardDescription>In Watts (W)</CardDescription>
+            <CardTitle>Self suficiency</CardTitle>
+            <CardDescription>Green source percentage</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-1 flex-row items-center">
-              <MaterialSymbol
-                icon="eco"
-                className="animate-pulse"
-                size={144}
-              ></MaterialSymbol>
+            <div className="grid p-14">
+              <p className="inline-block justify-self-center fill-primary text-3xl font-bold dark:fill-sky-600">
+                {data.length !== 0
+                  ? data[data.length - 1].house_self_sufficiency
+                  : "0"}{" "}
+                % green
+              </p>
             </div>
           </CardContent>
           <CardFooter>
@@ -269,16 +278,28 @@ export default function Home() {
       <Link href={"/home"}>
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle>Power flow</CardTitle>
-            <CardDescription>In Watts (W)</CardDescription>
+            <CardTitle>Money withdraw by second</CardTitle>
+            <CardDescription>In Euros (€)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-1 flex-row items-center">
-              <MaterialSymbol
-                icon="euro"
-                className="animate-pulse"
-                size={144}
-              ></MaterialSymbol>
+            <div className="grid space-y-3 pb-10">
+              <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
+                Grid 3.4(€):{" "}
+                {data.length !== 0 ? data[data.length - 1].grid_renewable : "0"}{" "}
+                €
+              </p>
+              <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
+                House 0(€):
+                {data.length !== 0
+                  ? data[data.length - 1].house_self_sufficiency
+                  : "0"}{" "}
+                €
+              </p>
+              <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
+                Total (€):
+                {data.length !== 0 ? data[data.length - 1].house_grid_exchange : "0"}{" "}
+                €
+              </p>
             </div>
           </CardContent>
           <CardFooter>
