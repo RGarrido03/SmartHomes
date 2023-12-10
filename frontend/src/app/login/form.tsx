@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -29,6 +30,7 @@ const formSchema = z.object({
 export function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+  const cookies = useCookies();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,8 +54,8 @@ export function LoginForm() {
       },
     );
     if (result.status === 200) {
-      const j = await result.json();
-      localStorage.setItem("token", j["token"]);
+      const currentUser = await result.json();
+      cookies.set("currentUser", JSON.stringify(currentUser));
       router.push("/insight");
     } else {
       toast({
