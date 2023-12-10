@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
