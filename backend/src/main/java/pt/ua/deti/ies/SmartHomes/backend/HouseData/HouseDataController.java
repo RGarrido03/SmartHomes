@@ -195,7 +195,7 @@ public class HouseDataController {
 
             for (FluxTable fluxTable : result) {
                 for (FluxRecord fluxRecord : fluxTable.getRecords()) {
-                    data.add(new DeviceData(d.getDeviceId(), d.getType(), d.getName(), d.getHouseArea(),
+                    data.add(new DeviceData(d.getDeviceId(), d.getType(), d.getName(), d.getHouseArea(), d.isOn(),
                                             (Long) fluxRecord.getValueByKey("power")));
                 }
             }

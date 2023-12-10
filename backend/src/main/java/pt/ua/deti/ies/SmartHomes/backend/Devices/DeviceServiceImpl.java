@@ -31,6 +31,7 @@ public class DeviceServiceImpl implements DeviceService {
             existing.setHouse(device.getHouse());
             existing.setName(device.getName());
             existing.setHouseArea(device.getHouseArea());
+            existing.setOn(device.isOn());
             return deviceRepository.save(existing);
         }
         else {

@@ -41,6 +41,9 @@ public class Device {
     @NotBlank(message = "House area is mandatory")
     private String houseArea;
 
+    @NotBlank(message = "State is mandatory")
+    private boolean on;
+
     @Enumerated(EnumType.STRING)
     private DeviceType type;
 }
