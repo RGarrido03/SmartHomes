@@ -12,6 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import Link from "next/link";
+import Wave from "react-wavify";
 import { useState, useEffect } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
@@ -47,14 +48,37 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const [displayText, setDisplayText] = useState("0 gCO₂eq/kWh");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 700) {
+        setDisplayText("0");
+      } else {
+        setDisplayText("0 gCO₂eq/kWh");
+      }
+    };
+
+    handleResize(); // Call initially to set the text based on window size
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       <CardHome className="col-span-3 flex overflow-hidden">
         <div>
           <CardHomeHeader>
-            <CardTitle>
-              Your house is currently 
-              <p className="text-green-700">carbon neutral.</p>
+            <CardTitle className="flex">
+              <p>
+                Your house is currently{" "}
+                <span className="text-green-700">carbon neutral.</span>
+              </p>
             </CardTitle>
           </CardHomeHeader>
           <CardContent>
@@ -68,7 +92,7 @@ export default function Home() {
             href="/insight"
             className="rounded-lg bg-accent px-5 py-3 text-base font-bold"
           >
-            0 gCO₂eq/kWh
+            {displayText}
           </Link>
         </div>
       </CardHome>
@@ -76,16 +100,29 @@ export default function Home() {
       <Link href={"/home"}>
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle>Power flow</CardTitle>
-            <CardDescription>In Watts (W)</CardDescription>
+            <CardTitle>Water output now</CardTitle>
+            <CardDescription>In Litters (L)</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid items-center justify-center self-center p-6">
-              <MaterialSymbol
-                icon="water_drop"
-                className="animate-pulse"
-                size={128}
-              ></MaterialSymbol>
+          <CardContent noPadding>
+            <div className="grid">
+              <p className="absolute inline-block justify-self-center fill-primary text-3xl font-bold dark:fill-sky-600">
+                0.{data.length !== 0
+                  ? data[data.length - 1].house_self_sufficiency
+                  : "0"}{" "}
+                L
+              </p>
+              <div className="static">
+                <Wave
+                  fill="#7dd3fc"
+                  options={{
+                    height: 80,
+                    amplitude: 20,
+                    speed: 0.15,
+                    points: 4,
+                  }}
+                  gradientTransform="rotate(90)"
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter>
@@ -102,15 +139,15 @@ export default function Home() {
       <Link href={"/home"}>
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle>Power flow</CardTitle>
-            <CardDescription>In Watts (W)</CardDescription>
+            <CardTitle>Devices</CardTitle>
+            <CardDescription>The more power consuming devices</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid items-center justify-center self-center p-6">
+            <div className="flex flex-1 flex-row items-center">
               <MaterialSymbol
                 icon="scene"
                 className="animate-pulse"
-                size={128}
+                size={144}
               ></MaterialSymbol>
             </div>
           </CardContent>
@@ -210,11 +247,11 @@ export default function Home() {
             <CardDescription>In Watts (W)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid items-center justify-center self-center p-6">
+            <div className="flex flex-1 flex-row items-center">
               <MaterialSymbol
                 icon="eco"
                 className="animate-pulse"
-                size={128}
+                size={144}
               ></MaterialSymbol>
             </div>
           </CardContent>
@@ -236,11 +273,11 @@ export default function Home() {
             <CardDescription>In Watts (W)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid items-center justify-center self-center p-6">
+            <div className="flex flex-1 flex-row items-center">
               <MaterialSymbol
                 icon="euro"
                 className="animate-pulse"
-                size={128}
+                size={144}
               ></MaterialSymbol>
             </div>
           </CardContent>
