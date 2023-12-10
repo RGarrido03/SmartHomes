@@ -52,7 +52,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        Date expires = jwtUtils.getDateFromJwtToken(jwt);
+        Long expires = jwtUtils.getDateFromJwtToken(jwt).getTime();
 
         Client userDetails = (Client) authentication.getPrincipal();
 
@@ -80,7 +80,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        Date expires = jwtUtils.getDateFromJwtToken(jwt);
+        Long expires = jwtUtils.getDateFromJwtToken(jwt).getTime();
 
         Client userDetails = (Client) authentication.getPrincipal();
 
