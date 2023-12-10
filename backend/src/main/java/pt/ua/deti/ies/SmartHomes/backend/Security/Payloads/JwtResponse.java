@@ -3,18 +3,22 @@ package pt.ua.deti.ies.SmartHomes.backend.Security.Payloads;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
     private Long id;
+    private Date expires;
     private String username;
     private String email;
 
-    public JwtResponse(String accessToken, Long id, String username, String email) {
+    public JwtResponse(String accessToken, Long id, Date expires, String username, String email) {
         this.token = accessToken;
         this.id = id;
+        this.expires = expires;
         this.username = username;
         this.email = email;
     }
