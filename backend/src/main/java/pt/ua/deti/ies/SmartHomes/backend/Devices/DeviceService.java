@@ -11,5 +11,7 @@ public interface DeviceService {
 
     void deleteDevice(long id);
 
+    Device changeState(long id, boolean on);
+
     List<Device> getAllDevices(long house_id);
 }

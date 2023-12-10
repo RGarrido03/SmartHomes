@@ -12,5 +12,6 @@ class DeviceData {
     private DeviceType type;
     private String name;
     private String houseArea;
+    private boolean on;
     private long power;
 }
