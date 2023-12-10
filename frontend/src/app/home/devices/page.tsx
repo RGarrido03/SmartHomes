@@ -1,17 +1,8 @@
 "use client";
 
 import { TitleCard } from "@/components/title-card";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import { useEffect, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useState } from "react";
+import { RoomCard } from "@/components/room-card";
 
 type Device = {
   id: number;
@@ -112,35 +103,11 @@ export default function Devices() {
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <TitleCard text="Control your devices to improve your house's energy efficency." />
+      <TitleCard text="Control your devices to improve your house's energy efficiency." />
 
-      <Card className="overflow-hidden">
-        <CardHeader icon="scene">
-          <CardTitle>Room Name</CardTitle>
-          <CardDescription>
-            Using {data.length !== 0 ? data[data.length - 1].watts : "0"} W
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-1 flex-row items-center">
-          <Button variant="outline">
-            <MaterialSymbol icon="mode_fan" size={40} />
-            <p className="text-primary-foreground">AC</p>
-            <p className="text-primary-foreground">420 W</p>
-          </Button>
-          <Button variant="outline">
-            <br />
-            <MaterialSymbol icon="mode_fan" size={40} />
-            <p className="text-primary-foreground">AC</p>
-            <p className="text-primary-foreground">420 W</p>
-          </Button>
-          <Button variant="outline">
-            <br />
-            <MaterialSymbol icon="mode_fan" size={40} />
-            <p className="text-primary-foreground">AC</p>
-            <p className="text-primary-foreground">420 W</p>
-          </Button>
-        </CardContent>
-      </Card>
+      {dataByRoom.map((room) => (
+        <RoomCard key={room.name} room={room} />
+      ))}
     </div>
   );
 }
