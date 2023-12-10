@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCookies } from "next-client-cookies";
@@ -48,7 +47,6 @@ export default function Navbar() {
           <DropdownMenuLabel>
             Hi, {user == null ? "" : user.name.split(" ")[0]}!
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>
             <MaterialSymbol icon="logout" className="mr-2" />
             Logout
