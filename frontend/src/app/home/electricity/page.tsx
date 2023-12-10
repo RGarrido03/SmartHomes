@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { MaterialSymbol } from "react-material-symbols";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
 
 type ElectricityDataProps = {
   time: string;
@@ -26,6 +28,8 @@ type ElectricityDataProps = {
 
 export default function Electricity() {
   const [data, setData] = useState<ElectricityDataProps>([]);
+  const cookies = useCookies();
+  const user: User = JSON.parse(cookies.get("currentUser") ?? "");
 
   useEffect(() => {
     async function fetchData() {
@@ -33,6 +37,9 @@ export default function Electricity() {
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
         },
       );
       setData(await temp.json());
