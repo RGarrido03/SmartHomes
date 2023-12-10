@@ -66,12 +66,9 @@ export default function Devices() {
       on: true,
       power: 45,
     },
-  ]);
 
-  const [dataByRoom, setDataByRoom] = useState<Room[]>([]);
-
-  // Organize devices by room
-  useEffect(() => {
+  // A useCallback is used to keep function after re-render.
+  const organizeDataByRoom = useCallback(() => {
     const temp = data.reduce((accumulator: Room[], currentValue: Device) => {
       let houseArea = accumulator.find(
         (area) => area.name === currentValue.houseArea,
@@ -95,8 +92,14 @@ export default function Devices() {
       return accumulator;
     }, []);
 
-    setDataByRoom(temp);
+    return temp;
   }, [data]);
+
+  // Organize devices by room
+  const [dataByRoom, setDataByRoom] = useState<Room[]>(organizeDataByRoom());
+  useEffect(() => {
+    setDataByRoom(organizeDataByRoom());
+  }, [data, organizeDataByRoom]);
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
