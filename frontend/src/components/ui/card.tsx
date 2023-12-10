@@ -101,6 +101,7 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
+
 const CardHome = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -138,7 +139,7 @@ const DevicesCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex justify-between rounded-card bg-secondary text-card-foreground self-end items-center pr-3",
+      "flex justify-between font-bold rounded-card bg-secondary text-card-foreground self-end items-center pr-3",
       className,
     )}
     {...props}
