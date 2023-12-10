@@ -3,6 +3,7 @@ export type User = {
   type: string;
   id: number;
   expires: number;
+  name: string;
   username: string;
   email: string;
 };
