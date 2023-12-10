@@ -1,5 +1,5 @@
-package pt.ua.deti.ies.SmartHomes.backend.Database;
+package pt.ua.deti.ies.SmartHomes.backend.Devices;
 
-enum DeviceType {
+public enum DeviceType {
     SOLARPV, WINDTURBINE, PLUG, GRIDMETER, AC, LIGHT, TV, SMARTASSISTANT, CARCARGER, VACUUM, DESUMIDIFIER, OVEN
 }
