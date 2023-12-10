@@ -32,6 +32,15 @@ export type Room = {
 };
 
 export default function Devices() {
+  /*
+    README: Fetch data
+    You should use a useEffect to fetch data from the API.
+    Also, the "data" useState initial state will be [] instead of the dummy data.
+    API link: /service/houses/1/electricity
+    Will be changed in the future to accommodate a non-hardcoded house ID.
+    Refer to the electricity page on how to implement it.
+  */
+
   const [data, setData] = useState<Device[]>([
     {
       id: 1,
