@@ -57,7 +57,7 @@ public class AuthController {
         Client userDetails = (Client) authentication.getPrincipal();
 
         return ResponseEntity
-                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getUsername(), userDetails.getEmail()));
+                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getName(), userDetails.getUsername(), userDetails.getEmail()));
     }
 
     @PostMapping("/register")
@@ -85,6 +85,6 @@ public class AuthController {
         Client userDetails = (Client) authentication.getPrincipal();
 
         return ResponseEntity
-                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getUsername(), userDetails.getEmail()));
+                .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getName(), userDetails.getUsername(), userDetails.getEmail()));
     }
 }
