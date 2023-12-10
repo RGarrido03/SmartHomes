@@ -33,8 +33,6 @@ export function middleware(request: NextRequest) {
     currentUser = JSON.parse(currentUserStr);
   }
 
-  console.log(request.nextUrl.pathname, isProtected(request.nextUrl.pathname));
-
   if (
     isProtected(request.nextUrl.pathname) &&
     (!currentUserStr || Date.now() > (currentUser?.expires ?? 0))
