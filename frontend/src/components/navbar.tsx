@@ -14,6 +14,7 @@ import {
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 export default function Navbar() {
   const cookies = useCookies();
@@ -23,10 +24,10 @@ export default function Navbar() {
       : JSON.parse(cookies.get("currentUser") ?? "");
   const router = useRouter();
 
-  const logout = () => {
+  const logout = useCallback(() => {
     cookies.remove("currentUser");
     router.push("/login");
-  };
+  }, [cookies, router]);
 
   return (
     <div className="flex flex-row items-center justify-between gap-4 p-4">
