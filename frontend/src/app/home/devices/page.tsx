@@ -34,7 +34,7 @@ type Device = {
   power: number;
 };
 
-type Room = {
+export type Room = {
   name: string;
   power: number;
   devices: Device[];
@@ -47,7 +47,7 @@ export default function Devices() {
       type: "LIGHT",
       name: "Light",
       houseArea: "Living Room",
-      on: false,
+      on: true,
       power: 1114,
     },
     {
@@ -59,13 +59,22 @@ export default function Devices() {
       power: 182,
     },
     {
-      id: 2,
+      id: 3,
       type: "TV",
       name: "TV",
       houseArea: "Kitchen",
       on: true,
       power: 45,
     },
+    {
+      id: 4,
+      type: "DESUMIDIFIER",
+      name: "Dehumidifier",
+      houseArea: "Kitchen",
+      on: false,
+      power: 0,
+    },
+  ]);
 
   // A useCallback is used to keep function after re-render.
   const organizeDataByRoom = useCallback(() => {
