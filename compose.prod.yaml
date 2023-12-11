@@ -109,7 +109,9 @@ services:
           "spring.rabbitmq.password" : "${RABBITMQ_DEFAULT_PASS}",
           "spring.rabbitmq.queue.json.name" : "smarthomes",
           "spring.rabbitmq.routing.json.key" : "smarthomes_routing_json_key",
-          "management.influx.metrics.export.enabled": "false"
+          "management.influx.metrics.export.enabled": "false",
+          "smarthomes.app.jwtSecret" : "${SPRING_SECURITY_JWT_SECRET}",
+          "smarthomes.app.jwtExpirationMs": "86400000"
         }'
     restart: unless-stopped
     networks:

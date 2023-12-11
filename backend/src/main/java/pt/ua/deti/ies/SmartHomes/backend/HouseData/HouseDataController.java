@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/houses")
+@RequestMapping("api/houses")
 public class HouseDataController {
     private QueryApi queryApi;
     private HouseService houseService;

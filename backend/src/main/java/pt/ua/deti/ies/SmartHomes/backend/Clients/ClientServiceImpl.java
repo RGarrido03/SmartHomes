@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseRepository;
 
@@ -56,5 +59,12 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<House> getHousesByClient(long id) {
         return houseRepository.findHousesByClientClientId(id);
+    }
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return clientRepository.findByUsername(username)
+                               .orElseThrow(() -> new UsernameNotFoundException("User was not found"));
     }
 }

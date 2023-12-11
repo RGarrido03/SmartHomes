@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/houses")
+@RequestMapping("api/houses")
 public class HouseController {
     private HouseService houseService;
 
