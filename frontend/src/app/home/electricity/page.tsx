@@ -15,6 +15,11 @@ import { MaterialSymbol } from "react-material-symbols";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 
+//websocket
+// websocket
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+
 type ElectricityDataProps = {
   time: string;
   grid_renewable: number;
@@ -32,6 +37,17 @@ export default function Electricity() {
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
 
   useEffect(() => {
+    const ws = new SockJS(
+      "http://${process.env.NEXT_PUBLIC_HOST_URL}/service/ws",
+    );
+    const client = Stomp.over(ws);
+
+    client.connect({}, function () {
+      client.subscribe("/houses/1/electricity", function (data) {
+        console.log("New notification: ", JSON.parse(data.body));
+      });
+    });
+
     async function fetchData() {
       const temp = await fetch(
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
