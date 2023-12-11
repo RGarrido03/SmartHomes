@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Room } from "@/app/home/devices/page";
 import { cn } from "@/lib/utils";
+import { useCallback } from "react";
 
 type RoomCardProps = {
   room: Room;
+  token: string;
+};
 
 type DeviceIcon = {
   [key in Room["devices"][number]["type"]]: MaterialSymbolProps["icon"];
@@ -32,7 +35,24 @@ const icons: DeviceIcon = {
   WINDTURBINE: "wind_power",
 };
 
-export function RoomCard({ room }: RoomCardProps) {
+export function RoomCard({ room, token }: RoomCardProps) {
+  const toggleStatus = useCallback(
+    async (id: number, currentOn: boolean) => {
+      await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/devices/${id}/${
+          currentOn ? "off" : "on"
+        }`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        },
+      );
+    },
+    [token],
+  );
+
   return (
     <Card className="overflow-hidden">
       <CardHeader icon="scene">
@@ -50,6 +70,7 @@ export function RoomCard({ room }: RoomCardProps) {
           <Button
             variant={device.on ? "default" : "secondary"}
             key={device.id}
+            onClick={() => toggleStatus(device.id, device.on)}
             className="h-fit flex-col gap-1"
           >
             <MaterialSymbol icon={icons[device.type]} size={24} />

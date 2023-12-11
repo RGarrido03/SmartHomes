@@ -108,7 +108,7 @@ export default function Devices() {
         <TitleCard text="Control your devices to improve your house's energy efficiency." />
 
         {dataByRoom.map((room) => (
-          <RoomCard key={room.name} room={room} />
+          <RoomCard key={room.name} room={room} token={user.token} />
         ))}
       </div>
       {(dataByRoom === null || dataByRoom.length === 0) && (
