@@ -1,9 +1,12 @@
+"use client";
+
 import Cover from "@/../public/cover.png";
 import { GitHubIcon, GoogleIcon, MetaIcon } from "@/components/brand-icons";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MaterialSymbol } from "react-material-symbols";
 import { LoginForm } from "./form";
+import { useToast } from "@/components/ui/use-toast";
 
 type AuthProvidersProps = {
   name: string;
@@ -11,6 +14,8 @@ type AuthProvidersProps = {
 }[];
 
 export default function Home() {
+  const { toast } = useToast();
+
   const providers: AuthProvidersProps = [
     {
       name: "Passkey",
@@ -64,6 +69,13 @@ export default function Home() {
               variant={"background"}
               key={provider.name}
               className="flex snap-start flex-row items-center gap-2 rounded-full"
+              onClick={() => {
+                toast({
+                  title: "Oops, not implemented yet!",
+                  description:
+                    "It looks like you found an Iteration 4 feature :)",
+                });
+              }}
             >
               {provider.icon}
               {provider.name}

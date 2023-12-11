@@ -4,6 +4,8 @@ import "./globals.css";
 import "react-material-symbols/rounded";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { CookiesProvider } from "next-client-cookies/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,9 +27,12 @@ export default function RootLayout({
           inter.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <CookiesProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </CookiesProvider>
       </body>
     </html>
   );
