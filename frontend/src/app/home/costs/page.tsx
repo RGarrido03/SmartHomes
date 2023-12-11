@@ -16,12 +16,10 @@ import Link from "next/link";
 import {Button} from "@/components/ui/button";
 
 type CostsProps = {
-    dayExpenses : number,
-    yesterdayExpenses : number,
-    water_mon : number,
-    electricity_mon: number,
-    monthExpenses: number
-}[];
+    electricity : number,
+    water : number,
+    today : number,
+};
 
 export default function Costs() {
     const [data, setData] = useState<CostsProps>([]);
@@ -59,7 +57,7 @@ export default function Costs() {
                     <div className="flex flex-row gap-10">
                         <div>
                             <p>Today</p>
-                            <p className="text-3xl font-semibold">294,43 €</p>
+                            <p className="text-3xl font-semibold">{data.today} €</p>
                         </div>
                         <div>
                             <p>Yesterday</p>
@@ -81,12 +79,12 @@ export default function Costs() {
                         <div>
                             <MaterialSymbol icon="water_drop" size={35} className="text-blue-300"></MaterialSymbol>
                             <p>Water</p>
-                            <p className="text-3xl text-blue-400"> 256,56 € </p>
+                            <p className="text-3xl text-blue-400"> {data.water} €</p>
                         </div>
                         <div>
                             <MaterialSymbol icon="bolt" size={35} className="text-amber-300"></MaterialSymbol>
                             <p>Electricity</p>
-                            <p className="text-3xl text-amber-300"> 256,56 €</p>
+                            <p className="text-3xl text-amber-300">{data.electricity} €</p>
                         </div>
                     </div>
                 </CardContent>
@@ -153,13 +151,11 @@ export default function Costs() {
                     <div>
                         <CustomAreaChart
                             data={data}
-                            dataKey="monthExpences"
+                            dataKey="monthExpenses"
                             className="fill-blue-600 dark:fill-yellow-600"
                             unitOfMeasurement="€"
                         />
                     </div>
-
-
                 </CardContent>
             </Card>
         </div>
