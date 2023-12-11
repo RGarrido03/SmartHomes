@@ -153,7 +153,7 @@ export default function Home() {
         </div>
         <div className="self-center p-6">
           <Link
-            href="/insight"
+            href="/home"
             className="rounded-lg bg-accent px-5 py-3 text-base font-bold"
           >
             {environmentData.length !== 0
@@ -180,7 +180,7 @@ export default function Home() {
                   L
                 </p>
                 <Wave
-                  fill="#7dd3fc"
+                  fill="#60A5FA"
                   options={{
                     height: 80,
                     amplitude: 5,
