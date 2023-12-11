@@ -33,7 +33,7 @@ type CostDataProps = {
   electricity: number;
   water: number;
   today: number;
-}[];
+};
 
 type WaterValues = {
   time: string;
@@ -56,9 +56,9 @@ type EnvironmentData = {
 
 export default function Home() {
   const [data, setData] = useState<ElectricityDataProps>([]);
-  const [costData, costSetData] = useState<CostDataProps>([]);
-  const [waterData, waterSetData] = useState<WaterValues>([]);
-  const [environmentData, environmentSetData] = useState<EnvironmentData>([]);
+  const [costData, setCostData] = useState<CostDataProps>([]);
+  const [waterData, setWaterData] = useState<WaterValues>([]);
+  const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -75,21 +75,21 @@ export default function Home() {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
         },
       );
-      costSetData(await costs.json());
+      setCostData(await costs.json());
       const waterCosts = await fetch(
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/water`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
         },
       );
-      waterSetData(await waterCosts.json());
+      setWaterData(await waterCosts.json());
       const environmentData = await fetch(
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/environment`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
         },
       );
-      environmentSetData(await environmentData.json());
+      setEnvironmentData(await environmentData.json());
     }
 
     fetchData().catch(console.error);
@@ -373,22 +373,22 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="grid space-y-3 pb-6 pt-4">
-                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
-                  Electricity cost:
+                <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
+                  Electricity cost:{" "}
                   <span className="font-bold">
-                    {costData[costData.length - 1]?.electricity || " 0"} €
+                    {costData.electricity.toFixed(2) || " 0"} €
                   </span>
                 </p>
-                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
-                  Water cost:
+                <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
+                  Water cost:{" "}
                   <span className="font-bold">
-                    {costData[costData.length - 1]?.water || " 0"} €
+                    {costData.water.toFixed(2) || " 0"} €
                   </span>
                 </p>
-                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
-                  Total cost today:
+                <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
+                  Total cost today:{" "}
                   <span className="font-bold">
-                    {costData[costData.length - 1]?.today || " 0"} €
+                    {costData.today.toFixed(2) || " 0"} €
                   </span>
                 </p>
               </div>
