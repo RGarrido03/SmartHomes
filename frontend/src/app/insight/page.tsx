@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type SummaryProps = {
   name: string;
@@ -17,7 +17,7 @@ type SummaryProps = {
 }[];
 
 type HousesProps = {
-  id: number;
+  houseId: number;
   name: string;
   location: string;
 }[];
@@ -47,23 +47,24 @@ export default function Home() {
     },
   ];
 
-  const houses: HousesProps = [
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
-    },
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
-    },
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
-    },
-  ];
+  const [houses, setHouses] = useState<HousesProps>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const temp = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${user.id}/houses`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        },
+      );
+      setHouses(await temp.json());
+    }
+
+    fetchData().catch(console.error);
+  }, [user.token, user.id]);
 
   const logout = useCallback(() => {
     cookies.remove("currentUser");
@@ -102,7 +103,7 @@ export default function Home() {
       <div className="flex flex-col space-y-4 p-4 lg:space-y-8 lg:p-12">
         {houses.map((house) => (
           <div
-            key={house.id}
+            key={house.houseId}
             className="flex items-center justify-between rounded-card bg-background p-4"
           >
             <div>
