@@ -61,11 +61,11 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${user.id}/houses`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${user != null ? user.id : 0}/houses`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
           headers: {
-            Authorization: "Bearer " + user.token,
+            Authorization: "Bearer " + user != null ? user.token : "",
           },
         },
       );
@@ -73,7 +73,7 @@ export default function Home() {
     }
 
     fetchData().catch(console.error);
-  }, [user.token, user.id]);
+  }, [user]);
 
   const logout = useCallback(() => {
     cookies.remove("currentUser");
