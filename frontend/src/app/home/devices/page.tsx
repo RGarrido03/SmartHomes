@@ -45,7 +45,9 @@ export default function Devices() {
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/devices`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/devices`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
           headers: {
@@ -61,7 +63,7 @@ export default function Devices() {
       fetchData().catch(console.error);
     }, 5000);
     return () => clearInterval(interval);
-  }, [user.token]);
+  }, [user.token, cookies]);
 
   // A useCallback is used to keep function after re-render.
   const organizeDataByRoom = useCallback(() => {
