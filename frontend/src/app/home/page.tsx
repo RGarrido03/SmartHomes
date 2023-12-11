@@ -1,6 +1,5 @@
 "use client";
 
-import { CustomAreaChart } from "@/components/area-chart";
 import {
   CardHome,
   CardHomeHeader,
@@ -17,6 +16,8 @@ import Wave from "react-wavify";
 import { useState, useEffect } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
 
 type ElectricityDataProps = {
   time: string;
@@ -60,33 +61,48 @@ export default function Home() {
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
 
+  const cookies = useCookies();
+  const user: User = JSON.parse(cookies.get("currentUser") ?? "");
+
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/electricity`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
         },
       );
       setData(await temp.json());
       const costs = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/costs`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/costs`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
         },
       );
       setCostData(await costs.json());
       const waterCosts = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/water`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/water`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
         },
       );
       setWaterData(await waterCosts.json());
       const environmentData = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/environment`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/environment`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
         },
       );
       setEnvironmentData(await environmentData.json());
@@ -97,7 +113,7 @@ export default function Home() {
       fetchData().catch(console.error);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user.token]);
 
   const [displayText, setDisplayText] = useState("gCO₂eq/kWh");
   const selfSufficiency =
@@ -183,8 +199,8 @@ export default function Home() {
                   fill="#60A5FA"
                   options={{
                     height: 80,
-                    amplitude: 5,
-                    speed: 0.25,
+                    amplitude: 8,
+                    speed: 0.35,
                     points: 4,
                   }}
                 />
@@ -220,7 +236,7 @@ export default function Home() {
                     ></MaterialSymbol>
                     <CardHeader>Aspirador</CardHeader>
                   </div>
-                  <Button className="bg-orange-300 pl-2 pr-2">
+                  <Button className="bg-orange-300 px-2">
                     <MaterialSymbol
                       icon="close"
                       size={24}
@@ -237,7 +253,7 @@ export default function Home() {
                     ></MaterialSymbol>
                     <CardHeader>Tesla Charger</CardHeader>
                   </div>
-                  <Button className="bg-orange-300 pl-2 pr-2">
+                  <Button className="bg-orange-300 px-2">
                     <MaterialSymbol
                       icon="close"
                       size={24}
