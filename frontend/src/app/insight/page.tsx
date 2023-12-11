@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
@@ -74,8 +73,17 @@ export default function Home() {
       setHouses(await temp.json());
     }
 
+    cookies.remove("house");
     fetchData().catch(console.error);
   }, []);
+
+  const goToHouse = useCallback(
+    (id: number) => {
+      cookies.set("house", id.toString());
+      router.push("/home");
+    },
+    [cookies, router],
+  );
 
   const logout = useCallback(() => {
     cookies.remove("currentUser");
@@ -83,7 +91,7 @@ export default function Home() {
   }, [cookies, router]);
 
   return (
-    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
+    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2 ">
       <div className="grid h-full content-center rounded-b-card bg-background lg:rounded-none lg:rounded-tr-card">
         <div className="row-auto grid content-center space-y-4 p-8 md:space-y-8 md:p-24">
           <p className="text-4xl font-extrabold md:text-5xl">
@@ -124,11 +132,9 @@ export default function Home() {
                 <p>{house.location}</p>
               </div>
             </div>
-            <Link href="/home">
-              <Button className="p-2">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
-              </Button>
-            </Link>
+            <Button className="p-2" onClick={() => goToHouse(house.houseId)}>
+              <MaterialSymbol icon="arrow_right_alt" size={24} />
+            </Button>
           </div>
         ))}
         {(houses.length === 0 || !houses) && (
