@@ -35,7 +35,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/house/0/electricity`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/electricity`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
         },
@@ -313,21 +313,21 @@ export default function Home() {
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
                   Grid 3.4(€):{" "}
                   {data.length !== 0
-                    ? data[data.length - 1].grid_renewable/100
+                    ? data[data.length - 1].grid_renewable / 100
                     : "0"}{" "}
                   €
                 </p>
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
                   House 0(€):
                   {data.length !== 0
-                    ? data[data.length - 1].house_self_sufficiency/100
+                    ? data[data.length - 1].house_self_sufficiency / 100
                     : "0"}{" "}
                   €
                 </p>
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
                   Total (€):
                   {data.length !== 0
-                    ? data[data.length - 1].house_grid_exchange/100
+                    ? data[data.length - 1].house_grid_exchange / 100
                     : "0"}{" "}
                   €
                 </p>
