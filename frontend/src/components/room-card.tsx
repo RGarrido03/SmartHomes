@@ -6,12 +6,30 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MaterialSymbol } from "react-material-symbols";
+import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Room } from "@/app/home/devices/page";
 import { cn } from "@/lib/utils";
 
 type RoomCardProps = {
   room: Room;
+
+type DeviceIcon = {
+  [key in Room["devices"][number]["type"]]: MaterialSymbolProps["icon"];
+};
+
+const icons: DeviceIcon = {
+  AC: "mode_fan",
+  CARCARGER: "directions_car",
+  DESUMIDIFIER: "humidity_mid",
+  GRIDMETER: "electric_meter",
+  LIGHT: "lightbulb",
+  OVEN: "oven",
+  PLUG: "outlet",
+  SMARTASSISTANT: "nest_audio",
+  SOLARPV: "solar_power",
+  TV: "tv_with_assistant",
+  VACUUM: "vacuum",
+  WINDTURBINE: "wind_power",
 };
 
 export function RoomCard({ room }: RoomCardProps) {
@@ -34,9 +52,9 @@ export function RoomCard({ room }: RoomCardProps) {
             key={device.id}
             className="h-fit flex-col gap-1"
           >
-            <MaterialSymbol icon="mode_fan" size={24} />
-            <p className="font-bold text-foreground">AC</p>
-            <p className="text-secondary-foreground">420 W</p>
+            <MaterialSymbol icon={icons[device.type]} size={24} />
+            <p className="font-bold text-foreground">{device.name}</p>
+            <p className="text-secondary-foreground">{device.power} W</p>
           </Button>
         ))}
       </CardContent>
