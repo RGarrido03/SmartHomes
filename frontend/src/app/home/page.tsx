@@ -368,7 +368,7 @@ export default function Home() {
         <Link href={"/home"}>
           <Card className="overflow-hidden">
             <CardHeader>
-              <CardTitle>Money withdraw by second</CardTitle>
+              <CardTitle>Costs summary</CardTitle>
               <CardDescription>In Euros (€)</CardDescription>
             </CardHeader>
             <CardContent>
