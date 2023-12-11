@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 type SummaryProps = {
   name: string;
@@ -17,6 +23,13 @@ type HousesProps = {
 }[];
 
 export default function Home() {
+  const router = useRouter();
+  const cookies = useCookies();
+  const user: User =
+    cookies.get("currentUser") === undefined
+      ? null
+      : JSON.parse(cookies.get("currentUser") ?? "");
+
   const summary: SummaryProps = [
     {
       name: "Electricity",
@@ -52,12 +65,17 @@ export default function Home() {
     },
   ];
 
+  const logout = useCallback(() => {
+    cookies.remove("currentUser");
+    router.push("/login");
+  }, [cookies, router]);
+
   return (
     <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
       <div className="grid h-full content-center rounded-b-card bg-background lg:rounded-none lg:rounded-tr-card">
         <div className="row-auto grid content-center space-y-4 p-8 md:space-y-8 md:p-24">
           <p className="text-4xl font-extrabold md:text-5xl">
-            Welcome back, John!
+            Welcome back, {user == null ? "" : user.name.split(" ")[0]}!
           </p>
           <p className="text-lg font-medium text-secondary-foreground">
             Here&apos;s your summary.
@@ -109,6 +127,14 @@ export default function Home() {
               Register
             </Button>
           </Link>
+          <Button
+            variant={"secondary"}
+            onClick={logout}
+            className="flex gap-2 font-bold"
+          >
+            <MaterialSymbol icon="logout" size={24} />
+            Logout
+          </Button>
         </div>
       </div>
     </div>
