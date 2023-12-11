@@ -37,15 +37,32 @@ export default function Electricity() {
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
 
   useEffect(() => {
+    let isConnected = false;
     const ws = new SockJS(
-      "http://${process.env.NEXT_PUBLIC_HOST_URL}/service/ws",
+      `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/ws`,
     );
     const client = Stomp.over(ws);
 
-    client.subscribe("/houses/1/electricity", function (data) {
-      console.log("New notification: ", JSON.parse(data.body));
-      setData(JSON.parse(data.body));
-    });
+    if (isConnected) {
+      client.subscribe("/houses/1/electricity", function (data) {
+        console.log("New notification: ", JSON.parse(data.body));
+        setData(JSON.parse(data.body));
+      });
+    } else {
+      client.connect(
+        {},
+        () => {
+          isConnected = true;
+          client.subscribe("/houses/1/electricity", function (data) {
+            console.log("New notification: ", JSON.parse(data.body));
+            setData(JSON.parse(data.body));
+          });
+        },
+        () => {
+          console.error("Sorry, I cannot connect to the server right now.");
+        },
+      );
+    }
 
     // async function fetchData() {
     //   const temp = await fetch(
