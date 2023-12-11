@@ -42,30 +42,29 @@ export default function Electricity() {
     );
     const client = Stomp.over(ws);
 
-    client.connect({}, function () {
-      client.subscribe("/houses/1/electricity", function (data) {
-        console.log("New notification: ", JSON.parse(data.body));
-      });
+    client.subscribe("/houses/1/electricity", function (data) {
+      console.log("New notification: ", JSON.parse(data.body));
+      setData(JSON.parse(data.body));
     });
 
-    async function fetchData() {
-      const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: "Bearer " + user.token,
-          },
-        },
-      );
-      setData(await temp.json());
-    }
+    // async function fetchData() {
+    //   const temp = await fetch(
+    //     `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
+    //     {
+    //       next: { revalidate: 60 }, // Revalidate every 60 seconds
+    //       headers: {
+    //         Authorization: "Bearer " + user.token,
+    //       },
+    //     },
+    //   );
+    //   setData(await temp.json());
+    // }
 
-    fetchData().catch(console.error);
-    const interval = setInterval(() => {
-      fetchData().catch(console.error);
-    }, 5000);
-    return () => clearInterval(interval);
+    // fetchData().catch(console.error);
+    // const interval = setInterval(() => {
+    //   fetchData().catch(console.error);
+    // }, 5000);
+    // return () => clearInterval(interval);
   }, [user.token]);
 
   return (
