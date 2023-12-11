@@ -56,7 +56,7 @@ type EnvironmentData = {
 
 export default function Home() {
   const [data, setData] = useState<ElectricityDataProps>([]);
-  const [costData, setCostData] = useState<CostDataProps>([]);
+  const [costData, setCostData] = useState<CostDataProps>();
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
 
@@ -376,19 +376,19 @@ export default function Home() {
                 <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
                   Electricity cost:{" "}
                   <span className="font-bold">
-                    {costData.electricity.toFixed(2) || " 0"} €
+                    {costData?.electricity.toFixed(2) || " 0"} €
                   </span>
                 </p>
                 <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
                   Water cost:{" "}
                   <span className="font-bold">
-                    {costData.water.toFixed(2) || " 0"} €
+                    {costData?.water.toFixed(2) || " 0"} €
                   </span>
                 </p>
                 <p className="inline-block fill-primary pl-2 text-xl font-normal dark:fill-sky-600">
                   Total cost today:{" "}
                   <span className="font-bold">
-                    {costData.today.toFixed(2) || " 0"} €
+                    {costData?.today.toFixed(2) || " 0"} €
                   </span>
                 </p>
               </div>
