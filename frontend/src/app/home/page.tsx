@@ -373,17 +373,23 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="grid space-y-3 pb-6 pt-4">
-                <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
+                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
                   Electricity cost:
-                  {costData[costData.length - 1]?.electricity || "0"} €
+                  <span className="font-bold">
+                    {costData[costData.length - 1]?.electricity || " 0"} €
+                  </span>
                 </p>
-                <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
+                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
                   Water cost:
-                  {costData[costData.length - 1]?.water || "0"} €
+                  <span className="font-bold">
+                    {costData[costData.length - 1]?.water || " 0"} €
+                  </span>
                 </p>
-                <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
-                  Total cost:
-                  {costData[costData.length - 1]?.today || "0"} €
+                <p className="pl-2 inline-block fill-primary text-xl font-normal dark:fill-sky-600">
+                  Total cost today:
+                  <span className="font-bold">
+                    {costData[costData.length - 1]?.today || " 0"} €
+                  </span>
                 </p>
               </div>
             </CardContent>
