@@ -29,8 +29,36 @@ type ElectricityDataProps = {
   house_renewable: number;
 }[];
 
+type CostDataProps = {
+  electricity: number;
+  water: number;
+  today: number;
+}[];
+
+type WaterValues = {
+  time: string;
+  kitchen: number;
+  bath: number;
+  garden: number;
+  other: number;
+  total: number;
+  forecast_today: number;
+}[];
+
+type EnvironmentData = {
+  time: string;
+  self_suficiency: number;
+  renewable: number;
+  emissions: number;
+  renewable_forecast_day: [];
+  renewable_forecast_hour: [];
+}[];
+
 export default function Home() {
   const [data, setData] = useState<ElectricityDataProps>([]);
+  const [costData, costSetData] = useState<CostDataProps>([]);
+  const [waterData, waterSetData] = useState<WaterValues>([]);
+  const [environmentData, environmentSetData] = useState<EnvironmentData>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -41,6 +69,27 @@ export default function Home() {
         },
       );
       setData(await temp.json());
+      const costs = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/costs`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+        },
+      );
+      costSetData(await costs.json());
+      const waterCosts = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/water`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+        },
+      );
+      waterSetData(await waterCosts.json());
+      const environmentData = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/service/houses/1/environment`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+        },
+      );
+      environmentSetData(await environmentData.json());
     }
 
     fetchData().catch(console.error);
@@ -50,15 +99,17 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const [displayText, setDisplayText] = useState("0 gCO₂eq/kWh");
+  const [displayText, setDisplayText] = useState("gCO₂eq/kWh");
+  const selfSufficiency =
+    data.length !== 0 ? data[data.length - 1].house_self_sufficiency : 0;
 
   useEffect(() => {
     const handleResize = () => {
       const windowWidth = window.innerWidth;
       if (windowWidth < 700) {
-        setDisplayText("0");
+        setDisplayText("");
       } else {
-        setDisplayText("0 gCO₂eq/kWh");
+        setDisplayText("gCO₂eq/kWh");
       }
     };
 
@@ -77,10 +128,21 @@ export default function Home() {
         <div>
           <CardHomeHeader>
             <CardTitle className="flex">
-              <p>
+              {selfSufficiency === 100 ? (
+                <p>
+                  Your house is currently{" "}
+                  <span className="text-green-700">carbon neutral.</span>
+                </p>
+              ) : (
+                <p>
+                  Your house is currently{" "}
+                  <span className="text-red-400">not carbon neutral.</span>
+                </p>
+              )}
+              {/* <p>
                 Your house is currently{" "}
                 <span className="text-green-700">carbon neutral.</span>
-              </p>
+              </p> */}
             </CardTitle>
           </CardHomeHeader>
           <CardContent>
@@ -94,6 +156,9 @@ export default function Home() {
             href="/insight"
             className="rounded-lg bg-accent px-5 py-3 text-base font-bold"
           >
+            {environmentData.length !== 0
+              ? environmentData[environmentData.length - 1].emissions
+              : "0"}{" "}
             {displayText}
           </Link>
         </div>
@@ -109,12 +174,10 @@ export default function Home() {
             <CardContent noPadding>
               <div className="grid">
                 <p className="absolute inline-block justify-self-center fill-primary pt-5 text-3xl font-bold text-blue-400">
-                  {data.length !== 0
-                    ? (
-                        data[data.length - 1].house_self_sufficiency / 2.1
-                      ).toFixed(1)
+                  {waterData.length !== 0
+                    ? waterData[waterData.length - 1].total.toFixed(1)
                     : "0"}{" "}
-                  L{/* não há data para água */}
+                  L
                 </p>
                 <Wave
                   fill="#7dd3fc"
@@ -195,7 +258,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/electricity"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Power flow</CardTitle>
@@ -309,27 +372,18 @@ export default function Home() {
               <CardDescription>In Euros (€)</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid space-y-3 pb-10">
+              <div className="grid space-y-3 pb-6 pt-4">
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
-                  Grid 3.4(€):{" "}
-                  {data.length !== 0
-                    ? data[data.length - 1].grid_renewable / 100
-                    : "0"}{" "}
-                  €
+                  Electricity cost:
+                  {costData[costData.length - 1]?.electricity || "0"} €
                 </p>
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
-                  House 0(€):
-                  {data.length !== 0
-                    ? data[data.length - 1].house_self_sufficiency / 100
-                    : "0"}{" "}
-                  €
+                  Water cost:
+                  {costData[costData.length - 1]?.water || "0"} €
                 </p>
                 <p className="inline-block justify-self-center fill-primary text-xl font-bold dark:fill-sky-600">
-                  Total (€):
-                  {data.length !== 0
-                    ? data[data.length - 1].house_grid_exchange / 100
-                    : "0"}{" "}
-                  €
+                  Total cost:
+                  {costData[costData.length - 1]?.today || "0"} €
                 </p>
               </div>
             </CardContent>
