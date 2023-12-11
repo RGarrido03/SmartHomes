@@ -7,6 +7,15 @@ import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { NewHouseForm } from "./form";
 
 type SummaryProps = {
   name: string;
@@ -122,12 +131,24 @@ export default function Home() {
         ))}
 
         <div className="flex items-center justify-center gap-4">
-          <Link href="/home">
-            <Button className="flex gap-2 font-bold">
-              <MaterialSymbol icon="add" size={24} />
-              Register
-            </Button>
-          </Link>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="flex gap-2 font-bold">
+                <MaterialSymbol icon="add" size={24} />
+                Add house
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Create a new house</DialogTitle>
+                <DialogDescription>
+                  Input your house&apos;s data. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <NewHouseForm />
+            </DialogContent>
+          </Dialog>
           <Button
             variant={"secondary"}
             onClick={logout}
