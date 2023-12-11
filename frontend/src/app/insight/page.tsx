@@ -61,11 +61,13 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${user != null ? user.id : 0}/houses`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${
+          user != null ? user.id : 0
+        }/houses`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
           headers: {
-            Authorization: "Bearer " + user != null ? user.token : "",
+            Authorization: user != null ? "Bearer " + user.token : "",
           },
         },
       );
@@ -73,7 +75,7 @@ export default function Home() {
     }
 
     fetchData().catch(console.error);
-  }, [user]);
+  }, []);
 
   const logout = useCallback(() => {
     cookies.remove("currentUser");
@@ -129,6 +131,15 @@ export default function Home() {
             </Link>
           </div>
         ))}
+        {(houses.length === 0 || !houses) && (
+          <div className="text-center">
+            <MaterialSymbol icon="error" size={48} />
+            <p className="text-lg font-bold">
+              Oops! It looks like you don&apos;t have any house yet.
+            </p>
+            <p>Start by creating one.</p>
+          </div>
+        )}
 
         <div className="flex items-center justify-center gap-4">
           <Dialog>
