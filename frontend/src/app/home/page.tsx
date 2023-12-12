@@ -85,11 +85,11 @@ export default function Home() {
         });
         // water
         client.subscribe("/houses/1/water", function (new_data) {
-          setWaterData((old) => [...old, JSON.parse(new_data.body)])
+          setWaterData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // environment
         client.subscribe("/houses/1/environment", function (new_data) {
-          setEnvironmentData((old) => [...old, JSON.parse(new_data.body)])
+          setEnvironmentData((old) => [...old, JSON.parse(new_data.body)]);
         });
       },
       () => {
@@ -167,10 +167,18 @@ export default function Home() {
       if (windowWidth < 700) {
         setDisplayText("");
       } else {
-        setDisplayText("gCO₂eq/kWh");{environmentData.length !== 0
-          ? environmentData[environmentData.length - 1].emissions
-          : "0"}{" "}
-        {displayText}
+        setDisplayText("gCO₂eq/kWh");
+        {
+          environmentData.length !== 0
+            ? environmentData[environmentData.length - 1].emissions
+            : "0";
+        }
+        {
+          (" ");
+        }
+        {
+          displayText;
+        }
       }
     };
 
