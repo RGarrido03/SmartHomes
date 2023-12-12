@@ -19,7 +19,7 @@ type CostsProps = {
     electricity : number,
     water : number,
     today : number,
-};
+}[];
 
 export default function Costs() {
     const [data, setData] = useState<CostsProps>([]);
@@ -57,7 +57,7 @@ export default function Costs() {
                     <div className="flex flex-row gap-10">
                         <div>
                             <p>Today</p>
-                            <p className="text-3xl font-semibold">{data.today} €</p>
+                            <p className="text-3xl font-semibold">{data.length !== 0 ? data[length-1].today : 0} €</p>
                         </div>
                         <div>
                             <p>Yesterday</p>
@@ -79,12 +79,12 @@ export default function Costs() {
                         <div>
                             <MaterialSymbol icon="water_drop" size={35} className="text-blue-300"></MaterialSymbol>
                             <p>Water</p>
-                            <p className="text-3xl text-blue-400"> {data.water} €</p>
+                            <p className="text-3xl text-blue-400"> {data.length !== 0 ? data[length-1].water : 0} €</p>
                         </div>
                         <div>
                             <MaterialSymbol icon="bolt" size={35} className="text-amber-300"></MaterialSymbol>
                             <p>Electricity</p>
-                            <p className="text-3xl text-amber-300">{data.electricity} €</p>
+                            <p className="text-3xl text-amber-300">{data.length !== 0 ? data[length-1].electricity : 0} €</p>
                         </div>
                     </div>
                 </CardContent>
@@ -141,11 +141,11 @@ export default function Costs() {
                     <div className="flex flex-row gap-10">
                         <div className="font-semibold">
                             <p>November</p>
-                            <p className="text-3xl">4654,5 €</p>
+                            <p className="text-3xl">{data.length !== 0 ? data[length-1].today : 0} €</p>
                         </div>
                         <div>
                             <p>Outubro</p>
-                            <p className="text-3xl">3600,63 €</p>
+                            <p className="text-3xl">{data.length !== 0 ? data[length-1].water : 0} €</p>
                         </div>
                     </div>
                     <div>
