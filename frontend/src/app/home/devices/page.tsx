@@ -7,7 +7,15 @@ import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { NewDeviceForm } from "./form";
 
 type Device = {
   id: number;
@@ -120,14 +128,27 @@ export default function Devices() {
             Oops! It looks like you don&apos;t have any device yet.
           </p>
           <p>Start by creating one.</p>
-          <Link href="/home/settings/devices" className="mt-4 self-center">
-            <Button className="flex gap-2 font-bold">
-              <MaterialSymbol icon="north_east" size={24} />
-              Add device
-            </Button>
-          </Link>
         </div>
       )}
+      <div className="flex justify-center">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="mt-4 flex gap-2 font-bold">
+              <MaterialSymbol icon="add" size={24} />
+              Add device
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create a new device</DialogTitle>
+              <DialogDescription>
+                Input your device&apos;s data. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <NewDeviceForm />
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
   );
 }
