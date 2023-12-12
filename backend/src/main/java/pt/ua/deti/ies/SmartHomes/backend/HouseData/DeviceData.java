@@ -7,11 +7,16 @@ import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceType;
 
 @AllArgsConstructor
 @Getter
-class DeviceData {
+public class DeviceData {
     private long id;
     private DeviceType type;
     private String name;
     private String houseArea;
     private boolean on;
     private long power;
+
+    public DeviceData(long id, long power) {
+        this.id = id;
+        this.power = power;
+    }
 }

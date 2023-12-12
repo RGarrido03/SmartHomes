@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
-class ElectricityData {
+public class ElectricityData {
     private Instant time;
     private long grid_renewable;
     private long house_solar;

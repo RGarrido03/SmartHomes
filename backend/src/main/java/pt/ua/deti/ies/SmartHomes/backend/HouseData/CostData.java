@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
-class CostData {
+public class CostData {
     private double electricity;
     private double water;
     private double today;
