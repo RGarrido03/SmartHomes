@@ -68,14 +68,14 @@ export default function Water() {
                   className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
                 <MaterialSymbol icon="soap" size={24}/>
                 <p className="text-xs text-secondary-foreground">
-                  {data.soap_l}
+                  {data.length !== 0 ? data[data.length-1].bath: 0}
                 </p>
               </div>
               <div
                   className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
                 <MaterialSymbol icon="oven_gen" size={24}/>
                 <p className="text-xs text-secondary-foreground">
-                  {data.oven_l}
+                  {data.length !== 0 ? data[data.length-1].kitchen: 0}
                 </p>
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function Water() {
                 className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full bg-primary p-2">
               <MaterialSymbol icon="home" size={24} fill/>
               <p className="text-xs text-secondary-foreground">
-                {data.total_water}
+                {data.length !== 0 ? data[data.length-1].total: 0}
               </p>
             </div>
 
@@ -147,14 +147,14 @@ export default function Water() {
                   className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
                 <MaterialSymbol icon="hot_tub" size={24}/>
                 <p className="text-xs text-secondary-foreground">
-                  {data.hotTub_l}
+                  {data.length !== 0 ? data[data.length-1].bath: 0}
                 </p>
               </div>
               <div
                   className="flex aspect-square w-16 flex-col items-center justify-center gap-1 rounded-full border-2 border-secondary p-2">
                 <MaterialSymbol icon="deceased" size={24}/>
                 <p className="text-xs text-secondary-foreground">
-                  {data.deceased_l}
+                  {data.length !== 0 ? data[data.length-1].garden: 0}
                 </p>
               </div>
             </div>
@@ -164,23 +164,23 @@ export default function Water() {
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>
-              {data.total_water} L
+              {data.length !== 0 ? data[data.length-1].total: 0} L
             </CardTitle>
             <CardDescription>Water consumption until now</CardDescription>
           </CardHeader>
-          <CardContent className="text-center">
+          <CardContent className="text-center" noPadding>
             <div className=" text-2xl">
               <br/>
-              <p className="font-semibold">205 L</p>
+              <p className="font-semibold"> {data.length !== 0 ? data[data.length-1].bath: 0} L</p>
               <p>Forecast for today</p>
               <br/>
-              <p className="font-semibold">205 L</p>
-              <p>Forecast for today</p>
+              <p className="font-semibold">{data.length !== 0 ? data[data.length-1].other: 0} L</p>
+              <p>Yesterday</p>
             </div>
 
             <CustomAreaChart
                 data={data}
-                dataKey="total_water"
+                dataKey="total"
                 className="fill-sky-300 dark:fill-sky-600"
                 unitOfMeasurement="L"
             />
@@ -194,19 +194,19 @@ export default function Water() {
             </CardTitle>
             <CardDescription>comparing to last week</CardDescription>
           </CardHeader>
-          <CardContent className="text-center">
+          <CardContent className="text-center" noPadding>
             <div className=" text-2xl">
               <br/>
-              <p className="font-semibold">205 L</p>
+              <p className="font-semibold">{data.length !== 0 ? data[data.length-1].forecast_today: 0} L</p>
               <p>Last week</p>
               <br/>
-              <p className="font-semibold">205 L</p>
+              <p className="font-semibold">{data.length !== 0 ? data[data.length-1].total: 0} L</p>
               <p>This week</p>
             </div>
 
             <CustomAreaChart
                 data={data}
-                dataKey="total_water"
+                dataKey="total"
                 className="fill-sky-300 dark:fill-sky-600"
                 unitOfMeasurement="L"
             />
