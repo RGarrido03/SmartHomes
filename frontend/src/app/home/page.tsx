@@ -208,10 +208,6 @@ export default function Home() {
                   <span className="text-red-400">not carbon neutral.</span>
                 </p>
               )}
-              {/* <p>
-                Your house is currently{" "}
-                <span className="text-green-700">carbon neutral.</span>
-              </p> */}
             </CardTitle>
           </CardHomeHeader>
           <CardContent>
