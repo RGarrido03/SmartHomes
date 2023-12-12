@@ -9,21 +9,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {useCookies} from "next-client-cookies";
+import {User} from "@/app/login/user";
 
-type ElectricityDataProps = {
+type EnvironmentDataProps = {
   time: string;
-  grid_renewable: number;
-  house_solar: number;
-  house_wind: number;
-  house_grid_exchange: number;
-  house_total: number;
-  house_self_sufficiency: number;
-  house_renewable: number;
+  self_sufficiency: number;
+  renewable: number;
+  emissions: number;
+  renewable_forecast_day: [];
+  renewable_forecast_hour: [];
 }[];
 
 export default function Environment() {
-  const [data] = useState<ElectricityDataProps>([]);
+  const cookies = useCookies();
+  const user: User = JSON.parse(cookies.get("currentUser") ?? "");
+  const [data,setData] = useState<EnvironmentDataProps>([]);
+
+  // Fetch data from API
+  useEffect(() => {
+    async function fetchData() {
+      const temp = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/environment`,
+          {
+            next: {revalidate: 60}, // Revalidate every 60 seconds
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
+          },
+      );
+      setData(await temp.json());
+    }
+
+    fetchData().catch(console.error);
+    const interval = setInterval(() => {
+      fetchData().catch(console.error);
+    }, 5000);
+    return () => clearInterval(interval);
+  });
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -32,7 +56,7 @@ export default function Environment() {
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>
-            {data.length !== 0 ? data[data.length - 1].house_solar : "0"}%
+            {data.length !== 0 ? data[data.length - 1].renewable : "0"}%
             renewable energy
           </CardTitle>
           <CardDescription>in the past 12 hours</CardDescription>
@@ -40,7 +64,7 @@ export default function Environment() {
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="house_solar"
+            dataKey="renewable"
             className="fill-yellow-300 dark:fill-yellow-600"
             unitOfMeasurement="%"
           />
@@ -50,7 +74,7 @@ export default function Environment() {
       <Card className="overflow-hidden">
         <CardHeader icon="bolt">
           <CardTitle>
-            {data.length !== 0 ? data[data.length - 1].house_wind : "0"}% energy
+            {data.length !== 0 ? data[data.length - 1].self_sufficiency : "0"}% energy
             used
           </CardTitle>
           <CardDescription>from self production</CardDescription>
@@ -58,7 +82,7 @@ export default function Environment() {
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="house_wind"
+            dataKey="self_sufficiency"
             className="fill-sky-300 dark:fill-sky-600"
             unitOfMeasurement="%"
           />
@@ -69,7 +93,7 @@ export default function Environment() {
         <CardHeader>
           <CardTitle>
             {data.length !== 0
-              ? data[data.length - 1].house_grid_exchange
+              ? data[data.length - 1].emissions
               : "0"}{" "}
             gCO₂eq/hour
           </CardTitle>
@@ -78,7 +102,7 @@ export default function Environment() {
         <CardContent noPadding>
           <CustomAreaChart
             data={data}
-            dataKey="house_grid_exchange"
+            dataKey="emissions"
             className="fill-emerald-300 dark:fill-emerald-600"
             unitOfMeasurement="%"
           />
@@ -94,15 +118,15 @@ export default function Environment() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Today</p>
-              <p>85%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(0) : "0"}%</p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Tomorrow</p>
-              <p>90%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(1) : "0"}%</p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Wednesday</p>
-              <p>78%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(2) : "0"}%</p>
             </div>
           </div>
         </CardContent>
@@ -117,15 +141,15 @@ export default function Environment() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-row justify-between">
               <p className="font-semibold">9:00</p>
-              <p>70%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(0) : "0"}%</p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">10:00</p>
-              <p>92%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(1): "0"}%</p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">11:00</p>
-              <p>85%</p>
+              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(2) : "0"}%</p>
             </div>
           </div>
         </CardContent>
