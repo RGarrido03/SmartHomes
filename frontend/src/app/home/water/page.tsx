@@ -15,12 +15,14 @@ import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 
 type WaterDataProps = {
-  oven_l: number;
-  hotTub_l: number;
-  total_water: number;
-  deceased_l: number;
-  soap_l: number;
-};
+  time: string;
+  kitchen: number;
+  bath: number;
+  garden: number;
+  other: number;
+  total: number;
+  forecast_today: number;
+}[];
 
 export default function Electricity() {
   const [data, setData] = useState<WaterDataProps>([]);
