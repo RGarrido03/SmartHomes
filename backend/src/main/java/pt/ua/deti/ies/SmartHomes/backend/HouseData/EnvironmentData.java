@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-class EnvironmentData {
+public class EnvironmentData {
     private Instant time;
     private long self_sufficiency;
     private long renewable;

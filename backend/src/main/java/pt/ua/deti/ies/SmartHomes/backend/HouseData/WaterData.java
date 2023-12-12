@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
-class WaterData {
+public class WaterData {
     private Instant time;
     private long kitchen;
     private long bath;
