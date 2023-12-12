@@ -1,12 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { NewHouseForm } from "./form";
 
 type SummaryProps = {
   name: string;
@@ -17,7 +25,7 @@ type SummaryProps = {
 }[];
 
 type HousesProps = {
-  id: number;
+  houseId: number;
   name: string;
   location: string;
 }[];
@@ -47,23 +55,35 @@ export default function Home() {
     },
   ];
 
-  const houses: HousesProps = [
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
+  const [houses, setHouses] = useState<HousesProps>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const temp = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${
+          user != null ? user.id : 0
+        }/houses`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: user != null ? "Bearer " + user.token : "",
+          },
+        },
+      );
+      setHouses(await temp.json());
+    }
+
+    cookies.remove("house");
+    fetchData().catch(console.error);
+  }, []);
+
+  const goToHouse = useCallback(
+    (id: number) => {
+      cookies.set("house", id.toString());
+      router.push("/home");
     },
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
-    },
-    {
-      id: 0,
-      name: "Main House",
-      location: "Azores Island",
-    },
-  ];
+    [cookies, router],
+  );
 
   const logout = useCallback(() => {
     cookies.remove("currentUser");
@@ -71,7 +91,7 @@ export default function Home() {
   }, [cookies, router]);
 
   return (
-    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2">
+    <div className="grid flex-1 grid-cols-1 lg:grid-cols-2 ">
       <div className="grid h-full content-center rounded-b-card bg-background lg:rounded-none lg:rounded-tr-card">
         <div className="row-auto grid content-center space-y-4 p-8 md:space-y-8 md:p-24">
           <p className="text-4xl font-extrabold md:text-5xl">
@@ -102,7 +122,7 @@ export default function Home() {
       <div className="flex flex-col space-y-4 p-4 lg:space-y-8 lg:p-12">
         {houses.map((house) => (
           <div
-            key={house.id}
+            key={house.houseId}
             className="flex items-center justify-between rounded-card bg-background p-4"
           >
             <div>
@@ -112,21 +132,40 @@ export default function Home() {
                 <p>{house.location}</p>
               </div>
             </div>
-            <Link href="/home">
-              <Button className="p-2">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
-              </Button>
-            </Link>
+            <Button className="p-2" onClick={() => goToHouse(house.houseId)}>
+              <MaterialSymbol icon="arrow_right_alt" size={24} />
+            </Button>
           </div>
         ))}
+        {(houses.length === 0 || !houses) && (
+          <div className="text-center">
+            <MaterialSymbol icon="error" size={48} />
+            <p className="text-lg font-bold">
+              Oops! It looks like you don&apos;t have any house yet.
+            </p>
+            <p>Start by creating one.</p>
+          </div>
+        )}
 
         <div className="flex items-center justify-center gap-4">
-          <Link href="/home">
-            <Button className="flex gap-2 font-bold">
-              <MaterialSymbol icon="add" size={24} />
-              Register
-            </Button>
-          </Link>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="flex gap-2 font-bold">
+                <MaterialSymbol icon="add" size={24} />
+                Add house
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Create a new house</DialogTitle>
+                <DialogDescription>
+                  Input your house&apos;s data. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <NewHouseForm />
+            </DialogContent>
+          </Dialog>
           <Button
             variant={"secondary"}
             onClick={logout}

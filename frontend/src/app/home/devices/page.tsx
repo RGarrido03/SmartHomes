@@ -5,6 +5,17 @@ import { useCallback, useEffect, useState } from "react";
 import { RoomCard } from "@/components/room-card";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
+import { MaterialSymbol } from "react-material-symbols";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { NewDeviceForm } from "./form";
 
 type Device = {
   id: number;
@@ -42,7 +53,9 @@ export default function Devices() {
   useEffect(() => {
     async function fetchData() {
       const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/devices`,
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/devices`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
           headers: {
@@ -58,7 +71,7 @@ export default function Devices() {
       fetchData().catch(console.error);
     }, 5000);
     return () => clearInterval(interval);
-  }, [user.token]);
+  }, [user.token, cookies]);
 
   // A useCallback is used to keep function after re-render.
   const organizeDataByRoom = useCallback(() => {
@@ -100,12 +113,42 @@ export default function Devices() {
   }, [data, organizeDataByRoom]);
 
   return (
-    <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <TitleCard text="Control your devices to improve your house's energy efficiency." />
+    <>
+      <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TitleCard text="Control your devices to improve your house's energy efficiency." />
 
-      {dataByRoom.map((room) => (
-        <RoomCard key={room.name} room={room} />
-      ))}
-    </div>
+        {dataByRoom.map((room) => (
+          <RoomCard key={room.name} room={room} token={user.token} />
+        ))}
+      </div>
+      {(dataByRoom === null || dataByRoom.length === 0) && (
+        <div className="mt-8 flex flex-1 flex-col justify-center text-center">
+          <MaterialSymbol icon="error" size={48} className="text-center" />
+          <p className="text-center text-lg font-bold">
+            Oops! It looks like you don&apos;t have any device yet.
+          </p>
+          <p>Start by creating one.</p>
+        </div>
+      )}
+      <div className="flex justify-center">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="mt-4 flex gap-2 font-bold">
+              <MaterialSymbol icon="add" size={24} />
+              Add device
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create a new device</DialogTitle>
+              <DialogDescription>
+                Input your device&apos;s data. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <NewDeviceForm />
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
   );
 }
