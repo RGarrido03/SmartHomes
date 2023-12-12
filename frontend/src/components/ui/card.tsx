@@ -95,12 +95,14 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex justify-between space-x-1 items-center bg-secondary p-4 pt-3", className)}
+    className={cn(
+      "flex items-center justify-between space-x-1 bg-secondary p-4 pt-3",
+      className,
+    )}
     {...props}
   />
 ));
 CardFooter.displayName = "CardFooter";
-
 
 const CardHome = React.forwardRef<
   HTMLDivElement,
@@ -115,7 +117,7 @@ const CardHome = React.forwardRef<
     {...props}
   />
 ));
-Card.displayName = "Card";
+CardHome.displayName = "CardHome";
 
 const CardHomeHeader = React.forwardRef<
   HTMLDivElement,
@@ -130,7 +132,7 @@ const CardHomeHeader = React.forwardRef<
     {icon && <CardIcon icon={icon} />}
   </div>
 ));
-CardHeader.displayName = "CardHeader";
+CardHomeHeader.displayName = "CardHomeHeader";
 
 const DevicesCard = React.forwardRef<
   HTMLDivElement,
@@ -139,13 +141,13 @@ const DevicesCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex justify-between font-bold rounded-card bg-secondary text-card-foreground self-end items-center pr-3",
+      "flex items-center justify-between self-end rounded-card bg-secondary pr-3 font-bold text-card-foreground",
       className,
     )}
     {...props}
   />
 ));
-Card.displayName = "Card";
+DevicesCard.displayName = "DevicesCard";
 
 export {
   Card,
@@ -156,5 +158,5 @@ export {
   CardContent,
   CardHome,
   CardHomeHeader,
-  DevicesCard
+  DevicesCard,
 };
