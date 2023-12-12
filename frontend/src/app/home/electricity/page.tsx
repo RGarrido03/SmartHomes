@@ -16,7 +16,6 @@ import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 
 //websocket
-// websocket
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
@@ -53,7 +52,7 @@ export default function Electricity() {
           isConnected = true;
           client.subscribe("/houses/1/electricity", function (new_data) {
             console.log("New notification: ", JSON.parse(new_data.body));
-            setData(old=> [...old, JSON.parse(new_data.body)]);
+            setData((old) => [...old, JSON.parse(new_data.body)]);
           });
         },
         () => {
@@ -78,10 +77,6 @@ export default function Electricity() {
     }
 
     fetchData().catch(console.error);
-    const interval = setInterval(() => {
-      fetchData().catch(console.error);
-    }, 5000);
-    return () => clearInterval(interval);
   }, [user.token, cookies]);
 
   return (
