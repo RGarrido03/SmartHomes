@@ -13,7 +13,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/clients")
+@RequestMapping("api/clients")
 public class ClientController {
 
     private ClientService clientService;

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("service/devices")
+@RequestMapping("api/devices")
 public class DeviceController {
     private DeviceService deviceService;
 
