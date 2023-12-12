@@ -62,25 +62,27 @@ export default function Electricity() {
       );
     }
 
-    // async function fetchData() {
-    //   const temp = await fetch(
-    //     `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
-    //     {
-    //       next: { revalidate: 60 }, // Revalidate every 60 seconds
-    //       headers: {
-    //         Authorization: "Bearer " + user.token,
-    //       },
-    //     },
-    //   );
-    //   setData(await temp.json());
-    // }
+    async function fetchData() {
+      const temp = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/electricity`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        },
+      );
+      setData(await temp.json());
+    }
 
-    // fetchData().catch(console.error);
-    // const interval = setInterval(() => {
-    //   fetchData().catch(console.error);
-    // }, 5000);
-    // return () => clearInterval(interval);
-  }, [user.token]);
+    fetchData().catch(console.error);
+    const interval = setInterval(() => {
+      fetchData().catch(console.error);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [user.token, cookies]);
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
