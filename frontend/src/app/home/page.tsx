@@ -18,6 +18,9 @@ import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
+//websocket
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 type ElectricityDataProps = {
   time: string;
@@ -65,55 +68,94 @@ export default function Home() {
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
 
   useEffect(() => {
+    const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
+    const client = Stomp.over(ws);
+
+    client.connect(
+      {},
+      () => {
+        // electricity
+        client.subscribe("/houses/1/electricity", function (new_data) {
+          setData((old) => [...old, JSON.parse(new_data.body)]);
+        });
+        // costs
+        client.subscribe("/houses/1/costs", function (new_data) {
+          const parsedData = JSON.parse(new_data.body);
+          setCostData(parsedData);
+        });
+        // water
+        client.subscribe("/houses/1/water", function (new_data) {
+          setWaterData((old) => [...old, JSON.parse(new_data.body)])
+        });
+        // environment
+        client.subscribe("/houses/1/environment", function (new_data) {
+          setEnvironmentData((old) => [...old, JSON.parse(new_data.body)])
+        });
+      },
+      () => {
+        console.error("ERROR: WEBSOCKET NOT WORKING");
+      },
+    );
     async function fetchData() {
-      const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/electricity`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: "Bearer " + user.token,
+      try {
+        const electricityResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/electricity`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
           },
-        },
-      );
-      setData(await temp.json());
-      const costs = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/costs`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: "Bearer " + user.token,
+        );
+        const electricityData = await electricityResponse.json();
+        setData(electricityData);
+
+        const costsResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/costs`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
           },
-        },
-      );
-      setCostData(await costs.json());
-      const waterCosts = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/water`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: "Bearer " + user.token,
+        );
+        const costsData = await costsResponse.json();
+        setCostData(costsData);
+
+        const waterResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/water`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
           },
-        },
-      );
-      setWaterData(await waterCosts.json());
-      const environmentData = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/environment`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: "Bearer " + user.token,
+        );
+        const waterData = await waterResponse.json();
+        setWaterData(waterData);
+
+        const environmentResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/environment`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
           },
-        },
-      );
-      setEnvironmentData(await environmentData.json());
+        );
+        const environmentData = await environmentResponse.json();
+        setEnvironmentData(environmentData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
 
     fetchData().catch(console.error);
-    const interval = setInterval(() => {
-      fetchData().catch(console.error);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [user.token]);
+  }, [user.token, cookies]);
 
   const [displayText, setDisplayText] = useState("gCO₂eq/kWh");
   const selfSufficiency =
@@ -125,7 +167,10 @@ export default function Home() {
       if (windowWidth < 700) {
         setDisplayText("");
       } else {
-        setDisplayText("gCO₂eq/kWh");
+        setDisplayText("gCO₂eq/kWh");{environmentData.length !== 0
+          ? environmentData[environmentData.length - 1].emissions
+          : "0"}{" "}
+        {displayText}
       }
     };
 
