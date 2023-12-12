@@ -24,7 +24,7 @@ type WaterDataProps = {
   forecast_today: number;
 }[];
 
-export default function Electricity() {
+export default function Water() {
   const [data, setData] = useState<WaterDataProps>([]);
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
