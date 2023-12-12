@@ -16,6 +16,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { NewDeviceForm } from "./form";
+//websocket
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 type Device = {
   id: number;
@@ -51,6 +54,23 @@ export default function Devices() {
 
   // Fetch data from API
   useEffect(() => {
+    const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
+    const client = Stomp.over(ws);
+
+    client.connect(
+      {},
+      () => {
+        client.subscribe("/houses/1/devices", function (new_data) {
+          console.log("New notification: ", JSON.parse(new_data.body));
+          const parsedData = JSON.parse(new_data.body);
+          setData(parsedData);
+        });
+      },
+      () => {
+        console.error("Sorry, I cannot connect to the server right now.");
+      },
+    );
+
     async function fetchData() {
       const temp = await fetch(
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
@@ -67,10 +87,6 @@ export default function Devices() {
     }
 
     fetchData().catch(console.error);
-    const interval = setInterval(() => {
-      fetchData().catch(console.error);
-    }, 5000);
-    return () => clearInterval(interval);
   }, [user.token, cookies]);
 
   // A useCallback is used to keep function after re-render.
