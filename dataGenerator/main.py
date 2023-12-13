@@ -84,7 +84,11 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     else:
         length_devices = len(devices)
         for i in range(length_devices):
-            devices[i]["power"] = round(random.uniform(0, total_house / length_devices))
+            devices[i]["power"] = (
+                round(random.uniform(0, total_house / length_devices))
+                if devices[i]["turnedOn"] is True
+                else 0
+            )
 
     return {
         "id": house_id,
@@ -175,7 +179,7 @@ if __name__ == "__main__":
             queue=queue_name_info,
             on_message_callback=callback,
             exclusive=True,
-            auto_ack=True
+            auto_ack=True,
         )
         channel.start_consuming()
     except Exception as e:
