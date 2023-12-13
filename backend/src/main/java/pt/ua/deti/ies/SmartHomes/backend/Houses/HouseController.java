@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceService;
 import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 
 @RestController
@@ -11,6 +12,7 @@ import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 @RequestMapping("api/houses")
 public class HouseController {
     private HouseService houseService;
+    private DeviceService deviceService;
     private Sender sender;
 
     @GetMapping("{id}")
@@ -27,7 +29,7 @@ public class HouseController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<House> updateDevice(@PathVariable("id") long houseId, @RequestBody House house) {
+    public ResponseEntity<House> updateHouse(@PathVariable("id") long houseId, @RequestBody House house) {
         house.setHouseId(houseId);
         House updatedHouse = houseService.updateHouse(house);
         sender.sendHousesInfo();
@@ -36,6 +38,11 @@ public class HouseController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteHouse(@PathVariable("id") long houseId) {
+        House house = houseService.getHouse(houseId);
+
+        // Delete associated devices
+        house.getDevices().forEach(device -> deviceService.deleteDevice(device.getDeviceId()));
+
         houseService.deleteHouse(houseId);
         sender.sendHousesInfo();
         return new ResponseEntity<>("House successfully deleted.", HttpStatus.OK);
