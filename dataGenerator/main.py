@@ -35,16 +35,17 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
 
     # convert REM data from MW to W
     for series in data["series"]:
-        if series["name"] == "Hídrica":
-            hydroelectric_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Eólica":
-            wind_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Gás Natural":
-            gas_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Solar":
-            solar_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Biomassa":
-            biomass_grid = round((series["data"][-2])) * 1000000
+        match series["name"]:
+            case "Hídrica":
+                hydroelectric_grid = round((series["data"][-2])) * 1000000
+            case "Eólica":
+                wind_grid = round((series["data"][-2])) * 1000000
+            case "Gás Natural":
+                gas_grid = round((series["data"][-2])) * 1000000
+            case "Solar":
+                solar_grid = round((series["data"][-2])) * 1000000
+            case "Biomassa":
+                biomass_grid = round((series["data"][-2])) * 1000000
 
     total_grid = round(
         hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
