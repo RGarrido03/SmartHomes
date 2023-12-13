@@ -54,7 +54,14 @@ public class Listener {
             List<DeviceData> devicesData = new ArrayList<>();
             for (int i = 0; i < message.getDevices().size(); i++) {
                 devicesData.add(
-                        new DeviceData(message.getDevices().get(i).getDeviceId(), message.getDevices().get(i).getPower()));
+                        new DeviceData(
+                                message.getDevices().get(i).getDeviceId(),
+                                message.getDevices().get(i).getType(),
+                                message.getDevices().get(i).getName(),
+                                message.getDevices().get(i).getHouseArea(),
+                                message.getDevices().get(i).isTurnedOn(),
+                                message.getDevices().get(i).getPower()
+                        ));
             }
             this.template.convertAndSend("/houses/" + message.getId() + "/devices", devicesData);
             this.template.convertAndSend("/houses/" + message.getId() + "/costs", new CostData(

@@ -23,7 +23,7 @@ routing_key_info = "smarthomes_info_routing_key"
 requests_cache.install_cache("ren_cache", expire_after=900)
 
 
-def generate_random_data(house_id: int) -> dict[str, any]:
+def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     headers = {
         "Accept": "application/json",
     }
@@ -65,8 +65,8 @@ def generate_random_data(house_id: int) -> dict[str, any]:
     )
 
     emissions = round((1 - renewable_house / 100) * 450)
-    renewable_forecast_day = [round(random.uniform(50, 100)) for i in range(3)]
-    renewable_forecast_hour = [round(random.uniform(50, 100)) for i in range(3)]
+    renewable_forecast_day = [round(random.uniform(50, 100)) for _ in range(3)]
+    renewable_forecast_hour = [round(random.uniform(50, 100)) for _ in range(3)]
 
     water_kitchen = round(random.uniform(0, 100))
     water_baths = round(random.uniform(0, 100))
@@ -79,24 +79,12 @@ def generate_random_data(house_id: int) -> dict[str, any]:
     costs_water = round(water_total * 0.00001, 2)
     costs_total = costs_electricity + costs_water
 
-    devices = [
-        {
-            "id": 1,
-            "power": round(random.uniform(0, total_house / 2)),
-        },
-        {
-            "id": 2,
-            "power": round(random.uniform(0, total_house / 4)),
-        },
-        {
-            "id": 3,
-            "power": round(random.uniform(0, total_house / 4)),
-        },
-        {
-            "id": 4,
-            "power": round(random.uniform(0, total_house / 8)),
-        },
-    ]
+    if devices is None:
+        devices = []
+    else:
+        length_devices = len(devices)
+        for i in range(length_devices):
+            devices[i]["power"] = round(random.uniform(0, total_house / length_devices))
 
     return {
         "id": house_id,
@@ -156,7 +144,7 @@ def callback(
     houses: list[dict[str, int | str | list | None]] = json.loads(body)
     print(f"Parsed JSON: {houses}")
     for house in houses:
-        house_data = generate_random_data(house["houseId"])
+        house_data = generate_random_data(house["houseId"], house["devices"])
         json_data = json.dumps(house_data)
         print(f"Sending {json_data}")
         send_data_to_rabbitmq(channel, json_data)
@@ -187,6 +175,7 @@ if __name__ == "__main__":
             queue=queue_name_info,
             on_message_callback=callback,
             exclusive=True,
+            auto_ack=True
         )
         channel.start_consuming()
     except Exception as e:
