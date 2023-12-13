@@ -1,7 +1,6 @@
 import json
 import pika
 import random
-import time
 import os
 import requests
 import requests_cache
@@ -11,7 +10,6 @@ from pika.adapters.blocking_connection import BlockingChannel
 rate_env = os.environ.get("SECONDS_RATE")
 seconds_rate = int(rate_env) if rate_env is not None else 5
 
-# id_list = get_ids_from_rabbitmq()
 host = "rabbitmq"
 port = 5672
 username = "rabbitmq"
@@ -160,6 +158,7 @@ def callback(
     for house in houses:
         house_data = generate_random_data(house["houseId"])
         json_data = json.dumps(house_data)
+        print(f"Sending {json_data}")
         send_data_to_rabbitmq(channel, json_data)
 
 
@@ -171,9 +170,9 @@ if __name__ == "__main__":
         pika.ConnectionParameters(host, port, "/", credentials)
     )
     channel = connection.channel()
+
     channel.queue_declare(queue=queue_name_data)
     channel.queue_declare(queue=queue_name_info)
-
     channel.exchange_declare(exchange=exchange_name)
 
     channel.queue_bind(
@@ -183,7 +182,6 @@ if __name__ == "__main__":
         queue=queue_name_info, exchange=exchange_name, routing_key=routing_key_info
     )
 
-    starttime = time.monotonic()
     try:
         channel.basic_consume(
             queue=queue_name_info,
