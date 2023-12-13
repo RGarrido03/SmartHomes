@@ -7,7 +7,6 @@ services:
         condition: service_healthy
     environment:
       RABBITMQ_DEFAULT_PASS: rabbitmq
-      SECONDS_RATE: 5
       PYTHONUNBUFFERED: 1
     networks:
       - backend

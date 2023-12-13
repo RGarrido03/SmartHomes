@@ -7,9 +7,6 @@ import requests_cache
 from pika import spec
 from pika.adapters.blocking_connection import BlockingChannel
 
-rate_env = os.environ.get("SECONDS_RATE")
-seconds_rate = int(rate_env) if rate_env is not None else 5
-
 host = "rabbitmq"
 port = 5672
 username = "rabbitmq"
@@ -35,7 +32,7 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
 
     hydroelectric_grid = wind_grid = gas_grid = solar_grid = biomass_grid = 0
 
-    # convert REM data from MW to W
+    # convert REN data from MW to W
     for series in data["series"]:
         match series["name"]:
             case "Hídrica":
