@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Data
-public class NotificationMessage {
+public class Notification {
     @NotEmpty
     private long id;
 
