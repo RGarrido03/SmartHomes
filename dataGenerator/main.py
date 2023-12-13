@@ -149,9 +149,11 @@ def send_data_to_rabbitmq(channel, json_data):
 
 
 def callback(ch, method, properties, body):
-    print(" [x] %r:%r" % (method.routing_key, body))
-    for house in body:
-        house_data = generate_random_data(house["id"])
+    print("%r:%r" % (method.routing_key, body))
+    houses = json.loads(body)
+    print(f"Parsed JSON: {houses}")
+    for house in houses:
+        house_data = generate_random_data(house["houseId"])
         json_data = json.dumps(house_data)
         send_data_to_rabbitmq(channel, json_data)
 
