@@ -166,12 +166,22 @@ if __name__ == "__main__":
     channel = connection.channel()
     channel.queue_declare(queue=queue_name_data)
     channel.queue_declare(queue=queue_name_info)
+
     channel.exchange_declare(exchange=exchange_name)
+
+    channel.queue_bind(
+        queue=queue_name_data, exchange=exchange_name, routing_key=routing_key
+    )
+    channel.queue_bind(
+        queue=queue_name_info, exchange=exchange_name, routing_key=routing_key_info
+    )
 
     starttime = time.monotonic()
     try:
         channel.basic_consume(
-            queue=queue_name_info, on_message_callback=callback, exclusive=True
+            queue=queue_name_info,
+            on_message_callback=callback,
+            exclusive=True,
         )
         channel.start_consuming()
     except Exception:
