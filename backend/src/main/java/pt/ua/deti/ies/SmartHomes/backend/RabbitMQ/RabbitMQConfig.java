@@ -15,8 +15,10 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String QUEUE_NAME = "smarthomes";
+    public static final String INFO_QUEUE_NAME = "smarthomes_info";
     public static final String EXCHANGE_NAME = "smarthomes_exchange";
     public static final String ROUTING_KEY = "smarthomes_routing_json_key";
+    public static final String INFO_ROUTING_KEY = "smarthomes_info_routing_key";
 
     // JSON Queue Values
     @Value("${spring.rabbitmq.queue.json.name}")
@@ -39,6 +41,11 @@ public class RabbitMQConfig {
         return new Queue(QUEUE_NAME, false);
     }
 
+    @Bean
+    public Queue infoQueue() {
+        return new Queue(INFO_QUEUE_NAME, false);
+    }
+
     // Spring bean for rabbitMQ exchange
     @Bean
     public DirectExchange exchange() {
@@ -47,8 +54,13 @@ public class RabbitMQConfig {
 
     // Binding between json queue and exchange using routing key
     @Bean
-    public Binding jsonBinding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    public Binding jsonBinding(Queue jsonQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(jsonQueue).to(exchange).with(ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding infoBinding(Queue infoQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(infoQueue).to(exchange).with(INFO_ROUTING_KEY);
     }
 
     @Bean
