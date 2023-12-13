@@ -33,6 +33,8 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     response = requests.post(url, headers=headers)
     data = json.loads(response.text)
 
+    hydroelectric_grid = wind_grid = gas_grid = solar_grid = biomass_grid = 0
+
     # convert REM data from MW to W
     for series in data["series"]:
         match series["name"]:
@@ -47,9 +49,7 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
             case "Biomassa":
                 biomass_grid = round((series["data"][-2])) * 1000000
 
-    total_grid = round(
-        hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
-    )
+    total_grid = hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     renewable_grid = round(
         (hydroelectric_grid + wind_grid + solar_grid + biomass_grid) * 100 / total_grid,
     )
@@ -132,8 +132,8 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     }
 
 
-def send_data_to_rabbitmq(channel: BlockingChannel, json_data: str) -> None:
-    channel.basic_publish(
+def send_data_to_rabbitmq(ch: BlockingChannel, json_data: str) -> None:
+    ch.basic_publish(
         exchange=exchange_name,
         routing_key=routing_key,
         body=json_data,
