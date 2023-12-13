@@ -5,7 +5,8 @@ import time
 import os
 import requests
 import requests_cache
-
+from pika import spec
+from pika.adapters.blocking_connection import BlockingChannel
 
 rate_env = os.environ.get("SECONDS_RATE")
 seconds_rate = int(rate_env) if rate_env is not None else 5
@@ -24,7 +25,7 @@ routing_key_info = "smarthomes_info_routing_key"
 requests_cache.install_cache("ren_cache", expire_after=900)
 
 
-def generate_random_data(house_id):
+def generate_random_data(house_id: int) -> dict[str, any]:
     headers = {
         "Accept": "application/json",
     }
@@ -140,7 +141,7 @@ def generate_random_data(house_id):
     }
 
 
-def send_data_to_rabbitmq(channel, json_data):
+def send_data_to_rabbitmq(channel: BlockingChannel, json_data: str) -> None:
     channel.basic_publish(
         exchange=exchange_name,
         routing_key=routing_key,
@@ -148,9 +149,13 @@ def send_data_to_rabbitmq(channel, json_data):
     )
 
 
-def callback(ch, method, properties, body):
-    print("%r:%r" % (method.routing_key, body))
-    houses = json.loads(body)
+def callback(
+    ch: BlockingChannel,
+    method: spec.Basic.Deliver,
+    properties: spec.BasicProperties,
+    body: bytes,
+) -> None:
+    houses: list[dict[str, int | str | list | None]] = json.loads(body)
     print(f"Parsed JSON: {houses}")
     for house in houses:
         house_data = generate_random_data(house["houseId"])
