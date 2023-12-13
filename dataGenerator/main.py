@@ -15,9 +15,11 @@ host = "rabbitmq"
 port = 5672
 username = "rabbitmq"
 password = os.environ.get("RABBITMQ_DEFAULT_PASS")
-queue_name = "smarthomes"
+queue_name_data = "smarthomes"
+queue_name_info = "smarthomes_info"
 exchange_name = "smarthomes_exchange"
 routing_key = "smarthomes_routing_json_key"
+routing_key_info = "smarthomes_info_routing_key"
 
 requests_cache.install_cache("ren_cache", expire_after=900)
 
@@ -146,18 +148,12 @@ def send_data_to_rabbitmq(channel, json_data):
     )
 
 
-# id_list receives the IDs from the first connection from RabbitMQ
-def get_ids_from_rabbitmq(channel):
-    id_list = []
-    while True:
-        method_frame, header_frame, body = channel.basic_get(queue=queue_name)
-        if method_frame is None:
-            break
-        else:
-            channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-            id_list.append(int(body.decode()))
-
-    return id_list
+def callback(ch, method, properties, body):
+    print(" [x] %r:%r" % (method.routing_key, body))
+    for house in body:
+        house_data = generate_random_data(house["id"])
+        json_data = json.dumps(house_data)
+        send_data_to_rabbitmq(channel, json_data)
 
 
 if __name__ == "__main__":
@@ -168,19 +164,15 @@ if __name__ == "__main__":
         pika.ConnectionParameters(host, port, "/", credentials)
     )
     channel = connection.channel()
-    channel.queue_declare(queue=queue_name)
+    channel.queue_declare(queue=queue_name_data)
+    channel.queue_declare(queue=queue_name_info)
     channel.exchange_declare(exchange=exchange_name)
 
     starttime = time.monotonic()
-    while True:
-        try:
-            house_data = generate_random_data(1)
-            json_data = json.dumps(house_data)
-
-            send_data_to_rabbitmq(channel, json_data)
-            print(json_data)
-
-            # wait before generating the next set of data
-            time.sleep(seconds_rate - ((time.monotonic() - starttime) % seconds_rate))
-        except Exception:
-            connection.close()
+    try:
+        channel.basic_consume(
+            queue=queue_name_info, on_message_callback=callback, exclusive=True
+        )
+        channel.start_consuming()
+    except Exception:
+        connection.close()
