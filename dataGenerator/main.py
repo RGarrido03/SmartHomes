@@ -14,7 +14,7 @@ password = os.environ.get("RABBITMQ_DEFAULT_PASS")
 queue_name_data = "smarthomes"
 queue_name_info = "smarthomes_info"
 exchange_name = "smarthomes_exchange"
-routing_key = "smarthomes_routing_json_key"
+routing_key_data = "smarthomes_routing_json_key"
 routing_key_info = "smarthomes_info_routing_key"
 
 requests_cache.install_cache("ren_cache", expire_after=900)
@@ -32,7 +32,6 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
 
     hydroelectric_grid = wind_grid = gas_grid = solar_grid = biomass_grid = 0
 
-    # convert REN data from MW to W
     for series in data["series"]:
         match series["name"]:
             case "Hídrica":
@@ -130,9 +129,15 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
 
 
 def send_data_to_rabbitmq(ch: BlockingChannel, json_data: str) -> None:
+    """
+    Send a serialized JSON object to RabbitMQ.
+    :param ch: Channel to send
+    :param json_data: Serialized JSON string
+    :return:
+    """
     ch.basic_publish(
         exchange=exchange_name,
-        routing_key=routing_key,
+        routing_key=routing_key_data,
         body=json_data,
     )
 
@@ -143,6 +148,14 @@ def callback(
     properties: spec.BasicProperties,
     body: bytes,
 ) -> None:
+    """
+    Parse the received message.
+    :param ch: Channel from where the message was sent
+    :param method: 🤷
+    :param properties: 🤷
+    :param body: Serialized message
+    :return:
+    """
     houses: list[dict[str, int | str | list | None]] = json.loads(body)
     print(f"Parsed JSON: {houses}")
     for house in houses:
@@ -166,7 +179,7 @@ if __name__ == "__main__":
     channel.exchange_declare(exchange=exchange_name)
 
     channel.queue_bind(
-        queue=queue_name_data, exchange=exchange_name, routing_key=routing_key
+        queue=queue_name_data, exchange=exchange_name, routing_key=routing_key_data
     )
     channel.queue_bind(
         queue=queue_name_info, exchange=exchange_name, routing_key=routing_key_info
