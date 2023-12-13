@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class Notification {
     @NotEmpty
-    private long id;
-
-    @NotEmpty
     private String message;
 
     @NotEmpty
     private NotificationTypeEnum notificationType;
+
+    @NotEmpty
+    private NotificationSeverityEnum notificationSeverity;
 }
