@@ -2,7 +2,6 @@ package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
 import lombok.AllArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // import org.springframework.beans.factory.annotation.Autowired;
