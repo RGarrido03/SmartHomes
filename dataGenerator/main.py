@@ -28,7 +28,7 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
         "Accept": "application/json",
     }
 
-    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString=638375445673643573&useGasDate=false"
+    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266"
 
     response = requests.post(url, headers=headers)
     data = json.loads(response.text)
