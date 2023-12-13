@@ -24,7 +24,7 @@ export default function Home() {
   }, [cookies, router]);
 
   function deleteUser(userId) {
-    fetch(`localhost/clients/${userId}`, {
+    fetch(`localhost/api/clients/${userId}`, {
       method: 'DELETE',
     })
     .then(response => response.json())
