@@ -3,7 +3,6 @@ package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.domain.WritePrecision;
 import lombok.extern.slf4j.Slf4j;
-import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceController;
 import pt.ua.deti.ies.SmartHomes.backend.HouseData.CostData;
 import pt.ua.deti.ies.SmartHomes.backend.HouseData.DeviceData;
 import pt.ua.deti.ies.SmartHomes.backend.HouseData.ElectricityData;
@@ -55,7 +54,7 @@ public class Listener {
             List<DeviceData> devicesData = new ArrayList<>();
             for (int i = 0; i < message.getDevices().size(); i++) {
                 devicesData.add(
-                        new DeviceData(message.getDevices().get(i).getId(), message.getDevices().get(i).getPower()));
+                        new DeviceData(message.getDevices().get(i).getDeviceId(), message.getDevices().get(i).getPower()));
             }
             this.template.convertAndSend("/houses/" + message.getId() + "/devices", devicesData);
             this.template.convertAndSend("/houses/" + message.getId() + "/costs", new CostData(
@@ -119,7 +118,7 @@ public class Listener {
         writeApi.writePoint("smarthomes", "smarthomes", house);
 
         for (Device d : message.getDevices()) {
-            Point device_measurement = Point.measurement("device_" + d.getId())
+            Point device_measurement = Point.measurement("device_" + d.getDeviceId())
                     .addField("power", d.getPower())
                     .time(Instant.now(), WritePrecision.NS);
             writeApi.writePoint("smarthomes", "smarthomes", device_measurement);
