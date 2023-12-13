@@ -184,5 +184,7 @@ if __name__ == "__main__":
             exclusive=True,
         )
         channel.start_consuming()
-    except Exception:
+    except Exception as e:
+        print("Exception found: ", e)
+        print("Closing connection...")
         connection.close()
