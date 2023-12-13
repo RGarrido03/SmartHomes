@@ -10,8 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useState, useEffect } from "react";
-import {useCookies} from "next-client-cookies";
-import {User} from "@/app/login/user";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
+
+//websocket
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { toast } from "@/components/ui/use-toast";
 
 type EnvironmentDataProps = {
   time: string;
@@ -22,32 +27,88 @@ type EnvironmentDataProps = {
   renewable_forecast_hour: [];
 }[];
 
+type NotificationDataProps = {
+  message: string;
+  notification_type: string;
+  notification_severity: string;
+};
+
 export default function Environment() {
+  const [data, setData] = useState<EnvironmentDataProps>([]);
+  const [notificationData, setNotificationData] =
+    useState<NotificationDataProps>();
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
-  const [data,setData] = useState<EnvironmentDataProps>([]);
 
-  // Fetch data from API
+  function showNotification(notificationData: NotificationDataProps) {
+    if (notificationData && Object.keys(notificationData).length > 0) {
+      toast({
+        variant: "destructive",
+        title: notificationData.notification_type,
+        description:
+          notificationData.message,
+      });
+    }
+  }
+
   useEffect(() => {
+    if (notificationData) {
+      showNotification(notificationData);
+    }
+  }, [notificationData]);
+
+  useEffect(() => {
+    const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
+    const client = Stomp.over(ws);
+
+    client.connect(
+      {},
+      () => {
+        client.subscribe("/houses/1/environment", function (new_data) {
+          console.log("New notification: ", JSON.parse(new_data.body));
+          setData((old) => [...old, JSON.parse(new_data.body)]);
+        });
+        // notifications
+        client.subscribe("/houses/1/notification", function (new_data) {
+          const parsedData = JSON.parse(new_data.body);
+          setNotificationData(parsedData);
+        });
+      },
+      () => {
+        console.error("Sorry, I cannot connect to the server right now.");
+      },
+    );
+
     async function fetchData() {
       const temp = await fetch(
-          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/1/environment`,
-          {
-            next: {revalidate: 60}, // Revalidate every 60 seconds
-            headers: {
-              Authorization: "Bearer " + user.token,
-            },
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/electricity`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
           },
+        },
       );
       setData(await temp.json());
+
+      const notificationResponse = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/notification`,
+        {
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        },
+      );
+      const notificationData = await notificationResponse.json();
+      setNotificationData(notificationData);
     }
 
     fetchData().catch(console.error);
-    const interval = setInterval(() => {
-      fetchData().catch(console.error);
-    }, 5000);
-    return () => clearInterval(interval);
-  });
+  }, [user.token, cookies]);
 
   return (
     <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -65,8 +126,8 @@ export default function Environment() {
           <CustomAreaChart
             data={data}
             dataKey="renewable"
-            className="fill-yellow-300 dark:fill-yellow-600"
-            unitOfMeasurement="%"
+            className="fill-emerald-300 dark:fill-emerald-600"
+            unitOfMeasurement="W"
           />
         </CardContent>
       </Card>
@@ -74,8 +135,8 @@ export default function Environment() {
       <Card className="overflow-hidden">
         <CardHeader icon="bolt">
           <CardTitle>
-            {data.length !== 0 ? data[data.length - 1].self_sufficiency : "0"}% energy
-            used
+            {data.length !== 0 ? data[data.length - 1].self_sufficiency : "0"}%
+            energy used
           </CardTitle>
           <CardDescription>from self production</CardDescription>
         </CardHeader>
@@ -92,9 +153,7 @@ export default function Environment() {
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>
-            {data.length !== 0
-              ? data[data.length - 1].emissions
-              : "0"}{" "}
+            {data.length !== 0 ? data[data.length - 1].emissions : "0"}{" "}
             gCO₂eq/hour
           </CardTitle>
           <CardDescription>Home carbon emissions</CardDescription>
@@ -118,15 +177,30 @@ export default function Environment() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Today</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(0) : "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_day
+                  : "0"}
+                %
+              </p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Tomorrow</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(1) : "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_day
+                  : "0"}
+                %
+              </p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">Wednesday</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_day.at(2) : "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_day
+                  : "0"}
+                %
+              </p>
             </div>
           </div>
         </CardContent>
@@ -141,15 +215,30 @@ export default function Environment() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-row justify-between">
               <p className="font-semibold">9:00</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(0) : "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_hour
+                  : "0"}
+                %
+              </p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">10:00</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(1): "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_hour
+                  : "0"}
+                %
+              </p>
             </div>
             <div className="flex flex-row justify-between">
               <p className="font-semibold">11:00</p>
-              <p>{data.length !== 0 ? data[data.length - 1].renewable_forecast_hour.at(2) : "0"}%</p>
+              <p>
+                {data.length !== 0
+                  ? data[data.length - 1].renewable_forecast_hour
+                  : "0"}
+                %
+              </p>
             </div>
           </div>
         </CardContent>
@@ -177,6 +266,7 @@ export default function Environment() {
           </div>
         </CardContent>
       </Card>
+
     </div>
   );
 }
