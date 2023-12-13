@@ -20,6 +20,12 @@ routing_key_info = "smarthomes_info_routing_key"
 requests_cache.install_cache("ren_cache", expire_after=900)
 
 
+def gaussian(min_value: int, max_value: int | float) -> int:
+    mean_value = (max_value + min_value) / 2
+    range_half = max_value - mean_value
+    return round(random.gauss(mean_value, range_half / 3))
+
+
 def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     headers = {
         "Accept": "application/json",
@@ -50,10 +56,10 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
         (hydroelectric_grid + wind_grid + solar_grid + biomass_grid) * 100 / total_grid,
     )
 
-    solar_house = round(random.uniform(0, 2500))
-    wind_house = round(random.uniform(0, 1000))
-    grid_exchange = round(random.uniform(-(solar_house + wind_house), 4000))
-    total_house = round(solar_house + wind_house + grid_exchange)
+    solar_house = gaussian(0, 2500)
+    wind_house = gaussian(0, 1000)
+    grid_exchange = gaussian(-(solar_house + wind_house), 1500)
+    total_house = solar_house + wind_house + grid_exchange
     self_sufficiency = round(
         100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100
     )
@@ -62,15 +68,15 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     )
 
     emissions = round((1 - renewable_house / 100) * 450)
-    renewable_forecast_day = [round(random.uniform(50, 100)) for _ in range(3)]
-    renewable_forecast_hour = [round(random.uniform(50, 100)) for _ in range(3)]
+    renewable_forecast_day = [gaussian(50, 100) for _ in range(3)]
+    renewable_forecast_hour = [gaussian(50, 100) for _ in range(3)]
 
-    water_kitchen = round(random.uniform(0, 100))
-    water_baths = round(random.uniform(0, 100))
-    water_garden = round(random.uniform(0, 25))
-    water_other = round(random.uniform(0, 50))
+    water_kitchen = gaussian(0, 100)
+    water_baths = gaussian(0, 100)
+    water_garden = gaussian(0, 25)
+    water_other = gaussian(0, 50)
     water_total = water_kitchen + water_baths + water_garden + water_other
-    water_today_forecast = round(random.uniform(water_total - 25, water_total + 50))
+    water_today_forecast = gaussian(water_total - 25, water_total + 50)
 
     costs_electricity = round((grid_exchange if grid_exchange > 0 else 0) * 0.0001, 2)
     costs_water = round(water_total * 0.00001, 2)
@@ -82,7 +88,7 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
         length_devices = len(devices)
         for i in range(length_devices):
             devices[i]["power"] = (
-                round(random.uniform(0, total_house / length_devices))
+                gaussian(0, total_house / length_devices)
                 if devices[i]["turnedOn"] is True
                 else 0
             )
