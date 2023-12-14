@@ -26,6 +26,10 @@ def gaussian(min_value: int, max_value: int | float) -> int:
     return round(random.gauss(mean_value, range_half / 3))
 
 
+def return_last_data(series: dict) -> float:
+    return round(series["data"][-2]) if len(series["data"]) >= 2 else round(series["data"][-1])
+
+
 def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     headers = {
         "Accept": "application/json",
@@ -41,15 +45,15 @@ def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     for series in data["series"]:
         match series["name"]:
             case "Hídrica":
-                hydroelectric_grid = round((series["data"][-2])) * 1000000
+                hydroelectric_grid = return_last_data(series) * 1000000
             case "Eólica":
-                wind_grid = round((series["data"][-2])) * 1000000
+                wind_grid = return_last_data(series) * 1000000
             case "Gás Natural":
-                gas_grid = round((series["data"][-2])) * 1000000
+                gas_grid = return_last_data(series) * 1000000
             case "Solar":
-                solar_grid = round((series["data"][-2])) * 1000000
+                solar_grid = return_last_data(series) * 1000000
             case "Biomassa":
-                biomass_grid = round((series["data"][-2])) * 1000000
+                biomass_grid = return_last_data(series) * 1000000
 
     total_grid = hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     renewable_grid = round(
@@ -200,6 +204,6 @@ if __name__ == "__main__":
         )
         channel.start_consuming()
     except Exception as e:
-        print("Exception found: ", e)
+        print("Exception found: ", e.with_traceback())
         print("Closing connection...")
         connection.close()
