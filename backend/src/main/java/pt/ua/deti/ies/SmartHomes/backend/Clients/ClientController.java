@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceService;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
@@ -41,7 +45,18 @@ public class ClientController {
     }
 
     @Operation(summary = "Get client by id")
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "User not found")
+
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Found the client", 
+            content = { @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = ClientController.class)) }),
+
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
+            content = @Content), 
+            
+        @ApiResponse(responseCode = "404", description = "Client not found", 
+            content = @Content) })
+
     @GetMapping("{id}")
     public ResponseEntity<Client> getClient(@PathVariable("id") long id) {
         Client client = clientService.getClient(id);
@@ -49,7 +64,18 @@ public class ClientController {
     }
 
     @Operation(summary = "Get house by client id")
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Houses are empty")
+
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Found houses", 
+            content = { @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = ClientController.class)) }),
+
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
+            content = @Content), 
+            
+        @ApiResponse(responseCode = "404", description = "Houses not found", 
+            content = @Content) })
+
     @GetMapping("{id}/houses")
     public ResponseEntity<List<House>> getHousesByClient(@PathVariable("id") long id) {
         List<House> houses = clientService.getHousesByClient(id);
@@ -57,7 +83,17 @@ public class ClientController {
     }
 
     @Operation(summary = "Edit Device by id")
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Device not found")
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Found the device to edit", 
+            content = { @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = ClientController.class)) }),
+
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
+            content = @Content), 
+            
+        @ApiResponse(responseCode = "404", description = "Book not found", 
+            content = @Content) })
+
     @PutMapping("{id}")
     public ResponseEntity<Client> updateDevice(@PathVariable("id") long id, @RequestBody Client client) {
         client.setClientId(id);
@@ -66,6 +102,18 @@ public class ClientController {
     }
 
     @Operation(summary = "Delete a client by id (including their respective houses and devices)")
+
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Found client to delete", 
+            content = { @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = ClientController.class)) }),
+
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
+            content = @Content), 
+            
+        @ApiResponse(responseCode = "404", description = "Client not found", 
+            content = @Content) })
+
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId) {
         Client client = clientService.getClient(ClientId);
