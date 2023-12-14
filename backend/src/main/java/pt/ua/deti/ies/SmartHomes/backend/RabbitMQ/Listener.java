@@ -1,28 +1,27 @@
 package pt.ua.deti.ies.SmartHomes.backend.RabbitMQ;
 
-import com.influxdb.client.WriteApi;
-import com.influxdb.client.domain.WritePrecision;
-import lombok.extern.slf4j.Slf4j;
-import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceController;
-import pt.ua.deti.ies.SmartHomes.backend.HouseData.CostData;
-import pt.ua.deti.ies.SmartHomes.backend.HouseData.DeviceData;
-import pt.ua.deti.ies.SmartHomes.backend.HouseData.ElectricityData;
-import pt.ua.deti.ies.SmartHomes.backend.HouseData.EnvironmentData;
-import pt.ua.deti.ies.SmartHomes.backend.HouseData.WaterData;
-
-import com.influxdb.client.write.Point;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
+import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.QUEUE_NAME;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ua.deti.ies.SmartHomes.backend.Notifications.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
-import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.QUEUE_NAME;
+import com.influxdb.client.WriteApi;
+import com.influxdb.client.domain.WritePrecision;
+import com.influxdb.client.write.Point;
+
+import lombok.extern.slf4j.Slf4j;
+import pt.ua.deti.ies.SmartHomes.backend.HouseData.CostData;
+import pt.ua.deti.ies.SmartHomes.backend.HouseData.DeviceData;
+import pt.ua.deti.ies.SmartHomes.backend.HouseData.ElectricityData;
+import pt.ua.deti.ies.SmartHomes.backend.HouseData.EnvironmentData;
+import pt.ua.deti.ies.SmartHomes.backend.HouseData.WaterData;
+import pt.ua.deti.ies.SmartHomes.backend.Notifications.*;
 
 @Slf4j
 @Service
@@ -33,59 +32,64 @@ public class Listener {
         @Autowired
         private SimpMessagingTemplate template;
 
-        @RabbitListener(queues = { QUEUE_NAME })
-        public void consumeMessage(final Message message) {
-                try {
-                        log.info("Received message: [{}]", message);
-
-                        if (message.getPower().getHouse().getSelf_sufficiency() <= 30) {
+    @RabbitListener(queues = { QUEUE_NAME })
+    public void consumeMessage(final Message message) {
+        try {
+            log.info("Received message: [{}]", message);
+            if (message.getPower().getHouse().getSelf_sufficiency() <= 30) {
                                 Notification notification = new Notification(
                                                 "Warning: Grid energy percentage is less than 30%!",
                                                 NotificationTypeEnum.ELECTRICITY, NotificationSeverityEnum.WARNING);
                                 this.template.convertAndSend("/houses/" + message.getId() + "/notification",
                                                 notification);
                         }
+            this.template.convertAndSend("/houses/" + message.getId() + "/electricity", new ElectricityData(
+                    Instant.now(),
+                    message.getPower().getGrid().getRenewable(),
+                    message.getPower().getHouse().getSolar(),
+                    message.getPower().getHouse().getWind(),
+                    message.getPower().getHouse().getGrid_exchange(),
+                    message.getPower().getHouse().getTotal(),
+                    message.getPower().getHouse().getSelf_sufficiency(),
+                    message.getPower().getHouse().getRenewable()));
+            this.template.convertAndSend("/houses/" + message.getId() + "/water", new WaterData(
+                    Instant.now(),
+                    message.getWater().getKitchen(),
+                    message.getWater().getBath(),
+                    message.getWater().getGarden(),
+                    message.getWater().getOther(),
+                    message.getWater().getTotal(),
+                    message.getWater().getForecast_today()));
+            List<DeviceData> devicesData = new ArrayList<>();
+            for (int i = 0; i < message.getDevices().size(); i++) {
+                devicesData.add(
+                        new DeviceData(
+                                message.getDevices().get(i).getDeviceId(),
+                                message.getDevices().get(i).getType(),
+                                message.getDevices().get(i).getName(),
+                                message.getDevices().get(i).getHouseArea(),
+                                message.getDevices().get(i).isTurnedOn(),
+                                message.getDevices().get(i).getPower()
+                        ));
+            }
+            this.template.convertAndSend("/houses/" + message.getId() + "/devices", devicesData);
+            this.template.convertAndSend("/houses/" + message.getId() + "/costs", new CostData(
+                    message.getCosts().getElectricity(),
+                    message.getCosts().getWater(),
+                    message.getCosts().getToday()));
+            this.template.convertAndSend("/houses/" + message.getId() + "/environment", new EnvironmentData(
+                    Instant.now(),
+                    message.getPower().getHouse().getSelf_sufficiency(),
+                    message.getPower().getHouse().getRenewable(),
+                    message.getPower().getHouse().getEmissions(),
+                    message.getPower().getHouse().getRenewable_forecast_day(),
+                    message.getPower().getHouse().getRenewable_forecast_hour()));
 
-                        this.template.convertAndSend("/houses/" + message.getId() + "/electricity", new ElectricityData(
-                                        Instant.now(),
-                                        message.getPower().getGrid().getRenewable(),
-                                        message.getPower().getHouse().getSolar(),
-                                        message.getPower().getHouse().getWind(),
-                                        message.getPower().getHouse().getGrid_exchange(),
-                                        message.getPower().getHouse().getTotal(),
-                                        message.getPower().getHouse().getSelf_sufficiency(),
-                                        message.getPower().getHouse().getRenewable()));
-                        this.template.convertAndSend("/houses/" + message.getId() + "/water", new WaterData(
-                                        Instant.now(),
-                                        message.getWater().getKitchen(),
-                                        message.getWater().getBath(),
-                                        message.getWater().getGarden(),
-                                        message.getWater().getOther(),
-                                        message.getWater().getTotal(),
-                                        message.getWater().getForecast_today()));
-                        List<DeviceData> devicesData = new ArrayList<>();
-                        for (int i = 0; i < message.getDevices().size(); i++) {
-                                devicesData.add(
-                                                new DeviceData(message.getDevices().get(i).getId(),
-                                                                message.getDevices().get(i).getPower()));
-                        }
-                        this.template.convertAndSend("/houses/" + message.getId() + "/devices", devicesData);
-                        this.template.convertAndSend("/houses/" + message.getId() + "/costs", new CostData(
-                                        message.getCosts().getElectricity(),
-                                        message.getCosts().getWater(),
-                                        message.getCosts().getToday()));
-                        this.template.convertAndSend("/houses/" + message.getId() + "/environment", new EnvironmentData(
-                                        Instant.now(),
-                                        message.getPower().getHouse().getSelf_sufficiency(),
-                                        message.getPower().getHouse().getRenewable(),
-                                        message.getPower().getHouse().getEmissions(),
-                                        message.getPower().getHouse().getRenewable_forecast_day(),
-                                        message.getPower().getHouse().getRenewable_forecast_hour()));
-                        writeDataToInfluxDB(message);
-                } catch (Exception e) {
-                        log.error("Error while writing to InfluxDB: {}", e.getMessage());
-                }
+            writeDataToInfluxDB(message);
+        } catch (Exception e) {
+            log.error("Error while writing to InfluxDB: {}", e.getMessage());
         }
+    }
 
         private void writeDataToInfluxDB(Message message) {
                 // Create a data point
@@ -129,12 +133,12 @@ public class Listener {
 
                 writeApi.writePoint("smarthomes", "smarthomes", house);
 
-                for (Device d : message.getDevices()) {
-                        Point device_measurement = Point.measurement("device_" + d.getId())
-                                        .addField("power", d.getPower())
-                                        .time(Instant.now(), WritePrecision.NS);
-                        writeApi.writePoint("smarthomes", "smarthomes", device_measurement);
-                }
+        for (Device d : message.getDevices()) {
+            Point device_measurement = Point.measurement("device_" + d.getDeviceId())
+                    .addField("power", d.getPower())
+                    .time(Instant.now(), WritePrecision.NS);
+            writeApi.writePoint("smarthomes", "smarthomes", device_measurement);
+        }
 
                 log.info("Points inserted");
         }

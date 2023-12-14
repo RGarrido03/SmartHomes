@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceType;
 
 import java.util.List;
 
@@ -148,8 +149,13 @@ class Costs {
 @Data
 class Device {
     @NotEmpty
-    private int id;
+    private int deviceId;
 
     @NotEmpty
     private long power;
+
+    private String name;
+    private String houseArea;
+    private boolean turnedOn;
+    private DeviceType type;
 }

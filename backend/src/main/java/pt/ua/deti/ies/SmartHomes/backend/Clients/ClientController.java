@@ -8,7 +8,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceService;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
 
 @RestController
 @AllArgsConstructor
@@ -16,6 +18,8 @@ import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 public class ClientController {
 
     private ClientService clientService;
+    private DeviceService deviceService;
+    private HouseService houseService;
 
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
@@ -50,6 +54,14 @@ public class ClientController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId) {
+        Client client = clientService.getClient(ClientId);
+
+        // Delete associated houses
+        client.getHouses().forEach(house -> {
+            // Delete associated devices
+            house.getDevices().forEach(device -> deviceService.deleteDevice(device.getDeviceId()));
+            houseService.deleteHouse(house.getHouseId());
+        });
         clientService.deleteClient(ClientId);
         return new ResponseEntity<>("Client successfully deleted!", HttpStatus.OK);
     }

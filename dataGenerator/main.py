@@ -1,61 +1,69 @@
 import json
 import pika
 import random
-import time
 import os
 import requests
 import requests_cache
+from pika import spec
+from pika.adapters.blocking_connection import BlockingChannel
 
-
-rate_env = os.environ.get("SECONDS_RATE")
-seconds_rate = int(rate_env) if rate_env is not None else 5
-
-# id_list = get_ids_from_rabbitmq()
 host = "rabbitmq"
 port = 5672
 username = "rabbitmq"
 password = os.environ.get("RABBITMQ_DEFAULT_PASS")
-queue_name = "smarthomes"
+queue_name_data = "smarthomes"
+queue_name_info = "smarthomes_info"
 exchange_name = "smarthomes_exchange"
-routing_key = "smarthomes_routing_json_key"
+routing_key_data = "smarthomes_routing_json_key"
+routing_key_info = "smarthomes_info_routing_key"
 
 requests_cache.install_cache("ren_cache", expire_after=900)
 
 
-def generate_random_data(house_id):
+def gaussian(min_value: int, max_value: int | float) -> int:
+    mean_value = (max_value + min_value) / 2
+    range_half = max_value - mean_value
+    return round(random.gauss(mean_value, range_half / 3))
+
+
+def return_last_data(series: dict) -> float:
+    return round(series["data"][-2]) if len(series["data"]) >= 2 else round(series["data"][-1])
+
+
+def generate_random_data(house_id: int, devices: list[dict]) -> dict[str, any]:
     headers = {
         "Accept": "application/json",
     }
 
-    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString=638375445673643573&useGasDate=false"
+    url = "https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266"
 
     response = requests.post(url, headers=headers)
     data = json.loads(response.text)
 
-    # convert REM data from MW to W
-    for series in data["series"]:
-        if series["name"] == "Hídrica":
-            hydroelectric_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Eólica":
-            wind_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Gás Natural":
-            gas_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Solar":
-            solar_grid = round((series["data"][-2])) * 1000000
-        elif series["name"] == "Biomassa":
-            biomass_grid = round((series["data"][-2])) * 1000000
+    hydroelectric_grid = wind_grid = gas_grid = solar_grid = biomass_grid = 0
 
-    total_grid = round(
-        hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
-    )
+    for series in data["series"]:
+        match series["name"]:
+            case "Hídrica":
+                hydroelectric_grid = return_last_data(series) * 1000000
+            case "Eólica":
+                wind_grid = return_last_data(series) * 1000000
+            case "Gás Natural":
+                gas_grid = return_last_data(series) * 1000000
+            case "Solar":
+                solar_grid = return_last_data(series) * 1000000
+            case "Biomassa":
+                biomass_grid = return_last_data(series) * 1000000
+
+    total_grid = hydroelectric_grid + wind_grid + gas_grid + solar_grid + biomass_grid
     renewable_grid = round(
         (hydroelectric_grid + wind_grid + solar_grid + biomass_grid) * 100 / total_grid,
     )
 
-    solar_house = round(random.uniform(0, 2500))
-    wind_house = round(random.uniform(0, 1000))
-    grid_exchange = round(random.uniform(-(solar_house + wind_house), 4000))
-    total_house = round(solar_house + wind_house + grid_exchange)
+    solar_house = gaussian(0, 2500)
+    wind_house = gaussian(0, 1000)
+    grid_exchange = gaussian(-(solar_house + wind_house), 1500)
+    total_house = solar_house + wind_house + grid_exchange
     self_sufficiency = round(
         100 * (1 - grid_exchange / total_house) if grid_exchange > 0 else 100
     )
@@ -64,38 +72,30 @@ def generate_random_data(house_id):
     )
 
     emissions = round((1 - renewable_house / 100) * 450)
-    renewable_forecast_day = [round(random.uniform(50, 100)) for i in range(3)]
-    renewable_forecast_hour = [round(random.uniform(50, 100)) for i in range(3)]
+    renewable_forecast_day = [gaussian(50, 100) for _ in range(3)]
+    renewable_forecast_hour = [gaussian(50, 100) for _ in range(3)]
 
-    water_kitchen = round(random.uniform(0, 100))
-    water_baths = round(random.uniform(0, 100))
-    water_garden = round(random.uniform(0, 25))
-    water_other = round(random.uniform(0, 50))
+    water_kitchen = gaussian(0, 100)
+    water_baths = gaussian(0, 100)
+    water_garden = gaussian(0, 25)
+    water_other = gaussian(0, 50)
     water_total = water_kitchen + water_baths + water_garden + water_other
-    water_today_forecast = round(random.uniform(water_total - 25, water_total + 50))
+    water_today_forecast = gaussian(water_total - 25, water_total + 50)
 
     costs_electricity = round((grid_exchange if grid_exchange > 0 else 0) * 0.0001, 2)
     costs_water = round(water_total * 0.00001, 2)
     costs_total = costs_electricity + costs_water
 
-    devices = [
-        {
-            "id": 1,
-            "power": round(random.uniform(0, total_house / 2)),
-        },
-        {
-            "id": 2,
-            "power": round(random.uniform(0, total_house / 4)),
-        },
-        {
-            "id": 3,
-            "power": round(random.uniform(0, total_house / 4)),
-        },
-        {
-            "id": 4,
-            "power": round(random.uniform(0, total_house / 8)),
-        },
-    ]
+    if devices is None:
+        devices = []
+    else:
+        length_devices = len(devices)
+        for i in range(length_devices):
+            devices[i]["power"] = (
+                gaussian(0, total_house / length_devices)
+                if devices[i]["turnedOn"] is True
+                else 0
+            )
 
     return {
         "id": house_id,
@@ -138,26 +138,41 @@ def generate_random_data(house_id):
     }
 
 
-def send_data_to_rabbitmq(channel, json_data):
-    channel.basic_publish(
+def send_data_to_rabbitmq(ch: BlockingChannel, json_data: str) -> None:
+    """
+    Send a serialized JSON object to RabbitMQ.
+    :param ch: Channel to send
+    :param json_data: Serialized JSON string
+    :return:
+    """
+    ch.basic_publish(
         exchange=exchange_name,
-        routing_key=routing_key,
+        routing_key=routing_key_data,
         body=json_data,
     )
 
 
-# id_list receives the IDs from the first connection from RabbitMQ
-def get_ids_from_rabbitmq(channel):
-    id_list = []
-    while True:
-        method_frame, header_frame, body = channel.basic_get(queue=queue_name)
-        if method_frame is None:
-            break
-        else:
-            channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-            id_list.append(int(body.decode()))
-
-    return id_list
+def callback(
+    ch: BlockingChannel,
+    method: spec.Basic.Deliver,
+    properties: spec.BasicProperties,
+    body: bytes,
+) -> None:
+    """
+    Parse the received message.
+    :param ch: Channel from where the message was sent
+    :param method: 🤷
+    :param properties: 🤷
+    :param body: Serialized message
+    :return:
+    """
+    houses: list[dict[str, int | str | list | None]] = json.loads(body)
+    print(f"Parsed JSON: {houses}")
+    for house in houses:
+        house_data = generate_random_data(house["houseId"], house["devices"])
+        json_data = json.dumps(house_data)
+        print(f"Sending {json_data}")
+        send_data_to_rabbitmq(channel, json_data)
 
 
 if __name__ == "__main__":
@@ -168,19 +183,27 @@ if __name__ == "__main__":
         pika.ConnectionParameters(host, port, "/", credentials)
     )
     channel = connection.channel()
-    channel.queue_declare(queue=queue_name)
+
+    channel.queue_declare(queue=queue_name_data)
+    channel.queue_declare(queue=queue_name_info)
     channel.exchange_declare(exchange=exchange_name)
 
-    starttime = time.monotonic()
-    while True:
-        try:
-            house_data = generate_random_data(1)
-            json_data = json.dumps(house_data)
+    channel.queue_bind(
+        queue=queue_name_data, exchange=exchange_name, routing_key=routing_key_data
+    )
+    channel.queue_bind(
+        queue=queue_name_info, exchange=exchange_name, routing_key=routing_key_info
+    )
 
-            send_data_to_rabbitmq(channel, json_data)
-            print(json_data)
-
-            # wait before generating the next set of data
-            time.sleep(seconds_rate - ((time.monotonic() - starttime) % seconds_rate))
-        except Exception:
-            connection.close()
+    try:
+        channel.basic_consume(
+            queue=queue_name_info,
+            on_message_callback=callback,
+            exclusive=True,
+            auto_ack=True,
+        )
+        channel.start_consuming()
+    except Exception as e:
+        print("Exception found: ", e.with_traceback())
+        print("Closing connection...")
+        connection.close()
