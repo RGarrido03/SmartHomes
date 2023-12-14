@@ -10,6 +10,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.RabbitMQConfig.*;
 
@@ -26,7 +27,7 @@ public class Sender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @Scheduled(fixedDelay = 5000L)
+    @Scheduled(fixedDelayString = "${generation.rate}", timeUnit = TimeUnit.SECONDS)
     public void sendHousesInfo() {
         List<House> houses = houseService.getAllHouses();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, INFO_ROUTING_KEY, houses);

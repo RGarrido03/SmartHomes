@@ -111,7 +111,8 @@ services:
           "spring.rabbitmq.routing.json.key" : "smarthomes_routing_json_key",
           "management.influx.metrics.export.enabled": "false",
           "smarthomes.app.jwtSecret" : "========smarthomes====JwtGenerator====secret========",
-          "smarthomes.app.jwtExpirationMs": "14400000"
+          "smarthomes.app.jwtExpirationMs": "14400000",
+          "generation.rate": "5"
         }'
     restart: unless-stopped
     networks:
