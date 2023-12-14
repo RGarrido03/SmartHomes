@@ -13,6 +13,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
 
 @RestController
+@RestControllerAdvice
 @AllArgsConstructor
 @RequestMapping("api/clients")
 public class ClientController {
@@ -21,30 +22,43 @@ public class ClientController {
     private DeviceService deviceService;
     private HouseService houseService;
 
+    @Operation(summary = "Get all of clients users")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> clients = clientService.findAll();
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
+    @Operation(summary = "Creation of a client")
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody Client Client) {
         Client savedClient = clientService.createClient(Client);
         return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get client by id")
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "User not found")
+    @ResponseStatus(code = HttpStatus.OK, reason = "User found")
     @GetMapping("{id}")
     public ResponseEntity<Client> getClient(@PathVariable("id") long id) {
         Client client = clientService.getClient(id);
         return new ResponseEntity<>(client, client != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Get house by client id")
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Houses are empty")
+    @ResponseStatus(code = HttpStatus.OK, reason = "Houses found")
     @GetMapping("{id}/houses")
     public ResponseEntity<List<House>> getHousesByClient(@PathVariable("id") long id) {
         List<House> houses = clientService.getHousesByClient(id);
         return new ResponseEntity<>(houses, houses.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
+    @Operation(summary = "Edit Device by id")
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Device not found")
+    @ResponseStatus(code = HttpStatus.OK, reason = "Device edited")
     @PutMapping("{id}")
     public ResponseEntity<Client> updateDevice(@PathVariable("id") long id, @RequestBody Client client) {
         client.setClientId(id);
@@ -52,6 +66,7 @@ public class ClientController {
         return new ResponseEntity<>(updatedClient, updatedClient != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Delete a client by id (including their respective houses and devices)")
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId) {
         Client client = clientService.getClient(ClientId);
