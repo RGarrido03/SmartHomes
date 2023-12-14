@@ -36,6 +36,6 @@ public class House {
     @NotBlank(message = "House location is mandatory")
     private String location;
 
-    @OneToMany(mappedBy = "house")
+    @OneToMany(mappedBy = "house", fetch = FetchType.EAGER)
     private List<Device> devices;
 }
