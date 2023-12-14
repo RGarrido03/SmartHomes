@@ -1,55 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
+import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
-import { useCookies } from "next-client-cookies";
-import { User } from "@/app/login/user";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import { TitleCard } from "@/components/title-card";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  DevicesCard,
-} from "@/components/ui/card";
+import { CardContent, CardHeader, DevicesCard } from "@/components/ui/card";
 
 export default function Home() {
-  const router = useRouter();
-  const cookies = useCookies();
-  const user: User =
-    cookies.get("currentUser") === undefined
-      ? null
-      : JSON.parse(cookies.get("currentUser") ?? "");
-
-
-  const logout = useCallback(() => {
-    cookies.remove("currentUser");
-    router.push("/login");
-  }, [cookies, router]);
-
   return (
     <div>
-        <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
-          <div className="flex items-center justify-between rounded-card bg-background p-4">
-            <div>
-              <p className="text-xl font-bold">Edit your profile</p>
-              <div className="flex items-center gap-1">
-                <p>Set your name, profile picture, address and more.</p>
-              </div>
+      <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
+        <div className="flex items-center justify-between rounded-card bg-background p-4">
+          <div>
+            <p className="text-xl font-bold">Edit your profile</p>
+            <div className="flex items-center gap-1">
+              <p>Set your name, profile picture, address and more.</p>
             </div>
-            <Link href="/home/settings/profile-edit">
-              <Button className="p-2 ">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
-              </Button>
-            </Link>
           </div>
+          <Link href="/home/settings/profile-edit">
+            <Button className="p-2 ">
+              <MaterialSymbol icon="arrow_right_alt" size={24} />
+            </Button>
+          </Link>
+        </div>
       </div>
       <div className="grid flex-1 grid-cols-3 lg:grid-cols-3">
-      <CardContent>
+        <CardContent>
           <div className="space-y-4">
             <DevicesCard>
               <div className="flex items-center justify-between">
