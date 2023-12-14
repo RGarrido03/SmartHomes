@@ -45,8 +45,7 @@ export default function Environment() {
       toast({
         variant: "destructive",
         title: notificationData.notification_type,
-        description:
-          notificationData.message,
+        description: notificationData.message,
       });
     }
   }
@@ -83,7 +82,7 @@ export default function Environment() {
       const temp = await fetch(
         `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
           "house",
-        )}/electricity`,
+        )}/environment`,
         {
           next: { revalidate: 60 }, // Revalidate every 60 seconds
           headers: {
@@ -266,7 +265,6 @@ export default function Environment() {
           </div>
         </CardContent>
       </Card>
-
     </div>
   );
 }
