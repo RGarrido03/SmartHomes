@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Operation;
 import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceService;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
@@ -40,7 +42,6 @@ public class ClientController {
 
     @Operation(summary = "Get client by id")
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "User not found")
-    @ResponseStatus(code = HttpStatus.OK, reason = "User found")
     @GetMapping("{id}")
     public ResponseEntity<Client> getClient(@PathVariable("id") long id) {
         Client client = clientService.getClient(id);
@@ -49,7 +50,6 @@ public class ClientController {
 
     @Operation(summary = "Get house by client id")
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Houses are empty")
-    @ResponseStatus(code = HttpStatus.OK, reason = "Houses found")
     @GetMapping("{id}/houses")
     public ResponseEntity<List<House>> getHousesByClient(@PathVariable("id") long id) {
         List<House> houses = clientService.getHousesByClient(id);
@@ -58,7 +58,6 @@ public class ClientController {
 
     @Operation(summary = "Edit Device by id")
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Device not found")
-    @ResponseStatus(code = HttpStatus.OK, reason = "Device edited")
     @PutMapping("{id}")
     public ResponseEntity<Client> updateDevice(@PathVariable("id") long id, @RequestBody Client client) {
         client.setClientId(id);

@@ -14,5 +14,6 @@
   },
   "[xml]": {
     "editor.defaultFormatter": "DotJoshJohnson.xml"
-  }
+  },
+  "java.compile.nullAnalysis.mode": "disabled"
 }
