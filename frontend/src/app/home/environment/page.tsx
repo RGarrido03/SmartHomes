@@ -23,8 +23,8 @@ type EnvironmentDataProps = {
   self_sufficiency: number;
   renewable: number;
   emissions: number;
-  renewable_forecast_day: [];
-  renewable_forecast_hour: [];
+  renewable_forecast_day: number[];
+  renewable_forecast_hour: number[];
 }[];
 
 type NotificationDataProps = {
@@ -178,7 +178,7 @@ export default function Environment() {
               <p className="font-semibold">Today</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_day
+                  ? data[data.length - 1].renewable_forecast_day[0]
                   : "0"}
                 %
               </p>
@@ -187,7 +187,7 @@ export default function Environment() {
               <p className="font-semibold">Tomorrow</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_day
+                  ? data[data.length - 1].renewable_forecast_day[1]
                   : "0"}
                 %
               </p>
@@ -196,7 +196,7 @@ export default function Environment() {
               <p className="font-semibold">Wednesday</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_day
+                  ? data[data.length - 1].renewable_forecast_day[2]
                   : "0"}
                 %
               </p>
@@ -216,7 +216,7 @@ export default function Environment() {
               <p className="font-semibold">9:00</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_hour
+                  ? data[data.length - 1].renewable_forecast_hour[0]
                   : "0"}
                 %
               </p>
@@ -225,7 +225,7 @@ export default function Environment() {
               <p className="font-semibold">10:00</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_hour
+                  ? data[data.length - 1].renewable_forecast_hour[1]
                   : "0"}
                 %
               </p>
@@ -234,7 +234,7 @@ export default function Environment() {
               <p className="font-semibold">11:00</p>
               <p>
                 {data.length !== 0
-                  ? data[data.length - 1].renewable_forecast_hour
+                  ? data[data.length - 1].renewable_forecast_hour[2]
                   : "0"}
                 %
               </p>
