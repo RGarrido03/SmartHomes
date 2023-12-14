@@ -26,6 +26,9 @@ export default function Home() {
   function deleteUser(userId) {
     fetch(`localhost/api/clients/${userId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: "Bearer " + user.token
+      },
     })
     .then(response => response.json())
     .then(data => {
@@ -47,7 +50,7 @@ export default function Home() {
 
   return (
     <div className="grid flex-1 grid-cols-1 lg:grid-cols-1">
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
+      <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
           <div className="flex items-center justify-between rounded-card bg-background p-4">
             <div>
               <p className="text-xl font-bold">Edit your profile</p>
@@ -70,7 +73,7 @@ export default function Home() {
                 <p>Make the planet greener by turning off devices when you don’t really need them.</p>
               </div>
             </div>
-            <Link href="/home/settings/house-manage">
+            <Link href="/home/settings/automation-manage">
               <Button className="p-2">
                 <MaterialSymbol icon="arrow_right_alt" size={24} />
               </Button>
@@ -85,7 +88,7 @@ export default function Home() {
                 <p>Ready to add one more IoT device?</p>
               </div>
             </div>
-            <Link href="/home/settings/house-manage">
+            <Link href="/home/settings/device-manage">
               <Button className="p-2">
                 <MaterialSymbol icon="arrow_right_alt" size={24} />
               </Button>

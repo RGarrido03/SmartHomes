@@ -7,7 +7,15 @@ import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-
+import { TitleCard } from "@/components/title-card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  DevicesCard,
+} from "@/components/ui/card";
 
 export default function Home() {
   const router = useRouter();
@@ -24,8 +32,8 @@ export default function Home() {
   }, [cookies, router]);
 
   return (
-    <div className="grid flex-1 grid-cols-3 lg:grid-cols-3">
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
+    <div>
+        <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
           <div className="flex items-center justify-between rounded-card bg-background p-4">
             <div>
               <p className="text-xl font-bold">Edit your profile</p>
@@ -33,71 +41,35 @@ export default function Home() {
                 <p>Set your name, profile picture, address and more.</p>
               </div>
             </div>
+            <Link href="/home/settings/profile-edit">
               <Button className="p-2 ">
                 <MaterialSymbol icon="arrow_right_alt" size={24} />
               </Button>
-              <Button className="p-2">
-                <MaterialSymbol icon="border_color" size={24} />
-              </Button>
-          </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-          <div className="flex items-center justify-between rounded-card bg-background p-4">
-            <div>
-              <p className="text-xl font-bold">Manage your automations</p>
-              <div className="flex items-center gap-1">
-                <p>Make the planet greener by turning off devices when you don’t really need them.</p>
-              </div>
-            </div>
-            <Link href="/home/settings/house-manage">
-              <Button className="p-2">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
-              </Button>
             </Link>
           </div>
       </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-          <div className="flex items-center justify-between rounded-card bg-background p-4">
-            <div>
-              <p className="text-xl font-bold">Manage this house’s devices</p>
-              <div className="flex items-center gap-1">
-                <p>Ready to add one more IoT device?</p>
+      <div className="grid flex-1 grid-cols-3 lg:grid-cols-3">
+      <CardContent>
+          <div className="space-y-4">
+            <DevicesCard>
+              <div className="flex items-center justify-between">
+                <MaterialSymbol
+                  icon="vacuum"
+                  size={24}
+                  className="pl-3"
+                ></MaterialSymbol>
+                <CardHeader>Aspirador</CardHeader>
               </div>
-            </div>
-            <Link href="/home/settings/house-manage">
-              <Button className="p-2">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
+              <Button className="bg-orange-400 px-2">
+                <MaterialSymbol
+                  icon="close"
+                  size={24}
+                  color="black"
+                ></MaterialSymbol>
               </Button>
-            </Link>
+            </DevicesCard>
           </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-          <div className="flex items-center justify-between rounded-card bg-background p-4">
-            <div>
-              <p className="text-xl font-bold">Manage your houses</p>
-              <div className="flex items-center gap-1">
-                <p>Add, edit or delete one.</p>
-              </div>
-            </div>
-            <Link href="/home/settings/house-manage">
-              <Button className="p-2">
-                <MaterialSymbol icon="arrow_right_alt" size={24} />
-              </Button>
-            </Link>
-          </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-          <div className="flex items-center justify-between rounded-card bg-background p-4">
-            <div>
-              <p className="text-xl font-bold">Delete your account</p>
-              <div className="flex items-center gap-1">
-                <p>We are fully GDPR-compliant</p>
-              </div>
-            </div>
-              <Button className="p-2" variant="destructive">
-                <MaterialSymbol icon="delete_forever" size={24} />
-              </Button>
-          </div>
+        </CardContent>
       </div>
     </div>
   );
