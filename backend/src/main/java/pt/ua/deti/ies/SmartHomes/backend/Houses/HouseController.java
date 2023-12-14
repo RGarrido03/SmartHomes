@@ -1,9 +1,13 @@
 package pt.ua.deti.ies.SmartHomes.backend.Houses;
 
 import lombok.AllArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceService;
 import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 
@@ -11,6 +15,7 @@ import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 @AllArgsConstructor
 @RequestMapping("api/houses")
 public class HouseController {
+    @Autowired
     private HouseService houseService;
     private DeviceService deviceService;
     private Sender sender;
@@ -46,5 +51,5 @@ public class HouseController {
         houseService.deleteHouse(houseId);
         sender.sendHousesInfo();
         return new ResponseEntity<>("House successfully deleted.", HttpStatus.OK);
-    }
+    }    
 }
