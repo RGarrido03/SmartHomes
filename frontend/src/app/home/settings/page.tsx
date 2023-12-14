@@ -23,7 +23,7 @@ export default function Home() {
     router.push("/login");
   }, [cookies, router]);
 
-  function deleteUser(userId) {
+  function deleteUser(userId: number) {
     fetch(`localhost/api/clients/${userId}`, {
       method: 'DELETE',
       headers: {
