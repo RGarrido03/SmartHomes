@@ -45,7 +45,6 @@ public class ClientController {
     }
 
     @Operation(summary = "Get client by id")
-
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Found the client", 
             content = { @Content(mediaType = "application/json", 
@@ -64,7 +63,6 @@ public class ClientController {
     }
 
     @Operation(summary = "Get house by client id")
-
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Found houses", 
             content = { @Content(mediaType = "application/json", 
