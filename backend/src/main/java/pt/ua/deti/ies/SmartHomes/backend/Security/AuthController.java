@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pt.ua.deti.ies.SmartHomes.backend.Clients.Client;
 import pt.ua.deti.ies.SmartHomes.backend.Clients.ClientRepository;
-import pt.ua.deti.ies.SmartHomes.backend.Devices.DeviceController;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.JwtResponse;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.LoginRequest;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.MessageResponse;
