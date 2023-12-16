@@ -112,7 +112,10 @@ services:
           "management.influx.metrics.export.enabled": "false",
           "smarthomes.app.jwtSecret" : "========smarthomes====JwtGenerator====secret========",
           "smarthomes.app.jwtExpirationMs": "14400000",
-          "generation.rate": "5"
+          "generation.rate": "5",
+          "springdoc.api-docs.path": "/api/docs-config",
+          "springdoc.swagger-ui.url": "/api/docs-config",
+          "springdoc.swagger-ui.path": "/api/docs/index.html"
         }'
     restart: unless-stopped
     networks:

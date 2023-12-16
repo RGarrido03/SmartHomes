@@ -58,8 +58,8 @@ public class Authentication {
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/authentication/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/ws/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/api-docs/**").permitAll()
+                        .requestMatchers("/api/docs/**").permitAll()
+                        .requestMatchers("/api/docs-config/**").permitAll()
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
