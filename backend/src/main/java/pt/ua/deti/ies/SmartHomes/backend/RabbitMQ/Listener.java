@@ -36,11 +36,34 @@ public class Listener {
         public void consumeMessage(final Message message) {
                 try {
                         log.info("Received message: [{}]", message);
+                        /**
+                         * Notifications
+                         * -> self sufficiency
+                         * -> water total
+                         * -> exporting to the grid
+                         */
+                        // self sufficiency
                         if (message.getPower().getHouse().getSelf_sufficiency() <= 80) {
                                 Notification notification = new Notification(
                                                 "Warning: Self sufficiency percentage is bellow than 80%!",
                                                 NotificationTypeEnum.ELECTRICITY, NotificationSeverityEnum.WARNING);
-                                this.template.convertAndSend("/houses/" + message.getId() + "/notification",
+                                this.template.convertAndSend("/houses/" + message.getId() + "/notification/power",
+                                                notification);
+                        }
+                        // water total
+                        if (message.getWater().getTotal() > 100) {
+                                Notification notification = new Notification(
+                                                "Warning: Your water consumption just skyrocketed past 100. Are your taps training for a marathon?",
+                                                NotificationTypeEnum.WATER, NotificationSeverityEnum.WARNING);
+                                this.template.convertAndSend("/houses/" + message.getId() + "/notification/water",
+                                                notification);
+                        }
+                        // exporting grid
+                        if (message.getPower().getHouse().getGrid_exchange() > 0) {
+                                Notification notification = new Notification(
+                                                "Info: Your home is exporting its excess energy, promoting a more sustainable power system.",
+                                                NotificationTypeEnum.ELECTRICITY, NotificationSeverityEnum.INFO);
+                                this.template.convertAndSend("/houses/" + message.getId() + "/notification/grid",
                                                 notification);
                         }
                         this.template.convertAndSend("/houses/" + message.getId() + "/electricity", new ElectricityData(
