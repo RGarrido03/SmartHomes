@@ -68,7 +68,7 @@ export default function Environment() {
           setData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // notifications
-        client.subscribe("/houses/1/notification", function (new_data) {
+        client.subscribe("/houses/1/notification/power", function (new_data) {
           const parsedData = JSON.parse(new_data.body);
           setNotificationData(parsedData);
         });

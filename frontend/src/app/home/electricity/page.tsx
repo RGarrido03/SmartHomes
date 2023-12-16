@@ -18,6 +18,7 @@ import { User } from "@/app/login/user";
 //websocket
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { toast } from "@/components/ui/use-toast";
 
 type ElectricityDataProps = {
   time: string;
@@ -30,10 +31,34 @@ type ElectricityDataProps = {
   house_renewable: number;
 }[];
 
+type NotificationDataProps = {
+  message: string;
+  notification_type: string;
+  notification_severity: string;
+};
+
 export default function Electricity() {
   const [data, setData] = useState<ElectricityDataProps>([]);
+  const [notificationData, setNotificationData] =
+    useState<NotificationDataProps>();
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
+
+  function showNotification(notificationData: NotificationDataProps) {
+    if (notificationData && Object.keys(notificationData).length > 0) {
+      toast({
+        variant: "info",
+        title: notificationData.notification_type,
+        description: notificationData.message,
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (notificationData) {
+      showNotification(notificationData);
+    }
+  }, [notificationData]);
 
   useEffect(() => {
     const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
@@ -45,6 +70,11 @@ export default function Electricity() {
         client.subscribe("/houses/1/electricity", function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           setData((old) => [...old, JSON.parse(new_data.body)]);
+        });
+        // notifications
+        client.subscribe("/houses/1/notification/grid", function (new_data) {
+          const parsedData = JSON.parse(new_data.body);
+          setNotificationData(parsedData);
         });
       },
       () => {
@@ -65,6 +95,18 @@ export default function Electricity() {
         },
       );
       setData(await temp.json());
+      const notificationResponse = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/notification`,
+        {
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        },
+      );
+      const notificationData = await notificationResponse.json();
+      setNotificationData(notificationData);
     }
 
     fetchData().catch(console.error);
