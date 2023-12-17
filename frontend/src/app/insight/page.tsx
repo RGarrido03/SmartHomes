@@ -15,6 +15,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { NewHouseForm } from "./form";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChangeHouseForm } from "./change-form";
 
 type SummaryProps = {
   name: string;
@@ -57,22 +66,22 @@ export default function Home() {
 
   const [houses, setHouses] = useState<HousesProps>([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const temp = await fetch(
-        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${
-          user != null ? user.id : 0
-        }/houses`,
-        {
-          next: { revalidate: 60 }, // Revalidate every 60 seconds
-          headers: {
-            Authorization: user != null ? "Bearer " + user.token : "",
-          },
+  async function fetchData() {
+    const temp = await fetch(
+      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/clients/${
+        user != null ? user.id : 0
+      }/houses`,
+      {
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
+        headers: {
+          Authorization: user != null ? "Bearer " + user.token : "",
         },
-      );
-      setHouses(await temp.json());
-    }
+      },
+    );
+    setHouses(await temp.json());
+  }
 
+  useEffect(() => {
     cookies.remove("house");
     fetchData().catch(console.error);
   }, []);
@@ -89,6 +98,13 @@ export default function Home() {
     cookies.remove("currentUser");
     router.push("/login");
   }, [cookies, router]);
+
+  const [openChangeModal, setOpenChangeModal] = useState<boolean>(false);
+  const [changeData, setChangeData] = useState<HousesProps[number]>({
+    houseId: 0,
+    name: "",
+    location: "",
+  });
 
   return (
     <div className="grid flex-1 grid-cols-1 lg:grid-cols-2 ">
@@ -132,9 +148,39 @@ export default function Home() {
                 <p>{house.location}</p>
               </div>
             </div>
-            <Button className="p-2" onClick={() => goToHouse(house.houseId)}>
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
+            <div className="flex gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button className="p-2" variant="secondary">
+                    <MaterialSymbol icon="more_horiz" size={24} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>More options</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setChangeData({
+                        houseId: house.houseId,
+                        name: house.name,
+                        location: house.location,
+                      });
+                      setOpenChangeModal(true);
+                    }}
+                  >
+                    <MaterialSymbol icon="edit" className="mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive focus:bg-destructive focus:text-destructive-foreground">
+                    <MaterialSymbol icon="delete" className="mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button className="p-2" onClick={() => goToHouse(house.houseId)}>
+                <MaterialSymbol icon="arrow_right_alt" size={24} />
+              </Button>
+            </div>
           </div>
         ))}
         {(houses.length === 0 || !houses) && (
@@ -176,6 +222,25 @@ export default function Home() {
           </Button>
         </div>
       </div>
+
+      <Dialog open={openChangeModal} onOpenChange={setOpenChangeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit this house</DialogTitle>
+            <DialogDescription>
+              Input new information for this house. Click save when you&apos;re
+              done.
+            </DialogDescription>
+          </DialogHeader>
+          <ChangeHouseForm
+            id={changeData.houseId}
+            currentName={changeData.name}
+            currentLocation={changeData.location}
+            setOpenChangeModal={setOpenChangeModal}
+            fetchData={fetchData}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
