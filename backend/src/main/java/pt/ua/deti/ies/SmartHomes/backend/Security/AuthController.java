@@ -22,8 +22,6 @@ import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.JwtResponse;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.LoginRequest;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.MessageResponse;
 
-import java.util.Date;
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestControllerAdvice
 @RestController
@@ -41,11 +39,11 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @Operation(summary = "Validate login of a user")
+    @Operation(summary = "Login a user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User logged in",
+            @ApiResponse(responseCode = "200", description = "User info & token",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthController.class)) }),
+                            schema = @Schema(implementation = JwtResponse.class)) }),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content) })
     @PostMapping("/login")
@@ -69,12 +67,12 @@ public class AuthController {
                 .ok(new JwtResponse(jwt, userDetails.getClientId(), expires, userDetails.getName(), userDetails.getUsername(), userDetails.getEmail()));
     }
 
-    @Operation(summary = "Creation of a new user")
+    @Operation(summary = "Register a new user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "New user registered",
+            @ApiResponse(responseCode = "200", description = "User info & token",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthController.class)) }),
-            @ApiResponse(responseCode = "404", description = "User already exists",
+            @ApiResponse(responseCode = "400", description = "User already exists",
                     content = @Content) })
     @PostMapping("/register")
     public ResponseEntity<?> registerClient(@Valid @RequestBody Client client) {
