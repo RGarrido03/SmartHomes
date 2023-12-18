@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { deviceTypes } from "./types";
+import { Dispatch, SetStateAction } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -32,7 +33,11 @@ const formSchema = z.object({
   houseArea: z.string().min(1),
 });
 
-export function NewDeviceForm() {
+type NewDeviceFormProps = {
+  setOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+};
+
+export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
   const { toast } = useToast();
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -69,7 +74,7 @@ export function NewDeviceForm() {
       },
     );
     if (result.status === 201) {
-      // Do something
+      setOpenCreateModal(false);
     } else {
       toast({
         title: "Error creating device.",
