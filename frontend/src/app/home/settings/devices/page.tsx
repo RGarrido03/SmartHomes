@@ -21,14 +21,31 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ChangeDeviceForm } from "./change-form";
 
 export default function Devices() {
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
   const [data, setData] = useState<Device[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [openChangeModal, setOpenChangeModal] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const { toast } = useToast();
+  const [changeData, setChangeData] = useState<Device>({
+    id: 0,
+    name: "",
+    type: "TV",
+    houseArea: "",
+    on: true,
+    power: 0,
+  });
 
   // Fetch data from API
   useEffect(() => {
@@ -93,7 +110,20 @@ export default function Devices() {
             <p className="font-semibold">{device.name}</p>
             <p className="text-sm">{deviceTypes[device.type].name}</p>
           </div>
-          <Button className="h-fit p-2">
+          <Button
+            className="h-fit p-2"
+            onClick={() => {
+              setChangeData({
+                id: device.id,
+                name: device.name,
+                houseArea: device.houseArea,
+                type: device.type,
+                on: device.on,
+                power: device.power,
+              });
+              setOpenChangeModal(true);
+            }}
+          >
             <MaterialSymbol icon="edit" size={20} />
           </Button>
           <Button
@@ -108,6 +138,22 @@ export default function Devices() {
           </Button>
         </div>
       ))}
+
+      <Dialog open={openChangeModal} onOpenChange={setOpenChangeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit this device</DialogTitle>
+            <DialogDescription>
+              Input new information for this device. Click save when you&apos;re
+              done.
+            </DialogDescription>
+          </DialogHeader>
+          <ChangeDeviceForm
+            currentData={changeData}
+            setOpenChangeModal={setOpenChangeModal}
+          />
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={openDeleteModal} onOpenChange={setOpenDeleteModal}>
         <AlertDialogContent>
