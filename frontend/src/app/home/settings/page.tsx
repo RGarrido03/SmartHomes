@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MaterialSymbol } from "react-material-symbols";
+import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
@@ -12,6 +12,7 @@ type Option = {
   title: string;
   description: string;
   href: string;
+  icon?: MaterialSymbolProps["icon"];
 };
 
 export default function Home() {
@@ -62,7 +63,13 @@ export default function Home() {
     {
       title: "Get help",
       description: "We're here to support you.",
-      href: "/help",
+      href: "/not-implemented",
+    },
+    {
+      title: "Donate",
+      description: "We need to buy sleeping pills.",
+      href: "/not-implemented",
+      icon: "favorite",
     },
   ];
 
@@ -78,21 +85,12 @@ export default function Home() {
             <p>{option.description}</p>
           </div>
           <Link href={option.href}>
-            <Button className="p-2" onClick={handleDelete}>
-              <MaterialSymbol icon="arrow_forward" size={24} />
+            <Button className="p-2">
+              <MaterialSymbol icon={option.icon ?? "arrow_forward"} size={24} />
             </Button>
           </Link>
         </div>
       ))}
-      <div className="flex items-center justify-between rounded-card bg-background p-4">
-        <div>
-          <p className="mb-0.5 text-lg font-bold">Donate</p>
-          <p>We need to buy sleeping pills.</p>
-        </div>
-        <Button className="p-2" onClick={handleDelete}>
-          <MaterialSymbol icon="favorite" size={24} />
-        </Button>
-      </div>
       <div className="flex items-center justify-between rounded-card bg-background p-4">
         <div>
           <p className="mb-0.5 text-lg font-bold">
