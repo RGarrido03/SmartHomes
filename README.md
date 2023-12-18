@@ -16,7 +16,24 @@ other mainstream applications, such as smart device control and control and info
 household resources. Instead of merely controlling devices, we gain insights into how to
 intelligently assist the environment and your wallet.
 
+## Usage
+### One time usage
+```
+$ docker compose up -build
 
+```
+
+### More then once
+```
+$ docker prune 
+$ docker compose up -build
+
+## Architecture
+### Module interactions
+![Achitecture](https://github.com/RGarrido03/SmartHomes/assets/63374228/8ebcf236-b172-4559-8811-612b9e17f70b)
+ 
+
+```
 ### Contributors
 - 68264: Bruno Lopes
 - 108712: Diogo Falcão
