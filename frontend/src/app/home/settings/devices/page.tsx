@@ -10,11 +10,25 @@ import Stomp from "stompjs";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
 import { deviceTypes } from "../../devices/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Devices() {
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
   const [data, setData] = useState<Device[]>([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>(0);
+  const { toast } = useToast();
 
   // Fetch data from API
   useEffect(() => {
@@ -24,11 +38,14 @@ export default function Devices() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/devices", function (new_data) {
-          console.log("New notification: ", JSON.parse(new_data.body));
-          const parsedData = JSON.parse(new_data.body);
-          setData(parsedData);
-        });
+        client.subscribe(
+          `/houses/${cookies.get("house")}/devices`,
+          function (new_data) {
+            console.log("New notification: ", JSON.parse(new_data.body));
+            const parsedData = JSON.parse(new_data.body);
+            setData(parsedData);
+          },
+        );
       },
       () => {
         console.error("Sorry, I cannot connect to the server right now.");
@@ -79,11 +96,55 @@ export default function Devices() {
           <Button className="h-fit p-2">
             <MaterialSymbol icon="edit" size={20} />
           </Button>
-          <Button variant="destructive" className="h-fit p-2">
+          <Button
+            variant="destructive"
+            className="h-fit p-2"
+            onClick={() => {
+              setDeleteId(device.id);
+              setOpenDeleteModal(true);
+            }}
+          >
             <MaterialSymbol icon="delete" size={20} />
           </Button>
         </div>
       ))}
+
+      <AlertDialog open={openDeleteModal} onOpenChange={setOpenDeleteModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              house and its respective data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                const result = await fetch(
+                  `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/devices/${deleteId}`,
+                  {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: "Bearer " + user.token,
+                    },
+                  },
+                );
+                if (result.status !== 200) {
+                  toast({
+                    title: "Error deleting device.",
+                    description: "Internal server error.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
