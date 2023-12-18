@@ -230,7 +230,7 @@ export default function Home() {
       </CardHome>
 
       <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Link href={"/home"}>
+        <Link href={"/home/water"}>
           <Card className="overflow-hidden">
             <CardHeader className="pb-6">
               <CardTitle>Water output now</CardTitle>
@@ -266,7 +266,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/devices"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Devices</CardTitle>
@@ -403,7 +403,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/environment"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Self suficiency</CardTitle>
@@ -430,7 +430,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/costs"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Costs summary</CardTitle>
