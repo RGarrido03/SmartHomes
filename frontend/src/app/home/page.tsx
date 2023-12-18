@@ -58,11 +58,33 @@ type EnvironmentData = {
   renewable_forecast_hour: [];
 }[];
 
+type Device = {
+  id: number;
+  name: string;
+  type:
+    | "TV"
+    | "SOLARPV"
+    | "WINDTURBINE"
+    | "PLUG"
+    | "GRIDMETER"
+    | "AC"
+    | "LIGHT"
+    | "SMARTASSISTANT"
+    | "CARCARGER"
+    | "VACUUM"
+    | "DESUMIDIFIER"
+    | "OVEN";
+  houseArea: string;
+  on: boolean;
+  power: number;
+};
+
 export default function Home() {
   const [data, setData] = useState<ElectricityDataProps>([]);
   const [costData, setCostData] = useState<CostDataProps>();
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
+  const [devicesData, setDevicesData] = useState<Device[]>([]);
 
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -90,6 +112,12 @@ export default function Home() {
         // environment
         client.subscribe("/houses/1/environment", function (new_data) {
           setEnvironmentData((old) => [...old, JSON.parse(new_data.body)]);
+        });
+        // devices
+        client.subscribe("/houses/1/devices", function (new_data) {
+          console.log("New notification: ", JSON.parse(new_data.body));
+          const parsedData = JSON.parse(new_data.body);
+          setDevicesData(parsedData);
         });
       },
       () => {
@@ -149,6 +177,19 @@ export default function Home() {
         );
         const environmentData = await environmentResponse.json();
         setEnvironmentData(environmentData);
+
+        const devicesResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/devices`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
+          },
+        );
+        const devicesData = await devicesResponse.json();
+        setDevicesData(devicesData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
