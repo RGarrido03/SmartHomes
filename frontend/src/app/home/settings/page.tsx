@@ -38,17 +38,13 @@ export default function Home() {
   }
 
   async function handleDelete() {
-    if (user) {
-      await deleteUser(user.id);
-      logout();
-    } else {
-      console.log("No user is currently logged in.");
-    }
+    deleteUser(user.id);
+    logout();
   }
 
   return (
     <div className="grid flex-1 grid-cols-1 lg:grid-cols-1">
-      <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
+      <div className="flex flex-col space-y-4 pb-4 lg:space-y-8">
         <div className="flex items-center justify-between rounded-card bg-background p-4">
           <div>
             <p className="text-xl font-bold">Edit your profile</p>
