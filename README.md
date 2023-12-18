@@ -25,15 +25,16 @@ $ docker compose up -build
 
 ### More then once
 ```
-$ docker prune 
+$ docker compose down --volumes
+$ docker builder prune -all 
 $ docker compose up -build
+```
 
 ## Architecture
 ### Module interactions
 ![Achitecture](https://github.com/RGarrido03/SmartHomes/assets/63374228/8ebcf236-b172-4559-8811-612b9e17f70b)
  
 
-```
 ### Contributors
 - 68264: Bruno Lopes
 - 108712: Diogo Falcão
