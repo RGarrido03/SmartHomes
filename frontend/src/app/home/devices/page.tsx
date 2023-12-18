@@ -20,7 +20,7 @@ import { NewDeviceForm } from "./form";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-type Device = {
+export type Device = {
   id: number;
   name: string;
   type:

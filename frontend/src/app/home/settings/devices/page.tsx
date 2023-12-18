@@ -1,51 +1,75 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MaterialSymbol } from "react-material-symbols";
-import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, DevicesCard } from "@/components/ui/card";
+import { Device } from "../../devices/page";
+import { useState, useEffect } from "react";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { useCookies } from "next-client-cookies";
+import { User } from "@/app/login/user";
 
-export default function Home() {
+export default function Devices() {
+  const cookies = useCookies();
+  const user: User = JSON.parse(cookies.get("currentUser") ?? "");
+  const [data, setData] = useState<Device[]>([]);
+
+  // Fetch data from API
+  useEffect(() => {
+    const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
+    const client = Stomp.over(ws);
+
+    client.connect(
+      {},
+      () => {
+        client.subscribe("/houses/1/devices", function (new_data) {
+          console.log("New notification: ", JSON.parse(new_data.body));
+          const parsedData = JSON.parse(new_data.body);
+          setData(parsedData);
+        });
+      },
+      () => {
+        console.error("Sorry, I cannot connect to the server right now.");
+      },
+    );
+
+    async function fetchData() {
+      const temp = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+          "house",
+        )}/devices`,
+        {
+          next: { revalidate: 60 }, // Revalidate every 60 seconds
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        },
+      );
+      setData(await temp.json());
+    }
+
+    fetchData().catch(console.error);
+  }, [user.token, cookies]);
+
   return (
-    <div>
-      <div className="flex flex-col space-y-4 px-4 pb-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
-          <div>
-            <p className="text-xl font-bold">Edit your profile</p>
-            <div className="flex items-center gap-1">
-              <p>Set your name, profile picture, address and more.</p>
-            </div>
-          </div>
-          <Link href="/home/settings/profile-edit">
-            <Button className="p-2 ">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
-          </Link>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex items-center gap-4 rounded-card bg-background p-4 md:col-span-2 lg:col-span-3">
+        <Link href="/home/settings">
+          <Button className="h-fit p-1">
+            <MaterialSymbol icon="arrow_back" size={24} />
+          </Button>
+        </Link>
+        <div>
+          <p className="text-lg font-bold">Manage this house&apos;s devices</p>
+          <p>Ready to add one more IoT device?</p>
         </div>
       </div>
-      <div className="grid flex-1 grid-cols-3 lg:grid-cols-3">
-        <CardContent>
-          <div className="space-y-4">
-            <DevicesCard>
-              <div className="flex items-center justify-between">
-                <MaterialSymbol
-                  icon="vacuum"
-                  size={24}
-                  className="pl-3"
-                ></MaterialSymbol>
-                <CardHeader>Aspirador</CardHeader>
-              </div>
-              <Button className="bg-orange-400 px-2">
-                <MaterialSymbol
-                  icon="close"
-                  size={24}
-                  color="black"
-                ></MaterialSymbol>
-              </Button>
-            </DevicesCard>
-          </div>
-        </CardContent>
-      </div>
+      {data.map((device) => (
+        <div key={device.id} className="rounded-card bg-background p-4">
+          <p>{device.name}</p>
+        </div>
+      ))}
     </div>
   );
 }
