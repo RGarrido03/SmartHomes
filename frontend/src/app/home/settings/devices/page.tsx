@@ -9,6 +9,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
+import { deviceTypes } from "../../devices/types";
 
 export default function Devices() {
   const cookies = useCookies();
@@ -66,8 +67,21 @@ export default function Devices() {
         </div>
       </div>
       {data.map((device) => (
-        <div key={device.id} className="rounded-card bg-background p-4">
-          <p>{device.name}</p>
+        <div
+          key={device.id}
+          className="flex items-center gap-4 rounded-card bg-background p-4"
+        >
+          <MaterialSymbol icon={deviceTypes[device.type].icon} size={24} />
+          <div className="flex-1">
+            <p className="font-semibold">{device.name}</p>
+            <p className="text-sm">{deviceTypes[device.type].name}</p>
+          </div>
+          <Button className="h-fit p-2">
+            <MaterialSymbol icon="edit" size={20} />
+          </Button>
+          <Button variant="destructive" className="h-fit p-2">
+            <MaterialSymbol icon="delete" size={20} />
+          </Button>
         </div>
       ))}
     </div>
