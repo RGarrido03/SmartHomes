@@ -8,6 +8,12 @@ import { User } from "@/app/login/user";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
+type Option = {
+  title: string;
+  description: string;
+  href: string;
+};
+
 export default function Home() {
   const router = useRouter();
   const cookies = useCookies();
@@ -42,83 +48,61 @@ export default function Home() {
     logout();
   }
 
+  const options: Option[] = [
+    {
+      title: "Edit your profile",
+      description: "Set your name, profile picture, address and more.",
+      href: "/profile",
+    },
+    {
+      title: "Manage this house's devices",
+      description: "Ready to add one more IoT device?",
+      href: "/home/settings/devices",
+    },
+    {
+      title: "Get help",
+      description: "We're here to support you.",
+      href: "/help",
+    },
+  ];
+
   return (
-    <div className="grid flex-1 grid-cols-1 lg:grid-cols-1">
-      <div className="flex flex-col space-y-4 pb-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
+    <div className="grid flex-1 gap-4">
+      {options.map((option) => (
+        <div
+          className="flex items-center justify-between rounded-card bg-background p-4"
+          key={option.title}
+        >
           <div>
-            <p className="text-xl font-bold">Edit your profile</p>
-            <div className="flex items-center gap-1">
-              <p>Set your name, profile picture, address and more.</p>
-            </div>
+            <p className="mb-0.5 text-lg font-bold">{option.title}</p>
+            <p>{option.description}</p>
           </div>
-          <Link href="/home/settings/profile-edit">
-            <Button className="p-2 ">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
+          <Link href={option.href}>
+            <Button className="p-2" onClick={handleDelete}>
+              <MaterialSymbol icon="arrow_forward" size={24} />
             </Button>
           </Link>
         </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
-          <div>
-            <p className="text-xl font-bold">Manage your automations</p>
-            <div className="flex items-center gap-1">
-              <p>
-                Make the planet greener by turning off devices when you don’t
-                really need them.
-              </p>
-            </div>
-          </div>
-          <Link href="/home/settings/automation-manage">
-            <Button className="p-2">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
-          </Link>
+      ))}
+      <div className="flex items-center justify-between rounded-card bg-background p-4">
+        <div>
+          <p className="mb-0.5 text-lg font-bold">Donate</p>
+          <p>We need to buy sleeping pills.</p>
         </div>
+        <Button className="p-2" onClick={handleDelete}>
+          <MaterialSymbol icon="favorite" size={24} />
+        </Button>
       </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
-          <div>
-            <p className="text-xl font-bold">Manage this house’s devices</p>
-            <div className="flex items-center gap-1">
-              <p>Ready to add one more IoT device?</p>
-            </div>
-          </div>
-          <Link href="/home/settings/device-manage">
-            <Button className="p-2">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
-          </Link>
+      <div className="flex items-center justify-between rounded-card bg-background p-4">
+        <div>
+          <p className="mb-0.5 text-lg font-bold">
+            Delete your account and all data
+          </p>
+          <p>This app is proudly made in the EU. So are the rules.</p>
         </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
-          <div>
-            <p className="text-xl font-bold">Manage your houses</p>
-            <div className="flex items-center gap-1">
-              <p>Add, edit or delete one.</p>
-            </div>
-          </div>
-          <Link href="/home/settings/house-manage">
-            <Button className="p-2">
-              <MaterialSymbol icon="arrow_right_alt" size={24} />
-            </Button>
-          </Link>
-        </div>
-      </div>
-      <div className="flex flex-col space-y-4 p-4 lg:space-y-8">
-        <div className="flex items-center justify-between rounded-card bg-background p-4">
-          <div>
-            <p className="text-xl font-bold">Delete your account</p>
-            <div className="flex items-center gap-1">
-              <p>We are fully GDPR-compliant</p>
-            </div>
-          </div>
-          <Button className="p-2" variant="destructive" onClick={handleDelete}>
-            <MaterialSymbol icon="delete_forever" size={24} />
-          </Button>
-        </div>
+        <Button className="p-2" variant="destructive" onClick={handleDelete}>
+          <MaterialSymbol icon="delete" size={24} />
+        </Button>
       </div>
     </div>
   );
