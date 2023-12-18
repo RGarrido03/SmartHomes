@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.LoginRequest;
 import pt.ua.deti.ies.SmartHomes.backend.Security.Payloads.MessageResponse;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Authentication")
 @RestControllerAdvice
 @RestController
 @RequestMapping("/api/authentication")

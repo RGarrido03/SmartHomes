@@ -1,6 +1,7 @@
 package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
 
 @RestController
 @RestControllerAdvice
+@Tag(name = "Clients")
 @AllArgsConstructor
 @RequestMapping("api/clients")
 public class ClientController {

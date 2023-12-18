@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 
 @RestController
 @RestControllerAdvice
+@Tag(name = "Houses")
 @AllArgsConstructor
 @RequestMapping("api/houses")
 public class HouseController {
