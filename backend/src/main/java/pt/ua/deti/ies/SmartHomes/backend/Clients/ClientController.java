@@ -1,5 +1,6 @@
 package pt.ua.deti.ies.SmartHomes.backend.Clients;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class ClientController {
     private DeviceService deviceService;
     private HouseService houseService;
 
-    @Operation(summary = "Get all of clients users")
+    @Operation(summary = "Get all clients")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
@@ -36,8 +37,13 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
-    @Operation(summary = "Creation of a client")
+    @Operation(summary = "Create client")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Client created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Client.class)) })
+    })
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody Client Client) {
         Client savedClient = clientService.createClient(Client);
@@ -45,31 +51,24 @@ public class ClientController {
     }
 
     @Operation(summary = "Get client by id")
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Found the client", 
-            content = { @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = ClientController.class)) }),
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Client.class)) }),
 
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
-            content = @Content), 
-            
-        @ApiResponse(responseCode = "404", description = "Client not found", 
-            content = @Content) })
-
+            @ApiResponse(responseCode = "404", description = "Client not found",
+                    content = @Content) })
     @GetMapping("{id}")
     public ResponseEntity<Client> getClient(@PathVariable("id") long id) {
         Client client = clientService.getClient(id);
         return new ResponseEntity<>(client, client != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Get house by client id")
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Found houses", 
+    @Operation(summary = "Get houses by client id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Houses found",
             content = { @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = ClientController.class)) }),
-
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
-            content = @Content), 
+                array = @ArraySchema(schema = @Schema(implementation = House.class))) }),
             
         @ApiResponse(responseCode = "404", description = "Houses not found", 
             content = @Content) })
@@ -80,38 +79,25 @@ public class ClientController {
         return new ResponseEntity<>(houses, houses.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @Operation(summary = "Edit Device by id")
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Found the device to edit", 
-            content = { @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = ClientController.class)) }),
-
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
-            content = @Content), 
-            
-        @ApiResponse(responseCode = "404", description = "Book not found", 
-            content = @Content) })
-
+    @Operation(summary = "Edit client by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client edited",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found",
+                    content = @Content) })
     @PutMapping("{id}")
-    public ResponseEntity<Client> updateDevice(@PathVariable("id") long id, @RequestBody Client client) {
+    public ResponseEntity<Client> updateClient(@PathVariable("id") long id, @RequestBody Client client) {
         client.setClientId(id);
         Client updatedClient = clientService.updateClient(client);
         return new ResponseEntity<>(updatedClient, updatedClient != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Delete a client by id (including their respective houses and devices)")
-
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Found client to delete", 
-            content = { @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = ClientController.class)) }),
-
-        @ApiResponse(responseCode = "400", description = "Invalid id supplied", 
-            content = @Content), 
-            
-        @ApiResponse(responseCode = "404", description = "Client not found", 
-            content = @Content) })
-
+    @Operation(summary = "Delete a client by id, and their respective houses and devices")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClient(@PathVariable("id") Long ClientId) {
         Client client = clientService.getClient(ClientId);
