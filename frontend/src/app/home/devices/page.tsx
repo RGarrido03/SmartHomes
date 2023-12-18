@@ -20,7 +20,7 @@ import { NewDeviceForm } from "./form";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-type Device = {
+export type Device = {
   id: number;
   name: string;
   type:
@@ -51,6 +51,7 @@ export default function Devices() {
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
   const [data, setData] = useState<Device[]>([]);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   // Fetch data from API
   useEffect(() => {
@@ -147,7 +148,7 @@ export default function Devices() {
         </div>
       )}
       <div className="flex justify-center">
-        <Dialog>
+        <Dialog open={openCreateModal} onOpenChange={setOpenCreateModal}>
           <DialogTrigger asChild>
             <Button className="mt-4 flex gap-2 font-bold">
               <MaterialSymbol icon="add" size={24} />
@@ -161,7 +162,7 @@ export default function Devices() {
                 Input your device&apos;s data. Click save when you&apos;re done.
               </DialogDescription>
             </DialogHeader>
-            <NewDeviceForm />
+            <NewDeviceForm setOpenCreateModal={setOpenCreateModal} />
           </DialogContent>
         </Dialog>
       </div>

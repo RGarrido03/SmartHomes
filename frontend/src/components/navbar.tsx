@@ -35,7 +35,7 @@ export default function Navbar() {
           <MaterialSymbol size={24} icon="arrow_back" />
         </Button>
       </Link>
-      <p className="w-full text-lg font-semibold">Main house</p>
+      <p className="w-full text-lg font-semibold">{cookies.get("houseName")}</p>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
