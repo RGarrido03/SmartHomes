@@ -17,6 +17,8 @@ import * as z from "zod";
 import { useCookies } from "next-client-cookies";
 import { DialogFooter } from "@/components/ui/dialog";
 import { User } from "@/app/login/user";
+import { Dispatch, SetStateAction } from "react";
+import { Device } from "../../devices/page";
 import {
   Select,
   SelectContent,
@@ -24,8 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { deviceTypes } from "./types";
-import { Dispatch, SetStateAction } from "react";
+import { deviceTypes } from "../../devices/types";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -33,11 +34,15 @@ const formSchema = z.object({
   houseArea: z.string().min(1),
 });
 
-type NewDeviceFormProps = {
-  setOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+type ChangeHouseFormProps = {
+  currentData: Device;
+  setOpenChangeModal: Dispatch<SetStateAction<boolean>>;
 };
 
-export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
+export function ChangeDeviceForm({
+  currentData,
+  setOpenChangeModal,
+}: ChangeHouseFormProps) {
   const { toast } = useToast();
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -46,26 +51,26 @@ export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      type: "",
-      houseArea: "",
+      name: currentData.name,
+      type: currentData.type,
+      houseArea: currentData.houseArea,
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await fetch(
-      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/devices`,
+      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/devices/${currentData.id}`,
       {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
+          house: {
+            houseId: cookies.get("house"),
+          },
           name: values.name,
           type: values.type,
           houseArea: values.houseArea,
-          turnedOn: true,
-          house: {
-            houseId: parseInt(cookies.get("house") || "1"),
-          },
+          turnedOn: currentData.on
         }),
         headers: {
           "Content-Type": "application/json",
@@ -73,12 +78,12 @@ export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
         },
       },
     );
-    if (result.status === 201) {
-      setOpenCreateModal(false);
+    if (result.status === 200) {
+      setOpenChangeModal(false);
     } else {
       toast({
-        title: "Error creating device.",
-        description: "Check the console for more logs.",
+        title: "Error creating house.",
+        description: "Internal server error.",
         variant: "destructive",
       });
     }

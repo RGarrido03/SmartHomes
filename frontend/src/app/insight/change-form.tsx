@@ -16,28 +16,29 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useCookies } from "next-client-cookies";
 import { DialogFooter } from "@/components/ui/dialog";
-import { User } from "@/app/login/user";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { deviceTypes } from "./types";
+import { User } from "../login/user";
 import { Dispatch, SetStateAction } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1),
-  type: z.string().min(1),
-  houseArea: z.string().min(1),
+  location: z.string().min(1),
 });
 
-type NewDeviceFormProps = {
-  setOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+type ChangeHouseFormProps = {
+  id: number;
+  currentName: string;
+  currentLocation: string;
+  setOpenChangeModal: Dispatch<SetStateAction<boolean>>;
+  fetchData: () => Promise<void>;
 };
 
-export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
+export function ChangeHouseForm({
+  id,
+  currentName,
+  currentLocation,
+  setOpenChangeModal,
+  fetchData,
+}: ChangeHouseFormProps) {
   const { toast } = useToast();
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -46,25 +47,22 @@ export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      type: "",
-      houseArea: "",
+      name: currentName,
+      location: currentLocation,
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await fetch(
-      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/devices`,
+      `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${id}`,
       {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
           name: values.name,
-          type: values.type,
-          houseArea: values.houseArea,
-          turnedOn: true,
-          house: {
-            houseId: parseInt(cookies.get("house") || "1"),
+          location: values.location,
+          client: {
+            clientId: user.id,
           },
         }),
         headers: {
@@ -73,12 +71,13 @@ export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
         },
       },
     );
-    if (result.status === 201) {
-      setOpenCreateModal(false);
+    if (result.status === 200) {
+      fetchData();
+      setOpenChangeModal(false);
     } else {
       toast({
-        title: "Error creating device.",
-        description: "Check the console for more logs.",
+        title: "Error creating house.",
+        description: "Internal server error.",
         variant: "destructive",
       });
     }
@@ -101,41 +100,12 @@ export function NewDeviceForm({ setOpenCreateModal }: NewDeviceFormProps) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
-            name="type"
+            name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.entries(deviceTypes).map(([k, v]) => (
-                      <SelectItem key={k} value={k}>
-                        {v.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="houseArea"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>House area</FormLabel>
+                <FormLabel>Location</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

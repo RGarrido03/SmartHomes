@@ -61,6 +61,7 @@ export function NewHouseForm() {
     if (result.status === 201) {
       const data = await result.json();
       cookies.set("house", data["houseId"]);
+      cookies.set("houseName", data["name"]);
       router.push("/home");
     } else {
       toast({
