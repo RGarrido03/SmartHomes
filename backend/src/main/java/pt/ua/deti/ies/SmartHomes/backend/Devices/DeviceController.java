@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.RabbitMQ.Sender;
 
 @RestController
@@ -21,25 +22,28 @@ public class DeviceController {
     private DeviceService deviceService;
     private Sender sender;
 
-    @Operation(summary = "Get device info by id")
+    @Operation(summary = "Get device by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the device",
+            @ApiResponse(responseCode = "200", description = "Device found",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = DeviceController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid device id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = Device.class)) }),
 
             @ApiResponse(responseCode = "404", description = "Device not found",
-                    content = @Content) })
+                    content = @Content)
+    })
     @GetMapping("{id}")
     public ResponseEntity<Device> getDeviceInfo(@PathVariable("id") long id) {
         Device device = deviceService.getDevice(id);
         return new ResponseEntity<>(device, device != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Creation of a device")
+    @Operation(summary = "Create device")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Device created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Device.class)) })
+    })
     @PostMapping
     public ResponseEntity<Device> createDevice(@RequestBody Device device) {
         Device savedDevice = deviceService.createDevice(device);
@@ -47,17 +51,15 @@ public class DeviceController {
         return new ResponseEntity<>(savedDevice, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Edit a device by id")
+    @Operation(summary = "Edit device by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Device edited",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = DeviceController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = Device.class)) }),
 
             @ApiResponse(responseCode = "404", description = "Device not found",
-                    content = @Content) })
+                    content = @Content)
+    })
     @PutMapping("{id}")
     public ResponseEntity<Device> updateDevice(@PathVariable("id") long deviceId, @RequestBody Device device) {
         device.setDeviceId(deviceId);
@@ -66,17 +68,15 @@ public class DeviceController {
         return new ResponseEntity<>(updatedDevice, updatedDevice != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Turns on a device by id")
+    @Operation(summary = "Turn on device by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Device turned on",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = DeviceController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid device id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = Device.class)) }),
 
             @ApiResponse(responseCode = "404", description = "Device not found",
-                    content = @Content) })
+                    content = @Content)
+    })
     @PatchMapping("{id}/on")
     public ResponseEntity<Device> turnOnDevice(@PathVariable("id") long deviceId) {
         Device device = deviceService.changeState(deviceId, true);
@@ -84,17 +84,15 @@ public class DeviceController {
         return new ResponseEntity<>(device, device != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Turns off a device by id")
+    @Operation(summary = "Turn off device by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Device turned off",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = DeviceController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid device id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = Device.class)) }),
 
             @ApiResponse(responseCode = "404", description = "Device not found",
-                    content = @Content) })
+                    content = @Content)
+    })
     @PatchMapping("{id}/off")
     public ResponseEntity<Device> turnOffDevice(@PathVariable("id") long deviceId) {
         Device device = deviceService.changeState(deviceId, false);
@@ -102,8 +100,11 @@ public class DeviceController {
         return new ResponseEntity<>(device, device != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Deletion of a device")
+    @Operation(summary = "Delete device")
     @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteDevice(@PathVariable("id") long deviceId) {
         deviceService.deleteDevice(deviceId);
