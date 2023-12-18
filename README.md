@@ -64,7 +64,7 @@ $ docker compose up -build
  
 
 ### Contributors
-- 68264: Bruno Lopes
-- 108712: Diogo Falcão
-- 108011: Fábio Matias
-- 107927: Rúben Garrido
+- 68264: Bruno Lopes => Team Manager
+- 108712: Diogo Falcão => Architect
+- 108011: Fábio Matias => Product Owner
+- 107927: Rúben Garrido => DevOps master
