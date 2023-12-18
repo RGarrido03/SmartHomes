@@ -31,10 +31,7 @@ public class HouseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "House found",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = House.class)) }),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -44,8 +41,13 @@ public class HouseController {
         return new ResponseEntity<>(house, house != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Creation of house")
+    @Operation(summary = "Create house")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "House created",
+                    content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = House.class)) })
+    })
     @PostMapping
     public ResponseEntity<House> createHouse(@RequestBody House house) {
         House savedDevice = houseService.createHouse(house);
@@ -57,10 +59,7 @@ public class HouseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "House edited",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = House.class)) }),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -72,8 +71,11 @@ public class HouseController {
         return new ResponseEntity<>(updatedHouse, updatedHouse != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary = "Deletion of house by id")
+    @Operation(summary = "Delete house by id and their respective devices")
     @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteHouse(@PathVariable("id") long houseId) {
         House house = houseService.getHouse(houseId);
