@@ -1,5 +1,13 @@
 # SmartHomes
 
+![Static Badge](https://img.shields.io/badge/python-%3E%3D3.11-green)
+![Static Badge](https://img.shields.io/badge/java-%3E%3D17-orange)
+![Static Badge](https://img.shields.io/badge/spring_boot-%3E%3D3.1.5-blue)
+![Static Badge](https://img.shields.io/badge/next.js-%3E%3D14.0.3-yellow)
+
+
+
+
 Project for "Introdução à Engenharia de Software", 2023/2024
 
 ## Description
