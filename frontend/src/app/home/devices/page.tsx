@@ -60,7 +60,7 @@ export default function Devices() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/devices", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/devices`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           const parsedData = JSON.parse(new_data.body);
           setData(parsedData);

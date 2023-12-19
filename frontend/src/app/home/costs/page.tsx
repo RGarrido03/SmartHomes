@@ -38,7 +38,7 @@ export default function Costs() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/costs", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/costs`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           const parsedData = JSON.parse(new_data.body);
           setData(parsedData);

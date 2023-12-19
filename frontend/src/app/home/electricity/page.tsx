@@ -67,12 +67,12 @@ export default function Electricity() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/electricity", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/electricity`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           setData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // notifications
-        client.subscribe("/houses/1/notification/grid", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/notification/grid`, function (new_data) {
           const parsedData = JSON.parse(new_data.body);
           setNotificationData(parsedData);
         });
