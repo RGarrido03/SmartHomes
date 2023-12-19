@@ -79,24 +79,25 @@ export default function Home() {
       {},
       () => {
         // electricity
-        client.subscribe("/houses/1/electricity", function (new_data) {
-          setData((old) => [...old, JSON.parse(new_data.body)]);
+        client.subscribe(`/houses/${cookies.get("house")}/electricity`, function (new_data) {
+          const parsedData = JSON.parse(new_data.body);
+          setCostData(parsedData);
         });
         // costs
-        client.subscribe("/houses/1/costs", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/costs`, function (new_data) {
           const parsedData = JSON.parse(new_data.body);
           setCostData(parsedData);
         });
         // water
-        client.subscribe("/houses/1/water", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/water`, function (new_data) {
           setWaterData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // environment
-        client.subscribe("/houses/1/environment", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/environment`, function (new_data) {
           setEnvironmentData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // devices
-        client.subscribe("/houses/1/devices", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/devices`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           const parsedData = JSON.parse(new_data.body);
           setDeviceData(parsedData);
@@ -297,7 +298,7 @@ export default function Home() {
                 The more power consuming devices
               </CardDescription>
             </CardHeader>
-            <CardContent className="overflow-y-auto h-36">
+            <CardContent className="h-36 overflow-y-auto">
               <div className="space-y-4">
                 {(data === null || data.length === 0) && (
                   <div className="flex flex-1 flex-col justify-center text-center">
