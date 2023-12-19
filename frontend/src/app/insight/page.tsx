@@ -94,12 +94,14 @@ export default function Home() {
 
   useEffect(() => {
     cookies.remove("house");
+    cookies.remove("houseName");
     fetchData().catch(console.error);
   }, []);
 
   const goToHouse = useCallback(
-    (id: number) => {
+    (id: number, name: string) => {
       cookies.set("house", id.toString());
+      cookies.set("houseName", name);
       router.push("/home");
     },
     [cookies, router],
@@ -197,7 +199,10 @@ export default function Home() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button className="p-2" onClick={() => goToHouse(house.houseId)}>
+              <Button
+                className="p-2"
+                onClick={() => goToHouse(house.houseId, house.name)}
+              >
                 <MaterialSymbol icon="arrow_right_alt" size={24} />
               </Button>
             </div>
