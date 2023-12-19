@@ -4,6 +4,7 @@ import com.influxdb.client.QueryApi;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,14 +30,15 @@ public class HouseDataController {
     private QueryApi queryApi;
     private HouseService houseService;
 
-    @Operation(summary = "Get house electricity by id")
+    @Operation(summary = "Get electricity data of a house")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Electricity house returned",
+            @ApiResponse(responseCode = "200", description = "Electricity data returned",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseDataController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            array = @ArraySchema(schema =
+                                @Schema(implementation = ElectricityData.class)
+                            )
+                    )}
+            ),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -75,14 +77,15 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
-    @Operation(summary = "Get the environmental impact of a house")
+    @Operation(summary = "Get environment data of a house")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Environmental impact data returned",
+            @ApiResponse(responseCode = "200", description = "Environment data returned",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseDataController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = EnvironmentData.class)
+                            )
+                    )}
+            ),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -132,10 +135,11 @@ public class HouseDataController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Water consumptions returned",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseDataController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = WaterData.class)
+                            )
+                    )}
+            ),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -178,10 +182,7 @@ public class HouseDataController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Costs data returned",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseDataController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            schema = @Schema(implementation = CostData.class)) }),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
@@ -218,14 +219,15 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
-    @Operation(summary = "Get total of devices of a house")
+    @Operation(summary = "Get devices data of a house")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Devices returned",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HouseDataController.class)) }),
-
-            @ApiResponse(responseCode = "400", description = "Invalid house id supplied",
-                    content = @Content),
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = DeviceData.class)
+                            )
+                    )}
+            ),
 
             @ApiResponse(responseCode = "404", description = "House not found",
                     content = @Content) })
