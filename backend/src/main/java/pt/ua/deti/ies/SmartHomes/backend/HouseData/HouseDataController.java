@@ -3,13 +3,17 @@ package pt.ua.deti.ies.SmartHomes.backend.HouseData;
 import com.influxdb.client.QueryApi;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pt.ua.deti.ies.SmartHomes.backend.Devices.Device;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.House;
 import pt.ua.deti.ies.SmartHomes.backend.Houses.HouseService;
@@ -18,12 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RestControllerAdvice
+@Tag(name = "House data")
 @AllArgsConstructor
 @RequestMapping("api/houses")
 public class HouseDataController {
     private QueryApi queryApi;
     private HouseService houseService;
 
+    @Operation(summary = "Get electricity data of a house")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Electricity data returned",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema =
+                                @Schema(implementation = ElectricityData.class)
+                            )
+                    )}
+            ),
+
+            @ApiResponse(responseCode = "404", description = "House not found",
+                    content = @Content) })
     @GetMapping("{id}/electricity")
     public ResponseEntity<List<ElectricityData>> getElectricity(@PathVariable String id) {
         List<ElectricityData> data = new ArrayList<>();
@@ -59,6 +77,18 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
+    @Operation(summary = "Get environment data of a house")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Environment data returned",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = EnvironmentData.class)
+                            )
+                    )}
+            ),
+
+            @ApiResponse(responseCode = "404", description = "House not found",
+                    content = @Content) })
     @GetMapping("{id}/environment")
     public ResponseEntity<List<EnvironmentData>> getEnvironment(@PathVariable String id) {
         List<EnvironmentData> data = new ArrayList<>();
@@ -101,6 +131,18 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
+    @Operation(summary = "Get water consumptions of a house")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Water consumptions returned",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = WaterData.class)
+                            )
+                    )}
+            ),
+
+            @ApiResponse(responseCode = "404", description = "House not found",
+                    content = @Content) })
     @GetMapping("{id}/water")
     public ResponseEntity<List<WaterData>> getWater(@PathVariable String id) {
         List<WaterData> data = new ArrayList<>();
@@ -136,6 +178,14 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
+    @Operation(summary = "Get costs of a house")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Costs data returned",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CostData.class)) }),
+
+            @ApiResponse(responseCode = "404", description = "House not found",
+                    content = @Content) })
     @GetMapping("{id}/costs")
     public ResponseEntity<CostData> getCosts(@PathVariable String id) {
         String parametrizedQuery = String.format(
@@ -169,6 +219,18 @@ public class HouseDataController {
         return new ResponseEntity<>(data, code);
     }
 
+    @Operation(summary = "Get devices data of a house")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Devices returned",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = DeviceData.class)
+                            )
+                    )}
+            ),
+
+            @ApiResponse(responseCode = "404", description = "House not found",
+                    content = @Content) })
     @GetMapping("{id}/devices")
     public ResponseEntity<List<DeviceData>> getDevices(@PathVariable String id) {
         HttpStatus code = HttpStatus.OK;
