@@ -126,7 +126,7 @@ export default function Environment() {
             data={data}
             dataKey="renewable"
             className="fill-emerald-300 dark:fill-emerald-600"
-            unitOfMeasurement="W"
+            unitOfMeasurement="%"
           />
         </CardContent>
       </Card>
@@ -162,7 +162,8 @@ export default function Environment() {
             data={data}
             dataKey="emissions"
             className="fill-emerald-300 dark:fill-emerald-600"
-            unitOfMeasurement="%"
+            unitOfMeasurement="g"
+            label="d"
           />
         </CardContent>
       </Card>

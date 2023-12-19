@@ -52,7 +52,6 @@ export default function Devices() {
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
   const [data, setData] = useState<Device[]>([]);
 
-  // Fetch data from API
   useEffect(() => {
     const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
     const client = Stomp.over(ws);
