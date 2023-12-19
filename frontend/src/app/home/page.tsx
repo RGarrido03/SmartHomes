@@ -289,70 +289,66 @@ export default function Home() {
           </Card>
         </Link>
 
-        <div>
-          <Link href={"/home/devices"}>
-            <Card className="overflow-hidden">
-              <CardHeader>
-                <CardTitle>Devices</CardTitle>
-                <CardDescription className="pb-4">
-                  The more power consuming devices
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {(data === null || data.length === 0) && (
-                    <div className="flex flex-1 flex-col justify-center text-center">
-                      <MaterialSymbol
-                        icon="error"
-                        size={48}
-                        className="text-center"
-                      />
-                      <p className="text-center text-lg font-bold">
-                        Oops! It looks like you don&apos;t have any device yet.
-                      </p>
-                      <p>Start by creating one.</p>
+        <Link href={"/home/devices"}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Devices</CardTitle>
+              <CardDescription className="pb-4">
+                The more power consuming devices
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="overflow-y-auto h-80">
+              <div className="space-y-4">
+                {(data === null || data.length === 0) && (
+                  <div className="flex flex-1 flex-col justify-center text-center">
+                    <MaterialSymbol
+                      icon="error"
+                      size={48}
+                      className="text-center"
+                    />
+                    <p className="text-center text-lg font-bold">
+                      Oops! It looks like you don&apos;t have any device yet.
+                    </p>
+                    <p>Start by creating one.</p>
+                  </div>
+                )}
+                {deviceData.map((device) => (
+                  <div
+                    key={device.id}
+                    className="flex items-center gap-4 rounded-card bg-secondary p-4"
+                  >
+                    <MaterialSymbol
+                      icon={deviceTypes[device.type].icon}
+                      size={24}
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{device.name}</p>
+                      <p className="text-sm">{deviceTypes[device.type].name}</p>
                     </div>
-                  )}
-                  {deviceData.map((device) => (
-                    <div
-                      key={device.id}
-                      className="flex items-center gap-4 rounded-card bg-secondary p-4"
+                    <Button
+                      variant="destructive"
+                      className="h-fit p-2"
+                      onClick={() => {
+                        setDeleteId(device.id);
+                        setOpenDeleteModal(true);
+                      }}
                     >
-                      <MaterialSymbol
-                        icon={deviceTypes[device.type].icon}
-                        size={24}
-                      />
-                      <div className="flex-1">
-                        <p className="font-semibold">{device.name}</p>
-                        <p className="text-sm">
-                          {deviceTypes[device.type].name}
-                        </p>
-                      </div>
-                      <Button
-                        variant="destructive"
-                        className="h-fit p-2"
-                        onClick={() => {
-                          setDeleteId(device.id);
-                          setOpenDeleteModal(true);
-                        }}
-                      >
-                        <MaterialSymbol icon="close" size={20} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <div className="flex items-center space-x-1">
-                  <p>Check out the</p>
-                  <MaterialSymbol icon="scene" size={18}></MaterialSymbol>
-                  <p>tab.</p>
-                </div>
-                <MaterialSymbol icon="arrow_forward" size={24}></MaterialSymbol>
-              </CardFooter>
-            </Card>
-          </Link>
-        </div>
+                      <MaterialSymbol icon="close" size={20} />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <div className="flex items-center space-x-1">
+                <p>Check out the</p>
+                <MaterialSymbol icon="scene" size={18}></MaterialSymbol>
+                <p>tab.</p>
+              </div>
+              <MaterialSymbol icon="arrow_forward" size={24}></MaterialSymbol>
+            </CardFooter>
+          </Card>
+        </Link>
 
         <Link href={"/home/electricity"}>
           <Card className="overflow-hidden">

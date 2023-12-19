@@ -20,10 +20,8 @@ export function CustomTooltip({
   payload,
   active,
   unitOfMeasurement,
-  data,
 }: TooltipProps<number, string> & {
   unitOfMeasurement: string;
-  data: string;
 }) {
   if (active) {
     return (
@@ -31,7 +29,7 @@ export function CustomTooltip({
         <p className="font-semibold">
           {payload ? payload[0].value : 0} {unitOfMeasurement}
         </p>
-        <p className="text-sm">{data ? data[0]: 0}</p>
+        <p className="text-sm">{payload ? payload[0].payload.time.slice(11, -11) : 0}</p>
       </div>
     );
   }
