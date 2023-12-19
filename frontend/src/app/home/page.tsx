@@ -9,7 +9,6 @@ import {
   CardFooter,
   CardHeader,
   CardDescription,
-  DevicesCard,
 } from "@/components/ui/card";
 import Link from "next/link";
 import Wave from "react-wavify";
@@ -18,9 +17,11 @@ import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
+import { deviceTypes } from "../home/devices/types";
 //websocket
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { Device } from "./devices/page";
 
 type ElectricityDataProps = {
   time: string;
@@ -58,33 +59,14 @@ type EnvironmentData = {
   renewable_forecast_hour: [];
 }[];
 
-type Device = {
-  id: number;
-  name: string;
-  type:
-    | "TV"
-    | "SOLARPV"
-    | "WINDTURBINE"
-    | "PLUG"
-    | "GRIDMETER"
-    | "AC"
-    | "LIGHT"
-    | "SMARTASSISTANT"
-    | "CARCARGER"
-    | "VACUUM"
-    | "DESUMIDIFIER"
-    | "OVEN";
-  houseArea: string;
-  on: boolean;
-  power: number;
-};
-
 export default function Home() {
   const [data, setData] = useState<ElectricityDataProps>([]);
   const [costData, setCostData] = useState<CostDataProps>();
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
-  const [devicesData, setDevicesData] = useState<Device[]>([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>(0);
+  const [deviceData, setDeviceData] = useState<Device[]>([]);
 
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -117,7 +99,7 @@ export default function Home() {
         client.subscribe("/houses/1/devices", function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           const parsedData = JSON.parse(new_data.body);
-          setDevicesData(parsedData);
+          setDeviceData(parsedData);
         });
       },
       () => {
@@ -189,7 +171,7 @@ export default function Home() {
           },
         );
         const devicesData = await devicesResponse.json();
-        setDevicesData(devicesData);
+        devicesData(devicesData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -307,62 +289,70 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home/devices"}>
-          <Card className="overflow-hidden">
-            <CardHeader>
-              <CardTitle>Devices</CardTitle>
-              <CardDescription className="pb-4">
-                The more power consuming devices
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <DevicesCard>
-                  <div className="flex items-center justify-between">
-                    <MaterialSymbol
-                      icon="vacuum"
-                      size={24}
-                      className="pl-3"
-                    ></MaterialSymbol>
-                    <CardHeader>Aspirador</CardHeader>
-                  </div>
-                  <Button className="bg-orange-300 px-2">
-                    <MaterialSymbol
-                      icon="close"
-                      size={24}
-                      color="black"
-                    ></MaterialSymbol>
-                  </Button>
-                </DevicesCard>
-                <DevicesCard>
-                  <div className="flex items-center justify-between">
-                    <MaterialSymbol
-                      icon="electric_car"
-                      size={24}
-                      className="pl-3"
-                    ></MaterialSymbol>
-                    <CardHeader>Tesla Charger</CardHeader>
-                  </div>
-                  <Button className="bg-orange-300 px-2">
-                    <MaterialSymbol
-                      icon="close"
-                      size={24}
-                      color="black"
-                    ></MaterialSymbol>
-                  </Button>
-                </DevicesCard>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <div className="flex items-center space-x-1">
-                <p>Check out the</p>
-                <MaterialSymbol icon="scene" size={18}></MaterialSymbol>
-                <p>tab.</p>
-              </div>
-              <MaterialSymbol icon="arrow_forward" size={24}></MaterialSymbol>
-            </CardFooter>
-          </Card>
-        </Link>
+        <div>
+          <Link href={"/home/devices"}>
+            <Card className="overflow-hidden">
+              <CardHeader>
+                <CardTitle>Devices</CardTitle>
+                <CardDescription className="pb-4">
+                  The more power consuming devices
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {(data === null || data.length === 0) && (
+                    <div className="flex flex-1 flex-col justify-center text-center">
+                      <MaterialSymbol
+                        icon="error"
+                        size={48}
+                        className="text-center"
+                      />
+                      <p className="text-center text-lg font-bold">
+                        Oops! It looks like you don&apos;t have any device yet.
+                      </p>
+                      <p>Start by creating one.</p>
+                    </div>
+                  )}
+                  {deviceData.map((device) => (
+                    <div
+                      key={device.id}
+                      className="flex items-center gap-4 rounded-card bg-secondary p-4"
+                    >
+                      <MaterialSymbol
+                        icon={deviceTypes[device.type].icon}
+                        size={24}
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold">{device.name}</p>
+                        <p className="text-sm">
+                          {deviceTypes[device.type].name}
+                        </p>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        className="h-fit p-2"
+                        onClick={() => {
+                          setDeleteId(device.id);
+                          setOpenDeleteModal(true);
+                        }}
+                      >
+                        <MaterialSymbol icon="close" size={20} />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="flex items-center space-x-1">
+                  <p>Check out the</p>
+                  <MaterialSymbol icon="scene" size={18}></MaterialSymbol>
+                  <p>tab.</p>
+                </div>
+                <MaterialSymbol icon="arrow_forward" size={24}></MaterialSymbol>
+              </CardFooter>
+            </Card>
+          </Link>
+        </div>
 
         <Link href={"/home/electricity"}>
           <Card className="overflow-hidden">
