@@ -73,7 +73,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User info & token",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthController.class)) }),
+                            schema = @Schema(implementation = JwtResponse.class)) }),
             @ApiResponse(responseCode = "400", description = "User already exists",
                     content = @Content) })
     @PostMapping("/register")
