@@ -63,12 +63,12 @@ export default function Environment() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/environment", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/environment`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           setData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // notifications
-        client.subscribe("/houses/1/notification/power", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/notification/power`, function (new_data) {
           const parsedData = JSON.parse(new_data.body);
           setNotificationData(parsedData);
         });
