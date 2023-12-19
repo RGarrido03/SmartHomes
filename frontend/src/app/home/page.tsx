@@ -290,14 +290,14 @@ export default function Home() {
         </Link>
 
         <Link href={"/home/devices"}>
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Devices</CardTitle>
               <CardDescription className="pb-4">
                 The more power consuming devices
               </CardDescription>
             </CardHeader>
-            <CardContent className="overflow-y-auto h-80">
+            <CardContent className="overflow-y-auto h-36">
               <div className="space-y-4">
                 {(data === null || data.length === 0) && (
                   <div className="flex flex-1 flex-col justify-center text-center">
