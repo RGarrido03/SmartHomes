@@ -12,12 +12,12 @@ type CustomAreaChartProps = {
   className?: string;
   height?: number | string | undefined;
   unitOfMeasurement?: string;
+  label?: string;
   width?: number | string | undefined;
 };
 
 export function CustomTooltip({
   payload,
-  label,
   active,
   unitOfMeasurement,
 }: TooltipProps<number, string> & {
@@ -29,7 +29,7 @@ export function CustomTooltip({
         <p className="font-semibold">
           {payload ? payload[0].value : 0} {unitOfMeasurement}
         </p>
-        <p className="text-sm">{label}</p>
+        <p className="text-sm">{payload ? payload[0].payload.time.slice(11, -11) : 0}</p>
       </div>
     );
   }

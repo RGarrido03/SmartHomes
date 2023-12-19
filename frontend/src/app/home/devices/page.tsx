@@ -53,7 +53,6 @@ export default function Devices() {
   const [data, setData] = useState<Device[]>([]);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
-  // Fetch data from API
   useEffect(() => {
     const ws = new SockJS(`http://${process.env.NEXT_PUBLIC_HOST_URL}/api/ws`);
     const client = Stomp.over(ws);
@@ -61,7 +60,7 @@ export default function Devices() {
     client.connect(
       {},
       () => {
-        client.subscribe("/houses/1/devices", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/devices`, function (new_data) {
           console.log("New notification: ", JSON.parse(new_data.body));
           const parsedData = JSON.parse(new_data.body);
           setData(parsedData);

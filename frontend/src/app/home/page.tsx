@@ -9,7 +9,6 @@ import {
   CardFooter,
   CardHeader,
   CardDescription,
-  DevicesCard,
 } from "@/components/ui/card";
 import Link from "next/link";
 import Wave from "react-wavify";
@@ -18,9 +17,11 @@ import { MaterialSymbol } from "react-material-symbols";
 import { Button } from "@/components/ui/button";
 import { useCookies } from "next-client-cookies";
 import { User } from "@/app/login/user";
+import { deviceTypes } from "../home/devices/types";
 //websocket
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { Device } from "./devices/page";
 
 type ElectricityDataProps = {
   time: string;
@@ -63,6 +64,9 @@ export default function Home() {
   const [costData, setCostData] = useState<CostDataProps>();
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>(0);
+  const [deviceData, setDeviceData] = useState<Device[]>([]);
 
   const cookies = useCookies();
   const user: User = JSON.parse(cookies.get("currentUser") ?? "");
@@ -75,21 +79,28 @@ export default function Home() {
       {},
       () => {
         // electricity
-        client.subscribe("/houses/1/electricity", function (new_data) {
-          setData((old) => [...old, JSON.parse(new_data.body)]);
+        client.subscribe(`/houses/${cookies.get("house")}/electricity`, function (new_data) {
+          const parsedData = JSON.parse(new_data.body);
+          setCostData(parsedData);
         });
         // costs
-        client.subscribe("/houses/1/costs", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/costs`, function (new_data) {
           const parsedData = JSON.parse(new_data.body);
           setCostData(parsedData);
         });
         // water
-        client.subscribe("/houses/1/water", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/water`, function (new_data) {
           setWaterData((old) => [...old, JSON.parse(new_data.body)]);
         });
         // environment
-        client.subscribe("/houses/1/environment", function (new_data) {
+        client.subscribe(`/houses/${cookies.get("house")}/environment`, function (new_data) {
           setEnvironmentData((old) => [...old, JSON.parse(new_data.body)]);
+        });
+        // devices
+        client.subscribe(`/houses/${cookies.get("house")}/devices`, function (new_data) {
+          console.log("New notification: ", JSON.parse(new_data.body));
+          const parsedData = JSON.parse(new_data.body);
+          setDeviceData(parsedData);
         });
       },
       () => {
@@ -149,6 +160,19 @@ export default function Home() {
         );
         const environmentData = await environmentResponse.json();
         setEnvironmentData(environmentData);
+
+        const devicesResponse = await fetch(
+          `http://${process.env.NEXT_PUBLIC_HOST_URL}/api/houses/${cookies.get(
+            "house",
+          )}/devices`,
+          {
+            headers: {
+              Authorization: "Bearer " + user.token,
+            },
+          },
+        );
+        const devicesData = await devicesResponse.json();
+        devicesData(devicesData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -230,7 +254,7 @@ export default function Home() {
       </CardHome>
 
       <div className="grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Link href={"/home"}>
+        <Link href={"/home/water"}>
           <Card className="overflow-hidden">
             <CardHeader className="pb-6">
               <CardTitle>Water output now</CardTitle>
@@ -266,7 +290,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/devices"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Devices</CardTitle>
@@ -274,42 +298,46 @@ export default function Home() {
                 The more power consuming devices
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="h-36 overflow-y-auto">
               <div className="space-y-4">
-                <DevicesCard>
-                  <div className="flex items-center justify-between">
+                {(data === null || data.length === 0) && (
+                  <div className="flex flex-1 flex-col justify-center text-center">
                     <MaterialSymbol
-                      icon="vacuum"
-                      size={24}
-                      className="pl-3"
-                    ></MaterialSymbol>
-                    <CardHeader>Aspirador</CardHeader>
+                      icon="error"
+                      size={48}
+                      className="text-center"
+                    />
+                    <p className="text-center text-lg font-bold">
+                      Oops! It looks like you don&apos;t have any device yet.
+                    </p>
+                    <p>Start by creating one.</p>
                   </div>
-                  <Button className="bg-orange-300 px-2">
+                )}
+                {deviceData.map((device) => (
+                  <div
+                    key={device.id}
+                    className="flex items-center gap-4 rounded-card bg-secondary p-4"
+                  >
                     <MaterialSymbol
-                      icon="close"
+                      icon={deviceTypes[device.type].icon}
                       size={24}
-                      color="black"
-                    ></MaterialSymbol>
-                  </Button>
-                </DevicesCard>
-                <DevicesCard>
-                  <div className="flex items-center justify-between">
-                    <MaterialSymbol
-                      icon="electric_car"
-                      size={24}
-                      className="pl-3"
-                    ></MaterialSymbol>
-                    <CardHeader>Tesla Charger</CardHeader>
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{device.name}</p>
+                      <p className="text-sm">{deviceTypes[device.type].name}</p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      className="h-fit p-2"
+                      onClick={() => {
+                        setDeleteId(device.id);
+                        setOpenDeleteModal(true);
+                      }}
+                    >
+                      <MaterialSymbol icon="close" size={20} />
+                    </Button>
                   </div>
-                  <Button className="bg-orange-300 px-2">
-                    <MaterialSymbol
-                      icon="close"
-                      size={24}
-                      color="black"
-                    ></MaterialSymbol>
-                  </Button>
-                </DevicesCard>
+                ))}
               </div>
             </CardContent>
             <CardFooter>
@@ -403,7 +431,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/environment"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Self suficiency</CardTitle>
@@ -430,7 +458,7 @@ export default function Home() {
           </Card>
         </Link>
 
-        <Link href={"/home"}>
+        <Link href={"/home/costs"}>
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Costs summary</CardTitle>
