@@ -73,10 +73,10 @@ The SmartHomes App API has various entities (house, devices,...) and functions t
 email: ana@ua.pt</br>
 password: anaanaana
 ### John
-email: john@ua.pt
+email: john@ua.pt</br>
 password: johnjohn
 ### Petter
-email: peter@ua.pt
+email: peter@ua.pt</br>
 password: petterpetter
 
 ### Contributors
