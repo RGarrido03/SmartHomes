@@ -60,13 +60,24 @@ $ docker compose up -build
 
 ## Architecture
 ### Module interactions
-![Achitecture](https://github.com/RGarrido03/SmartHomes/assets/63374228/8ebcf236-b172-4559-8811-612b9e17f70b)
+![Achitecture](./docs/Achitecture.png)
 
 
 ## Rest API Documentation (swagger)
 
 The SmartHomes App API has various entities (house, devices,...) and functions to each one of them. To see more details go to:
 [/api/docs/index.html](http://localhost/api/docs/index.html)
+
+## Personas and scenarios mail and passwords
+### Ana
+email: ana@ua.pt</br>
+password: anaanaana
+### John
+email: john@ua.pt
+password: johnjohn
+### Petter
+email: peter@ua.pt
+password: petterpetter
 
 ### Contributors
 - 68264: Bruno Lopes => Team Manager
