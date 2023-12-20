@@ -64,8 +64,6 @@ export default function Home() {
   const [costData, setCostData] = useState<CostDataProps>();
   const [waterData, setWaterData] = useState<WaterValues>([]);
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>([]);
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [deleteId, setDeleteId] = useState<number>(0);
   const [deviceData, setDeviceData] = useState<Device[]>([]);
 
   const cookies = useCookies();
@@ -329,10 +327,6 @@ export default function Home() {
                     <Button
                       variant="destructive"
                       className="h-fit p-2"
-                      onClick={() => {
-                        setDeleteId(device.id);
-                        setOpenDeleteModal(true);
-                      }}
                     >
                       <MaterialSymbol icon="close" size={20} />
                     </Button>
