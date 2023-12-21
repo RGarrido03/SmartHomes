@@ -66,7 +66,7 @@ $ docker compose up -build
 ## Rest API Documentation (swagger)
 
 The SmartHomes App API has various entities (house, devices,...) and functions to each one of them. To see more details go to:
-[/api/docs/index.html](http://localhost/api/docs/index.html)
+[/api/docs/index.html](http://deti-ies-09.ua.pt/api/docs/index.html)
 
 ## Personas and scenarios mail and passwords
 ### Ana
