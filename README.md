@@ -24,6 +24,10 @@ other mainstream applications, such as smart device control and control and info
 household resources. Instead of merely controlling devices, we gain insights into how to
 intelligently assist the environment and your wallet.
 
+## Slides
+
+[Canva presentation](https://www.canva.com/design/DAF3eMbogZc/hNAPnj4ER_BDGeEgtOP6Gw/edit?utm_content=DAF3eMbogZc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## UI
 
 Login                      |  Home insight             | Home Overview
